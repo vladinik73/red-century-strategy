@@ -1,5 +1,32 @@
 # Changelog
 
+## v4.0 — Phase 2 (Economy & Terrain)
+Дата: 2026-03-01
+
+### Новые канонические файлы
+- `docs/04_economy/Money_Model.md` — полная формула MoneyPerTurn (базовый доход + добыча + магистраль + союзы + стабильность + осада + кибер)
+- `docs/06_combat/Siege_Effects.md` — эффекты осады: -30% экономика/наука, +30% стоимость производства, -1 DefenseModifier
+- `docs/07_units/Production_Rules.md` — 1 юнит/ход на интегрированный город, мгновенное появление, очередь глубиной 1
+
+### Обновлённые файлы
+- `docs/04_economy/Action_Points.md` — формализована формула ОД: база 5 + города + технологии + модификаторы (стабильность, магистраль, союзы, оккупация, кибер)
+- `docs/04_economy/Stability_and_Morale.md` — уточнены штрафы (захват -2, потеря -4, столица -8, разрыв союза -2, оккупация -1/город), бунт при 0 стабильности
+- `docs/05_tech/Tech_Progression.md` — SciencePerTurn формула, Research Boost (ConversionRate 0.5), связь с ОД и победой
+- `docs/08_diplomacy/Diplomacy_and_Alliances.md` — лимит 2 союза, cooldown 3 хода, кибер = автовойна
+
+### Патчи существующих файлов
+- `docs/06_combat/Damage_and_Rules.md` — добавлен DefenseModifier: -1 если город под осадой (ссылка на Siege_Effects.md)
+- `docs/06_combat/Siege_Air_Sea.md` — заменена дублирующая формулировка «-30% к производству» на ссылку на Siege_Effects.md
+- `docs/02_cities/City_Levels.md` — добавлена секция «Производство юнитов» со ссылкой на Production_Rules.md
+- `docs/04_economy/Resources.md` — уточнён тип выхода ресурсных клеток (Money/Science), условия запуска добычи, ссылки на Money_Model.md и Tech_Progression.md
+
+### Консистентность
+- SOURCE_OF_TRUTH обновлён до v4.0: добавлены секции Phase 2 (экономика, ОД, осада, стабильность, дипломатия, производство)
+- Устранено дублирование определения осады между Siege_Air_Sea.md и Siege_Effects.md
+- Формулы OD/Science/Money проверены на согласованность между файлами
+
+---
+
 ## v3.0 — Phase 1 (integration)
 Дата: 2026-03-01
 

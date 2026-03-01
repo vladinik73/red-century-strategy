@@ -18,6 +18,7 @@ Damage = BaseDamage + TerrainBonus + MoraleModifier - DefenseModifier
 ## DefenseModifier (складывается)
 - +1 если юнит в лесу
 - +2 если юнит в укреплённом городе
+- -1 если город под осадой (см. `docs/06_combat/Siege_Effects.md`)
 - -1 если юнит окружён (см. ниже)
 
 ## Окружение

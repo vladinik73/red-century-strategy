@@ -1,4 +1,4 @@
-# Source of Truth (v3.0 — Phase 1)
+# Source of Truth (v4.0 — Phase 2)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -33,11 +33,49 @@
 - Авиация в городе = floor(уровень / 2)
 - Лимит кораблей = уровень города (при наличии порта)
 
+## Производство юнитов (Phase 2)
+- Каждый интегрированный город может произвести не более 1 юнита за ход
+- Мгновенное появление на клетке города (если свободна); очередь глубиной 1
+- В неинтегрированном городе производство запрещено
+- Подробности: `docs/07_units/Production_Rules.md`
+
+## Экономика — деньги (Phase 2)
+- MoneyPerTurn = floor((Σ CityBaseIncome + HarvestIncome) × NetworkMultiplier × AllianceMultiplier × StabilityMultiplier × CyberIncomeMultiplier)
+- CityBaseIncome = city_level (только интегрированные города)
+- HarvestIncome = Σ MoneyYield(tile) от денежных ресурсных клеток
+- Ресурсная клетка: 2 ед./ход (запас 10), после исчерпания 1 ед./ход (бесконечно)
+- Запуск добычи: 1 ОД (однократно), клетка на территории интегрированного города
+- Подробности: `docs/04_economy/Money_Model.md`, `docs/04_economy/Resources.md`
+
 ## Технологии (Phase 1)
 - 3 ветки × 5 уровней = 15 технологий максимум
 - BaseCost(level) = 10 × level²
 - Research Boost: MoneyToScience = MoneySpent × 0.5 (без ограничений на объём)
 - SciencePerTurn = 5 + CityBonus + TechBonus + NetworkContribution
+
+## ОД — формула (Phase 2)
+- OD = 5 + floor(Σ уровней интегрированных городов / 5) + floor(Количество технологий / 3) + StabilityModifier + NetworkModifier + AllianceModifier - OccupationPenalty - CyberPenalty
+- Подробности: `docs/04_economy/Action_Points.md`
+
+## Осада (Phase 2)
+- Осада = вражеский юнит соседствует с городом
+- Экономика: -30% к MoneyPerTurn и ScienceGain города
+- Производство: стоимость юнита ×1.3 (ceil)
+- Оборона: -1 к DefenseModifier города
+- Подробности: `docs/06_combat/Siege_Effects.md`
+
+## Стабильность и мораль (Phase 2)
+- Диапазон: 0–100, старт: 70, авто-восстановление +1/ход
+- Мораль привязана к стабильности (≥70 → мораль 100)
+- Стабильность 80–100: +10% к урону (MoraleModifier)
+- Бунт при 0 стабильности: 10% шанс/ход, город → нейтральный
+- Подробности: `docs/04_economy/Stability_and_Morale.md`
+
+## Дипломатия (Phase 2)
+- Не более 2 союзов одновременно
+- Союз нельзя разорвать раньше 6 ходов; cooldown после разрыва 3 хода
+- Кибератака на нейтральную цивилизацию = автообъявление войны
+- Подробности: `docs/08_diplomacy/Diplomacy_and_Alliances.md`
 
 ## AI (Phase 1)
 - Все переменные скоринга определены в `docs/09_ai/AI_Spec_v1_0.md`

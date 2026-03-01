@@ -39,6 +39,9 @@ SciencePerTurn = BaseScience
 - **TechBonus** = бонусы от научных технологий (Научная ветка уровень 2: +10%, уровень 3: +20%)
 - **NetworkContribution** = floor(NetworkBonus% × 0.1)
 
+### Осада
+- Если город под осадой, его вклад в CityBonus снижается на 30% (×0.7). См. `docs/06_combat/Siege_Effects.md`.
+
 ## Связь с ОД
 - floor(Количество изученных технологий / 3) добавляется к ОД за ход
 
