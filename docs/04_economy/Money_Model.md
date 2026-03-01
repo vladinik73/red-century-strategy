@@ -40,8 +40,10 @@ AllianceMultiplier = 1 + min(10, 5 * ActiveAlliancesCount) / 100
 Стабильность даёт `MoneyMultiplier` по таблице из `docs/04_economy/Stability_and_Morale.md`:
 
 ```
-StabilityMultiplier = 1 + MoneyMultiplier
+StabilityMultiplier = 1 + MoneyMultiplier / 100
 ```
+
+Пример: стабильность 85 → MoneyMultiplier = +5% → StabilityMultiplier = 1.05
 
 ## 6) Осада (-30%)
 Если город под осадой, его вклад в доход снижается:
@@ -49,7 +51,7 @@ StabilityMultiplier = 1 + MoneyMultiplier
 - добыча денег на клетках территории этого города ×0.7
 
 ## 7) Кибер-дебафф (-20% доход)
-Если активен эффект киберподразделения «-20% доход», применяется:
+Если активен эффект киберподразделения «Сбой» (см. `docs/07_units/Cyber_Effects.md`), применяется:
 ```
 CyberIncomeMultiplier = 0.8
 ```

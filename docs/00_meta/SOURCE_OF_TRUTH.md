@@ -1,4 +1,4 @@
-# Source of Truth (v4.0 — Phase 2)
+# Source of Truth (v4.1 — Phase 2.1 hotfix)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -53,8 +53,10 @@
 - Research Boost: MoneyToScience = MoneySpent × 0.5 (без ограничений на объём)
 - SciencePerTurn = 5 + CityBonus + TechBonus + NetworkContribution
 
-## ОД — формула (Phase 2)
+## ОД — формула (Phase 2 + 2.1)
 - OD = 5 + floor(Σ уровней интегрированных городов / 5) + floor(Количество технологий / 3) + StabilityModifier + NetworkModifier + AllianceModifier - OccupationPenalty - CyberPenalty
+- «Сбой» (кибер) может включать два параллельных эффекта: CyberPenalty = -1 OD и CyberIncomeMultiplier = 0.8 (−20% MoneyPerTurn)
+- Уточнение: `docs/07_units/Cyber_Effects.md`
 - Подробности: `docs/04_economy/Action_Points.md`
 
 ## Осада (Phase 2)
@@ -64,12 +66,13 @@
 - Оборона: -1 к DefenseModifier города
 - Подробности: `docs/06_combat/Siege_Effects.md`
 
-## Стабильность и мораль (Phase 2)
+## Стабильность и мораль (Phase 2 + 2.1)
 - Диапазон: 0–100, старт: 70, авто-восстановление +1/ход
 - Мораль привязана к стабильности (≥70 → мораль 100)
-- Стабильность 80–100: +10% к урону (MoraleModifier)
+- Стабильность влияет на доход денег: MoneyMultiplier (80–100: +5%, 60–79: 0%, 40–59: -5%, 20–39: -10%, 0–19: -20%)
+- Мораль влияет на урон: MoraleMultiplier — **множитель** (80–100: 1.10, 40–79: 1.00, 20–39: 0.90, 0–19: 0.80)
 - Бунт при 0 стабильности: 10% шанс/ход, город → нейтральный
-- Подробности: `docs/04_economy/Stability_and_Morale.md`
+- Канон: `docs/04_economy/Stability_and_Morale.md`, `docs/06_combat/Damage_and_Rules.md`
 
 ## Дипломатия (Phase 2)
 - Не более 2 союзов одновременно
