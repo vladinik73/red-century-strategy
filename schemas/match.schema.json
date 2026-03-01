@@ -1,0 +1,16 @@
+{
+  "Match": {
+    "id": "string(16)",
+    "mode": "PvE|PvP|Async",
+    "map_size": "80x80|50x50",
+    "turn": "int",
+    "players": [
+      "string"
+    ],
+    "ai_difficulty": "Easy|Normal|Hard|God",
+    "seed": "int",
+    "events": [
+      "object"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "City": {
+    "id": "string",
+    "name": "string",
+    "level": "int",
+    "owner": "string|null",
+    "is_capital": "bool",
+    "is_integrated": "bool",
+    "integration_turns_left": "int",
+    "defense_level": "int",
+    "has_port": "bool",
+    "garrison_units": "int",
+    "max_garrison": "int",
+    "territory_tiles": [
+      "string"
+    ]
+  }
+}

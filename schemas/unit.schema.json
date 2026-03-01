@@ -1,0 +1,19 @@
+{
+  "Unit": {
+    "id": "string",
+    "name": "string",
+    "faction": "string|null",
+    "hp_max": "int",
+    "hp_current": "int",
+    "damage": "int",
+    "range": "int",
+    "move": "int",
+    "ap_cost": "int",
+    "tags": [
+      "string"
+    ],
+    "special": [
+      "string"
+    ]
+  }
+}
