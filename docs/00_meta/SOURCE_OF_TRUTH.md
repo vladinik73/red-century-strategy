@@ -1,4 +1,4 @@
-# Source of Truth (v4.1 — Phase 2.1 hotfix)
+# Source of Truth (v4.2 — Phase 3.1 Cyber Rebalance)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -55,9 +55,18 @@
 
 ## ОД — формула (Phase 2 + 2.1)
 - OD = 5 + floor(Σ уровней интегрированных городов / 5) + floor(Количество технологий / 3) + StabilityModifier + NetworkModifier + AllianceModifier - OccupationPenalty - CyberPenalty
-- «Сбой» (кибер) может включать два параллельных эффекта: CyberPenalty = -1 OD и CyberIncomeMultiplier = 0.8 (−20% MoneyPerTurn)
-- Уточнение: `docs/07_units/Cyber_Effects.md`
 - Подробности: `docs/04_economy/Action_Points.md`
+
+## Cyber Rules (v4.2)
+- 1 активный «Сбой» на цивилизацию
+- Применение «Сбоя» требует 1 ОД
+- Эффект «Сбоя» (2 хода):
+  - -20% доход поражённого города
+  - -1 ОД глобально
+- Дороги не уничтожаются: получают статус `DamagedRoad` на 2 хода
+  - `DamagedRoad` не учитывается в `NetworkBonus` и не даёт бонус перемещения
+  - авто-восстановление через 2 хода или восстановление владельцем за 1 ОД
+- Подробности: `docs/07_units/Cyber_Effects.md`, `docs/07_units/Advanced_Units.md`, `docs/04_economy/Network.md`
 
 ## Осада (Phase 2)
 - Осада = вражеский юнит соседствует с городом
