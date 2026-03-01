@@ -1,7 +1,9 @@
 # Бой: формула и правила
 
 ## Общая формула урона
-Damage = BaseDamage + TerrainBonus + MoraleModifier - DefenseModifier
+```
+Damage = floor((BaseDamage + TerrainBonus - DefenseModifier) × MoraleMultiplier)
+```
 
 - Минимальный урон = 1
 - Округление вниз
@@ -10,10 +12,17 @@ Damage = BaseDamage + TerrainBonus + MoraleModifier - DefenseModifier
 - +1 при атаке с горы
 - -1 при атаке на гору с равнины
 
-## MoraleModifier (через стабильность)
-- Стабильность 80–100: +10% к урону
-- 20–39: -10%
-- 0–19: -20%
+## MoraleMultiplier (через стабильность)
+Мораль применяется как **множитель** к итоговому урону:
+
+| Стабильность | MoraleMultiplier |
+|-------------|------------------|
+| 80–100      | 1.10 (+10%)      |
+| 40–79       | 1.00             |
+| 20–39       | 0.90 (-10%)      |
+| 0–19        | 0.80 (-20%)      |
+
+Канон: `docs/04_economy/Stability_and_Morale.md`
 
 ## DefenseModifier (складывается)
 - +1 если юнит в лесу

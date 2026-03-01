@@ -1,5 +1,23 @@
 # Changelog
 
+## v4.1 — Phase 2.1 hotfix
+Дата: 2026-03-01
+
+### Новые канонические файлы
+- `docs/07_units/Cyber_Effects.md` — уточнение «Сбоя»: два параллельных эффекта (CyberPenalty -1 OD + CyberIncomeMultiplier 0.8)
+
+### Обновлённые файлы
+- `docs/04_economy/Stability_and_Morale.md` — добавлена таблица MoneyMultiplier (80–100: +5%, 60–79: 0%, 40–59: -5%, 20–39: -10%, 0–19: -20%); MoraleModifier переименован в MoraleMultiplier с таблицей значений
+- `docs/06_combat/Damage_and_Rules.md` — формула урона изменена на мультипликативную: `floor((BaseDamage + TerrainBonus - DefenseModifier) × MoraleMultiplier)`; добавлена таблица MoraleMultiplier
+
+### Консистентность
+- SOURCE_OF_TRUTH обновлён до v4.1: MoneyMultiplier table, MoraleMultiplier как множитель, кибер-эффекты уточнены
+- Устранена неоднозначность MoraleModifier (аддитивный → мультипликативный)
+- Устранена недоопределённость MoneyMultiplier (добавлена таблица)
+- Кибер-эффекты формализованы в отдельном файле с ссылками из Money_Model.md и Action_Points.md
+
+---
+
 ## v4.0 — Phase 2 (Economy & Terrain)
 Дата: 2026-03-01
 
