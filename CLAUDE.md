@@ -36,11 +36,13 @@
 
 ## Быстрые ссылки
 - Обзор: `docs/01_overview/README.md`
+- Города: `docs/02_cities/*`
 - Карта: `docs/03_map/*`
 - Экономика: `docs/04_economy/*`
 - Технологии: `docs/05_tech/*`
 - Бой: `docs/06_combat/*`
 - Юниты: `docs/07_units/*`
+- Дипломатия: `docs/08_diplomacy/*`
 - ИИ: `docs/09_ai/*`
 - UI/UX: `docs/10_uiux/*`
 
