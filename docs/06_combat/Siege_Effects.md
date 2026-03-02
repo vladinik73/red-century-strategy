@@ -21,5 +21,5 @@ APCostSiege = ceil(APCostBase × 1.3)
 
 ## 3) Оборона
 Если город под осадой:
-- бонус защиты города снижается на 1 (см. `docs/02_cities/City_Defense.md`)
+- бонус защиты города снижается на 1 (см. `docs/04_economy/City_Defense.md`)
 - и это должно учитываться в DefenseModifier боёвки (`docs/06_combat/Damage_and_Rules.md`).
