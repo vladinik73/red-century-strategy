@@ -1,5 +1,23 @@
 # Changelog
 
+## v4.21 — Phase 4.14 (Stability Boost Action)
+
+- `docs/04_economy/Stability_and_Morale.md` — добавлено действие цивилизации **Boost Stability** (тратит деньги + 1 ОД, раз в ход на цивилизацию).
+- `docs/04_economy/Action_Points.md` — добавлено в список действий, уточнены ограничения и сброс per-turn флага.
+- `docs/01_overview/Turn_Pipeline.md` — PHASE 0: сброс `StabilityBoostUsedThisTurn`; PHASE 3: описание действия Boost Stability.
+- `docs/00_meta/SOURCE_OF_TRUTH.md` — добавлена секция `Stability Boost (v4.21)`.
+
+---
+
+## v4.20 — Phase 4.13 (Combat Actions: Counter-attack, Heal, Disband)
+
+- `docs/06_combat/Damage_and_Rules.md` — добавлен канон ответного удара: **только melee (Range=1)**, ranged без ответного удара.
+- `docs/10_uiux/Unit_Actions.md` — добавлены действия Heal (+3 HP за 1 ОД) и Disband (refund 50% AP cost), а также правило «1 действие на юнит за ход».
+- `docs/01_overview/Turn_Pipeline.md` — уточнён action budget юнита (сброс в PHASE 0, учёт в PHASE 3).
+- `docs/00_meta/SOURCE_OF_TRUTH.md` — секция Unit Actions (v4.20).
+
+---
+
 ## v4.19 — Phase 4.12 (Numeric P0 closure: movement, roads/ports caps, veterancy)
 
 - Movement: зафиксирована таблица базовой стоимости перемещения по тайлам (PLAIN/FOREST/MOUNTAIN/DESERT/WATER).

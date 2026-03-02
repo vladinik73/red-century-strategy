@@ -39,6 +39,8 @@
 #### 0.3 Reset per-turn counters
 
 - `BoostScienceThisTurn = 0`
+- `StabilityBoostUsedThisTurn = false`
+- `HasActedThisTurn = false` для всех живых юнитов этой цивилизации
 
 #### 0.4 Rebellion check (Stability = 0)
 
@@ -100,11 +102,16 @@
 - Чинка дорог (`DamagedRoad`) — по канону
 - Кибердействия — по канону
 - **Boost Science** (1 ОД) — конвертирует деньги в науку; лимит за ход: `BoostScienceThisTurn ≤ floor(SciencePerTurn_ForBoostCap × 2)` (см. `Tech_Progression.md`)
+- **Boost Stability** (1 ОД + деньги, раз в ход на цивилизацию):
+  - cost: `1 AP` + деньги (`50` → +2 Stability или `100` → +5 Stability)
+  - requires: ≥1 интегрированный город у цивилизации
+  - sets: `StabilityBoostUsedThisTurn = true`
 - Прочие действия юнитов (`Heal`, `Disband`) — по канону UI/UX
 
 Правила:
 - ОД списываются **немедленно**.
 - Отмена действий **не предусмотрена**.
+- **1 действие на юнит за ход:** каждый юнит может выполнить только одно действие (Move / Attack / Heal / Disband / Special). После выполнения юнит помечается `HasActedThisTurn = true` и становится недоступен до следующего хода цивилизации.
 
 ---
 

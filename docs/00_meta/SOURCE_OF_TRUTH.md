@@ -1,4 +1,4 @@
-# Source of Truth (v4.19 — Phase 4.12 Numeric P0 closure)
+# Source of Truth (v4.21 — Phase 4.14 Stability Boost Action)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -202,6 +202,16 @@
 - Бунт при 0 стабильности: 10% шанс/ход, город → нейтральный
 - Канон: `docs/04_economy/Stability_and_Morale.md`, `docs/06_combat/Damage_and_Rules.md`
 
+## Stability Boost (v4.21)
+
+- Действие цивилизации **Boost Stability**: в PHASE 3 можно потратить **1 ОД** и деньги:
+  - `50 Money → +2 Stability`
+  - `100 Money → +5 Stability`
+- Ограничение: **1 раз за ход на цивилизацию** (`StabilityBoostUsedThisTurn`), сброс в PHASE 0.
+- Требование: у цивилизации есть **хотя бы один интегрированный город**.
+- `Stability` ограничивается диапазоном **0–100**.
+- Канон: `docs/04_economy/Stability_and_Morale.md`, `docs/04_economy/Action_Points.md`, `docs/01_overview/Turn_Pipeline.md`.
+
 ## Дипломатия (Phase 2)
 - Не более 2 союзов одновременно
 - Союз нельзя разорвать раньше 6 ходов; cooldown после разрыва 3 хода
@@ -232,6 +242,14 @@
 - У каждого типа юнита есть параметр `Sight` (видимость).
 - StarterScout (A2) Sight = 2.
 Канон: таблицы юнитов в `docs/07_units/*`.
+
+## Unit Actions (v4.20)
+
+- **1 действие на юнит за ход цивилизации** (Move / Attack / Heal / Disband / Special).
+- **Heal:** 1 ОД, +3 HP, не выше MaxHP, тратит действие юнита.
+- **Disband:** тратит действие юнита, удаляет юнит, возвращает `floor(APCost × 0.5)` ОД в текущий пул.
+- **Counter-attack:** существует **только в melee (Range=1)** и только если защитник выжил; для ranged (Range≥2) ответного удара нет.
+- Канон: `docs/10_uiux/Unit_Actions.md`, `docs/06_combat/Damage_and_Rules.md`, `docs/01_overview/Turn_Pipeline.md`.
 
 ## Numeric P0 Constants (v4.19)
 

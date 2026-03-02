@@ -10,6 +10,11 @@
 - **Boost Science** — 1 ОД
   Конвертирует деньги в науку по правилу `docs/05_tech/Tech_Progression.md` (v4.15).
   Лимит за ход: `floor(SciencePerTurn × 2)`.
+- **Boost Stability** — 1 ОД + деньги (50 или 100) (v4.21)
+  Эффект: `Stability += 2` (за 50 Money) или `Stability += 5` (за 100 Money).
+  Тип: действие цивилизации (не действие юнита).
+  Ограничения: 1 раз за ход на цивилизацию (`StabilityBoostUsedThisTurn`); требует ≥1 интегрированного города.
+  Связь с Turn Pipeline: PHASE 0 → сброс `StabilityBoostUsedThisTurn = false`; PHASE 3 → выполнение.
 
 ## Формула начисления ОД (за ход)
 OD = 5 (база)
