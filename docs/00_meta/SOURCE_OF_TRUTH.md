@@ -1,4 +1,4 @@
-# Source of Truth (v4.18 — Phase 4.11 MVP UI/UX: Main Game Screen)
+# Source of Truth (v4.19 — Phase 4.12 Numeric P0 closure)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -232,6 +232,23 @@
 - У каждого типа юнита есть параметр `Sight` (видимость).
 - StarterScout (A2) Sight = 2.
 Канон: таблицы юнитов в `docs/07_units/*`.
+
+## Numeric P0 Constants (v4.19)
+
+### Roads & Ports
+- `MaxRoadLevel = 3` (L1..L3).
+- Road movement bonus: `MoveBonus = RoadLevel` (+1/+2/+3), применяется **только если** юнит начинает перемещение на тайле с неповреждённой дорогой.
+- `MaxPortLevel = 3` (L1..L3).
+- Канон: `docs/04_economy/Network.md`, `docs/04_economy/Infrastructure_Costs.md`
+
+### Movement Costs
+- MoveCost по террейну: PLAIN=1, FOREST=2, MOUNTAIN=2, DESERT=1, WATER=1 (только морские юниты).
+- Река = `WATER + is_river=true` (строка WATER).
+- Канон: `docs/03_map/Map_Generation.md`
+
+### Veterancy
+- Tier-up при **3 убийствах за жизнь** → `MaxHP += 2` (один уровень ветеранства в MVP).
+- Канон: `docs/06_combat/Veterancy_and_Serial.md`
 
 ## Territory — MaxTerritoryRadius (v4.16)
 
