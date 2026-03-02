@@ -2,6 +2,14 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
+## Schema Sync Notes (v4.22)
+
+- **match.schema / units**: `has_acted_this_turn: boolean` is canonical. Replaces legacy `has_moved` + `has_attacked`.
+- **match.schema / cities**: `territory_radius: 1..5` (default 1, MaxTerritoryRadius=5).
+- **player.schema**: `stability_boost_used_this_turn: boolean` (per-turn flag, reset at start of civ turn).
+- **tile.schema / ports**: `port_level: 0..3` is canonical; `has_port` removed. `port_level >= 1` means port exists.
+- **tile.schema / roads**: `road_damaged_turns_left: 0..2` (max=2 enforced).
+
 ## tile.schema.json (v4.14)
 
 Назначение: формальная структура одной клетки карты (tile) для генерации/хранения match state.
@@ -11,7 +19,7 @@
 - terrain: `terrain_base` (LAND/WATER), `terrain_type` (T1: PLAIN/FOREST/MOUNTAIN/DESERT/WATER)
 - `is_river`: boolean (WATER+is_river=true = river tile)
 - resources: `resource_type` (MONEY/SCIENCE), `resource_remaining`, `resource_yield_per_turn`, `harvest_started`, `harvest_owner_civ_id`
-- infrastructure: `road_level`, `road_owner_civ_id`, `road_damaged_turns_left`, `has_port`, `port_owner_civ_id`
+- infrastructure: `road_level`, `road_owner_civ_id`, `road_damaged_turns_left`, `port_level`, `port_owner_civ_id`
 - city/territory: `city_id`, `territory_city_id`, `territory_owner_civ_id`
 - visibility: `visibility[10]` (0=UNEXPLORED, 1=VISIBLE)
 
@@ -34,7 +42,7 @@
 
 Схема типа юнита. Добавлено поле `sight` (per unit type).
 
-## match.schema.json (v4.12)
+## match.schema.json (v4.22)
 
 Canonical State Container для состояния партии (полный game state) + `events[]` как replay-log.
 

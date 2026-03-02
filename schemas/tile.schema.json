@@ -113,17 +113,12 @@
       "default": 0,
       "description": "DamagedRoad timer. 0 means not damaged."
     },
-    "has_port": {
-      "type": "boolean",
-      "default": false,
-      "description": "Whether a port exists on this tile."
-    },
     "port_level": {
       "type": "integer",
       "minimum": 0,
       "maximum": 3,
       "default": 0,
-      "description": "Port level (0 = no port, 1..3 = L1..L3; MaxPortLevel=3). Only meaningful when has_port=true."
+      "description": "Port level (0 = no port, 1..3 = L1..L3; MaxPortLevel=3). port_level >= 1 means port exists."
     },
     "port_owner_civ_id": {
       "type": [

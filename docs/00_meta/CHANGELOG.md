@@ -1,5 +1,23 @@
 # Changelog
 
+## v4.23 — Phase 4.15 (Elimination Rules + Neutral Cities)
+
+- Добавлен канон элиминации: `docs/01_overview/Elimination_Rules.md` — условие (0 городов), удаление юнитов, пропуск в turn order, пересчёт побед.
+- Нейтральные города: garrison = 0 (канон MVP); старт: level=1, defense_level=0, territory_radius=1.
+- Rebellion → neutral: defense_level сбрасывается в 0 (MVP правило простоты).
+- Обновлены: City_Capture, Map_Generation, Stability_and_Morale, SOURCE_OF_TRUTH, REPO_STRUCTURE.
+
+---
+
+## v4.22 — Phase 4.14 (Schema Sync)
+- Schema sync: unit action flags → `has_acted_this_turn` (replaces `has_moved` + `has_attacked`) in match state.
+- Schema: cities include `territory_radius` (1..5) to match Territory rules.
+- Schema: player state includes `stability_boost_used_this_turn` (per-turn counter).
+- Schema: tile ports use `port_level` (0..3); remove redundant `has_port`.
+- Schema: `road_damaged_turns_left` constrained to max 2.
+
+---
+
 ## v4.21 — Phase 4.14 (Stability Boost Action)
 
 - `docs/04_economy/Stability_and_Morale.md` — добавлено действие цивилизации **Boost Stability** (тратит деньги + 1 ОД, раз в ход на цивилизацию).

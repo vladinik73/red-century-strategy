@@ -1,4 +1,4 @@
-# Source of Truth (v4.21 — Phase 4.14 Stability Boost Action)
+# Source of Truth (v4.23 — Elimination + Neutral Cities)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -42,6 +42,27 @@
 См. также:
 - `schemas/tile.schema.json` (v4.10)
 - `schemas/player.schema.json` (v4.11)
+
+## Schemas — sync notes (v4.22)
+- Match Unit per-turn action flag: `has_acted_this_turn: boolean` is canonical schema field.
+  - It **replaces** legacy `has_moved` + `has_attacked`.
+  - This matches gameplay canon: **1 action per unit per turn** (move/attack/heal/disband/etc).
+- Player per-turn counter: `stability_boost_used_this_turn: boolean` (reset at start of civ turn).
+- City territory: `territory_radius` is stored in match city object (1..5). Canon cap: `MaxTerritoryRadius = 5`.
+- Tile ports: use `port_level: 0..3`. Do **not** keep a separate `has_port` boolean.
+- Tile damaged road timer: `road_damaged_turns_left: 0..2`.
+
+## Elimination + Neutral Cities (v4.23)
+
+- **Elimination:** цивилизация элиминирована при 0 городов; юниты удаляются; пропуск в turn order; victory пересчёт по активным цивилизациям.
+- **Neutral cities:** garrison = 0; start: level=1, defense_level=0, territory_radius=1.
+- **Rebellion → neutral:** defense_level сбрасывается в 0.
+
+Канон:
+- `docs/01_overview/Elimination_Rules.md`
+- `docs/02_cities/City_Capture.md`
+- `docs/03_map/Map_Generation.md`
+- `docs/04_economy/Stability_and_Morale.md`
 
 ## Turn Pipeline
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "player.state.schema (v4.11)",
+  "title": "player.state.schema (v4.22)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -122,6 +122,11 @@
           "minimum": 0
         }
       }
+    },
+    "stability_boost_used_this_turn": {
+      "type": "boolean",
+      "default": false,
+      "description": "Per-turn flag: Stability boost (50→+2 or 100→+5) can be used at most once per civ turn. Reset at start of civ turn."
     },
     "effects": {
       "type": "object",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.12)",
+  "title": "Match State (v4.22)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -207,6 +207,13 @@
             "minimum": 0,
             "maximum": 2
           },
+          "territory_radius": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "default": 1,
+            "description": "Chebyshev radius of this city's territory. Canon: start/min=1, MaxTerritoryRadius=5."
+          },
           "territory_tile_indices": {
             "type": "array",
             "items": {
@@ -233,8 +240,7 @@
           "kills_in_chain",
           "kill_count_total",
           "veterancy_level",
-          "has_moved",
-          "has_attacked"
+          "has_acted_this_turn"
         ],
         "properties": {
           "unit_id": {
@@ -273,11 +279,10 @@
             "type": "integer",
             "minimum": 0
           },
-          "has_moved": {
-            "type": "boolean"
-          },
-          "has_attacked": {
-            "type": "boolean"
+          "has_acted_this_turn": {
+            "type": "boolean",
+            "default": false,
+            "description": "Per-unit per-turn action flag. True after the unit performs its single action for the turn (move, attack, heal, disband, special). Replaces legacy has_moved/has_attacked."
           },
           "garrisoned_city_id": {
             "type": [
