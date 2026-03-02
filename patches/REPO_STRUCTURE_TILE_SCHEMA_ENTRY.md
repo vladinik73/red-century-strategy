@@ -1,0 +1,1 @@
+- `schemas/tile.schema.json` — структура тайла карты (terrain/resources/roads/ports/territory/visibility).
