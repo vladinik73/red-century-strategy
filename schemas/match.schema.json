@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.25)",
+  "title": "Match State (v4.25.1)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -398,35 +398,107 @@
     },
     "events": {
       "type": "array",
-      "description": "Replay-log. Typed by event_type (v4.25). Canon: docs/01_overview/Action_Catalog.md",
-      "items": {
-        "$ref": "#/$defs/GameEvent"
-      }
+      "description": "Replay-log. Discriminated union by event_type (v4.25.1). Canon: docs/01_overview/Action_Catalog.md",
+      "items": { "$ref": "#/$defs/GameEvent" }
     }
   },
   "$defs": {
     "GameEvent": {
+      "oneOf": [
+        { "$ref": "#/$defs/Event_MOVE" },
+        { "$ref": "#/$defs/Event_ATTACK" },
+        { "$ref": "#/$defs/Event_SERIAL_ATTACK" },
+        { "$ref": "#/$defs/Event_HEAL" },
+        { "$ref": "#/$defs/Event_DISBAND" },
+        { "$ref": "#/$defs/Event_CAPTURE_CITY" },
+        { "$ref": "#/$defs/Event_PRODUCE" },
+        { "$ref": "#/$defs/Event_BUILD_ROAD" },
+        { "$ref": "#/$defs/Event_UPGRADE_ROAD" },
+        { "$ref": "#/$defs/Event_BUILD_PORT" },
+        { "$ref": "#/$defs/Event_UPGRADE_PORT" },
+        { "$ref": "#/$defs/Event_UPGRADE_CITY" },
+        { "$ref": "#/$defs/Event_BOOST_SCIENCE" },
+        { "$ref": "#/$defs/Event_BOOST_STABILITY" },
+        { "$ref": "#/$defs/Event_START_HARVEST" },
+        { "$ref": "#/$defs/Event_REPAIR_ROAD" },
+        { "$ref": "#/$defs/Event_TECH_UNLOCK" },
+        { "$ref": "#/$defs/Event_DECLARE_WAR" },
+        { "$ref": "#/$defs/Event_MAKE_PEACE" },
+        { "$ref": "#/$defs/Event_FORM_ALLIANCE" },
+        { "$ref": "#/$defs/Event_BREAK_ALLIANCE" },
+        { "$ref": "#/$defs/Event_REBELLION" },
+        { "$ref": "#/$defs/Event_ELIMINATION" },
+        { "$ref": "#/$defs/Event_VICTORY_TRIGGER" },
+        { "$ref": "#/$defs/Event_VICTORY_COMPLETE" },
+        { "$ref": "#/$defs/Event_HIDDEN_CIV_SPAWN" }
+      ]
+    },
+    "EventBase": {
       "type": "object",
-      "required": ["event_id", "turn_index", "acting_civ_id", "event_type", "payload"],
+      "required": ["event_id", "round_index", "civ_turn_index", "acting_civ_id", "event_type", "payload"],
       "additionalProperties": false,
       "properties": {
-        "event_id": { "type": "string", "description": "Unique event id" },
-        "turn_index": { "type": "integer", "minimum": 0, "description": "Turn when event occurred" },
-        "acting_civ_id": { "type": "integer", "minimum": 0, "maximum": 9, "description": "Civ index 0..MaxCivs-1" },
-        "event_type": { "$ref": "#/$defs/EventType" },
-        "seq": { "type": "integer", "minimum": 0, "description": "Order within turn" },
-        "payload": { "type": "object", "additionalProperties": true }
+        "event_id": { "type": "string" },
+        "round_index": { "type": "integer", "minimum": 0, "description": "Round number; increments after all alive civs complete a turn" },
+        "civ_turn_index": { "type": "integer", "minimum": 0, "description": "Flat turn counter; same as match.turn.turn_index" },
+        "turn_index": { "type": "integer", "minimum": 0, "description": "Deprecated: use civ_turn_index" },
+        "acting_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 },
+        "event_type": { "type": "string" },
+        "seq": { "type": "integer", "minimum": 0, "description": "Order within civ turn" },
+        "payload": { "type": "object" }
       }
     },
-    "EventType": {
-      "type": "string",
-      "enum": [
-        "MOVE", "ATTACK", "SERIAL_ATTACK", "PRODUCE", "BUILD_ROAD", "UPGRADE_ROAD",
-        "BUILD_PORT", "UPGRADE_PORT", "UPGRADE_CITY", "HEAL", "DISBAND", "CAPTURE_CITY",
-        "START_HARVEST", "REPAIR_ROAD", "BOOST_SCIENCE", "BOOST_STABILITY", "TECH_UNLOCK",
-        "DECLARE_WAR", "MAKE_PEACE", "FORM_ALLIANCE", "BREAK_ALLIANCE",
-        "REBELLION", "ELIMINATION", "VICTORY_TRIGGER", "VICTORY_COMPLETE", "HIDDEN_CIV_SPAWN"
-      ]
-    }
+    "Event_MOVE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "MOVE" }, "payload": { "$ref": "#/$defs/Payload_MOVE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_MOVE": { "type": "object", "additionalProperties": false, "required": ["unit_id", "from_tile", "to_tile"], "properties": { "unit_id": { "type": "string" }, "from_tile": { "type": "integer", "minimum": 0, "maximum": 6399 }, "to_tile": { "type": "integer", "minimum": 0, "maximum": 6399 } } },
+    "Event_ATTACK": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "ATTACK" }, "payload": { "$ref": "#/$defs/Payload_ATTACK" } }, "required": ["event_type", "payload"] }] },
+    "Payload_ATTACK": { "type": "object", "additionalProperties": false, "required": ["attacker_unit_id", "target_unit_id", "damage", "target_remaining_hp"], "properties": { "attacker_unit_id": { "type": "string" }, "target_unit_id": { "type": "string" }, "damage": { "type": "integer", "minimum": 0 }, "target_remaining_hp": { "type": "integer", "minimum": 0 }, "counterattack_damage": { "type": "integer", "minimum": 0 }, "attacker_destroyed": { "type": "boolean" } } },
+    "Event_SERIAL_ATTACK": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "SERIAL_ATTACK" }, "payload": { "$ref": "#/$defs/Payload_SERIAL_ATTACK" } }, "required": ["event_type", "payload"] }] },
+    "Payload_SERIAL_ATTACK": { "type": "object", "additionalProperties": false, "required": ["attacker_unit_id", "chain_index", "target_unit_id", "damage", "target_destroyed"], "properties": { "attacker_unit_id": { "type": "string" }, "chain_index": { "type": "integer", "minimum": 0 }, "target_unit_id": { "type": "string" }, "damage": { "type": "integer", "minimum": 0 }, "target_destroyed": { "type": "boolean" } } },
+    "Event_HEAL": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "HEAL" }, "payload": { "$ref": "#/$defs/Payload_HEAL" } }, "required": ["event_type", "payload"] }] },
+    "Payload_HEAL": { "type": "object", "additionalProperties": false, "required": ["unit_id", "hp_before", "hp_after"], "properties": { "unit_id": { "type": "string" }, "hp_before": { "type": "integer", "minimum": 0 }, "hp_after": { "type": "integer", "minimum": 0 } } },
+    "Event_DISBAND": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "DISBAND" }, "payload": { "$ref": "#/$defs/Payload_DISBAND" } }, "required": ["event_type", "payload"] }] },
+    "Payload_DISBAND": { "type": "object", "additionalProperties": false, "required": ["unit_id", "ap_refund"], "properties": { "unit_id": { "type": "string" }, "ap_refund": { "type": "integer", "minimum": 0 } } },
+    "Event_CAPTURE_CITY": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "CAPTURE_CITY" }, "payload": { "$ref": "#/$defs/Payload_CAPTURE_CITY" } }, "required": ["event_type", "payload"] }] },
+    "Payload_CAPTURE_CITY": { "type": "object", "additionalProperties": false, "required": ["unit_id", "city_id"], "properties": { "unit_id": { "type": "string" }, "city_id": { "type": "string" }, "from_owner_civ_id": { "type": "integer" }, "to_owner_civ_id": { "type": "integer" }, "integration_turns_left": { "type": "integer", "minimum": 0, "maximum": 4 } } },
+    "Event_PRODUCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "PRODUCE" }, "payload": { "$ref": "#/$defs/Payload_PRODUCE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_PRODUCE": { "type": "object", "additionalProperties": false, "required": ["city_id", "unit_type_id", "spawned_unit_id"], "properties": { "city_id": { "type": "string" }, "unit_type_id": { "type": "string" }, "spawned_unit_id": { "type": "string" } } },
+    "Event_BUILD_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BUILD_ROAD" }, "payload": { "$ref": "#/$defs/Payload_BUILD_ROAD" } }, "required": ["event_type", "payload"] }] },
+    "Payload_BUILD_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_road_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "new_road_level": { "type": "integer", "minimum": 1, "maximum": 3 } } },
+    "Event_UPGRADE_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "UPGRADE_ROAD" }, "payload": { "$ref": "#/$defs/Payload_UPGRADE_ROAD" } }, "required": ["event_type", "payload"] }] },
+    "Payload_UPGRADE_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_road_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "old_road_level": { "type": "integer", "minimum": 1, "maximum": 2 }, "new_road_level": { "type": "integer", "minimum": 2, "maximum": 3 } } },
+    "Event_BUILD_PORT": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BUILD_PORT" }, "payload": { "$ref": "#/$defs/Payload_BUILD_PORT" } }, "required": ["event_type", "payload"] }] },
+    "Payload_BUILD_PORT": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_port_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "new_port_level": { "type": "integer", "minimum": 1, "maximum": 3 } } },
+    "Event_UPGRADE_PORT": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "UPGRADE_PORT" }, "payload": { "$ref": "#/$defs/Payload_UPGRADE_PORT" } }, "required": ["event_type", "payload"] }] },
+    "Payload_UPGRADE_PORT": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_port_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "old_port_level": { "type": "integer", "minimum": 1, "maximum": 2 }, "new_port_level": { "type": "integer", "minimum": 2, "maximum": 3 } } },
+    "Event_UPGRADE_CITY": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "UPGRADE_CITY" }, "payload": { "$ref": "#/$defs/Payload_UPGRADE_CITY" } }, "required": ["event_type", "payload"] }] },
+    "Payload_UPGRADE_CITY": { "type": "object", "additionalProperties": false, "required": ["city_id", "new_city_level", "chosen_reward"], "properties": { "city_id": { "type": "string" }, "new_city_level": { "type": "integer", "minimum": 2, "maximum": 5 }, "chosen_reward": { "type": "string", "enum": ["DEFENSE", "EXPAND_TERRITORY", "UNLOCK_PORT", "SPECIALIZATION"] } } },
+    "Event_BOOST_SCIENCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BOOST_SCIENCE" }, "payload": { "$ref": "#/$defs/Payload_BOOST_SCIENCE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_BOOST_SCIENCE": { "type": "object", "additionalProperties": false, "required": ["money_spent", "science_gained"], "properties": { "money_spent": { "type": "integer", "minimum": 0 }, "science_gained": { "type": "integer", "minimum": 0 }, "cap_used": { "type": "integer", "minimum": 0 } } },
+    "Event_BOOST_STABILITY": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BOOST_STABILITY" }, "payload": { "$ref": "#/$defs/Payload_BOOST_STABILITY" } }, "required": ["event_type", "payload"] }] },
+    "Payload_BOOST_STABILITY": { "type": "object", "additionalProperties": false, "required": ["money_spent", "stability_gained"], "properties": { "money_spent": { "type": "integer", "minimum": 0 }, "stability_gained": { "type": "integer", "minimum": 0 } } },
+    "Event_START_HARVEST": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "START_HARVEST" }, "payload": { "$ref": "#/$defs/Payload_START_HARVEST" } }, "required": ["event_type", "payload"] }] },
+    "Payload_START_HARVEST": { "type": "object", "additionalProperties": false, "required": ["tile_id"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 } } },
+    "Event_REPAIR_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "REPAIR_ROAD" }, "payload": { "$ref": "#/$defs/Payload_REPAIR_ROAD" } }, "required": ["event_type", "payload"] }] },
+    "Payload_REPAIR_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 } } },
+    "Event_TECH_UNLOCK": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "TECH_UNLOCK" }, "payload": { "$ref": "#/$defs/Payload_TECH_UNLOCK" } }, "required": ["event_type", "payload"] }] },
+    "Payload_TECH_UNLOCK": { "type": "object", "additionalProperties": false, "required": ["branch", "level"], "properties": { "branch": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "SCIENCE"] }, "level": { "type": "integer", "minimum": 1, "maximum": 5 } } },
+    "Event_DECLARE_WAR": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "DECLARE_WAR" }, "payload": { "$ref": "#/$defs/Payload_DECLARE_WAR" } }, "required": ["event_type", "payload"] }] },
+    "Payload_DECLARE_WAR": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Event_MAKE_PEACE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "MAKE_PEACE" }, "payload": { "$ref": "#/$defs/Payload_MAKE_PEACE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_MAKE_PEACE": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Event_FORM_ALLIANCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "FORM_ALLIANCE" }, "payload": { "$ref": "#/$defs/Payload_FORM_ALLIANCE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_FORM_ALLIANCE": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Event_BREAK_ALLIANCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BREAK_ALLIANCE" }, "payload": { "$ref": "#/$defs/Payload_BREAK_ALLIANCE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_BREAK_ALLIANCE": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Event_REBELLION": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "REBELLION" }, "payload": { "$ref": "#/$defs/Payload_REBELLION" } }, "required": ["event_type", "payload"] }] },
+    "Payload_REBELLION": { "type": "object", "additionalProperties": false, "required": ["city_id"], "properties": { "city_id": { "type": "string" }, "old_owner_civ_id": { "type": "integer" } } },
+    "Event_ELIMINATION": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "ELIMINATION" }, "payload": { "$ref": "#/$defs/Payload_ELIMINATION" } }, "required": ["event_type", "payload"] }] },
+    "Payload_ELIMINATION": { "type": "object", "additionalProperties": false, "required": ["civ_id"], "properties": { "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Event_VICTORY_TRIGGER": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "VICTORY_TRIGGER" }, "payload": { "$ref": "#/$defs/Payload_VICTORY_TRIGGER" } }, "required": ["event_type", "payload"] }] },
+    "Payload_VICTORY_TRIGGER": { "type": "object", "additionalProperties": false, "required": ["victory_type", "civ_id", "turns_to_win"], "properties": { "victory_type": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "TECH"] }, "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "turns_to_win": { "type": "integer", "minimum": 0 } } },
+    "Event_VICTORY_COMPLETE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "VICTORY_COMPLETE" }, "payload": { "$ref": "#/$defs/Payload_VICTORY_COMPLETE" } }, "required": ["event_type", "payload"] }] },
+    "Payload_VICTORY_COMPLETE": { "type": "object", "additionalProperties": false, "required": ["victory_type", "civ_id"], "properties": { "victory_type": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "TECH"] }, "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Event_HIDDEN_CIV_SPAWN": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "HIDDEN_CIV_SPAWN" }, "payload": { "$ref": "#/$defs/Payload_HIDDEN_CIV_SPAWN" } }, "required": ["event_type", "payload"] }] },
+    "Payload_HIDDEN_CIV_SPAWN": { "type": "object", "additionalProperties": false, "required": ["civ_id", "regions_count", "cities_count"], "properties": { "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "regions_count": { "type": "integer", "minimum": 1 }, "cities_count": { "type": "integer", "minimum": 1 }, "city_ids": { "type": "array", "items": { "type": "string" } } } }
   }
 }

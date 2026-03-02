@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.25.1 — Event Taxonomy (strict payloads + turn semantics)
+
+- `events[]`: discriminated union (oneOf) с 26 строго типизированными payload-схемами (additionalProperties: false).
+- EventBase: добавлены `round_index`, `civ_turn_index`; `turn_index` deprecated.
+- `docs/01_overview/Action_Catalog.md`: секция "Event Fields", payload specs выровнены со схемой.
+- SOURCE_OF_TRUTH, schemas/README обновлены.
+
+---
+
 ## v4.25 — Phase 4.17 (Event Taxonomy + Action Catalog)
 
 - Event taxonomy: `events[]` в match.schema типизированы по `event_type` (enum из 26 типов).

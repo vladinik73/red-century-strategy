@@ -1,8 +1,27 @@
-# Action Catalog (v4.25) — MVP
+# Action Catalog (v4.25.1) — MVP
 
 Канонический каталог действий игрока и соответствующих event types для replay-log.
 
 Канон: `schemas/match.schema.json` (events[]), `docs/01_overview/Turn_Pipeline.md`.
+
+---
+
+## Event Fields (v4.25.1)
+
+Каждый event — discriminated union по `event_type`. Общие поля (EventBase):
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `event_id` | string | Уникальный ID события |
+| `round_index` | int | Номер раунда (инкремент после хода всех живых цивилизаций) |
+| `civ_turn_index` | int | Плоский счётчик хода; то же, что `match.turn.turn_index` |
+| `acting_civ_id` | int | ID цивилизации, совершившей действие (0..9) |
+| `event_type` | string | Тип события (см. таблицы ниже) |
+| `payload` | object | Специфичные данные (см. payload specs) |
+| `seq` | int? | Порядок внутри хода цивилизации |
+| `turn_index` | int? | Deprecated: использовать `civ_turn_index` |
+
+Payload для каждого event_type строго типизирован в `schemas/match.schema.json` (additionalProperties: false).
 
 ---
 
@@ -22,11 +41,11 @@
 ### Payload specs (replay)
 
 - **MOVE:** `{ unit_id, from_tile, to_tile }` — tile = index 0..6399
-- **ATTACK:** `{ attacker_unit_id, target_type: "unit"|"city", target_id, target_tile, damage_dealt, target_destroyed: bool, counterattack_damage?: int, attacker_destroyed?: bool }`
-- **SERIAL_ATTACK:** `{ attacker_unit_id, chain_index: int, target_unit_id, damage_dealt, target_destroyed: bool }`
+- **ATTACK:** `{ attacker_unit_id, target_unit_id, damage, target_remaining_hp }` — опционально: `counterattack_damage`, `attacker_destroyed`
+- **SERIAL_ATTACK:** `{ attacker_unit_id, chain_index, target_unit_id, damage, target_destroyed }`
 - **HEAL:** `{ unit_id, hp_before, hp_after }`
 - **DISBAND:** `{ unit_id, ap_refund }`
-- **CAPTURE_CITY:** `{ city_id, from_owner_civ_id, to_owner_civ_id, integration_turns_left: 4 }`
+- **CAPTURE_CITY:** `{ unit_id, city_id }` — опционально: `from_owner_civ_id`, `to_owner_civ_id`, `integration_turns_left`
 
 ---
 
@@ -57,16 +76,16 @@
 
 ### Payload specs (replay)
 
-- **PRODUCE:** `{ city_id, produced_unit_type_id, spawn_tile }`
-- **BUILD_ROAD:** `{ tile, new_road_level: 1 }`
-- **UPGRADE_ROAD:** `{ tile, old_road_level, new_road_level }`
-- **BUILD_PORT:** `{ tile, new_port_level: 1 }`
-- **UPGRADE_PORT:** `{ tile, old_port_level, new_port_level }`
-- **UPGRADE_CITY:** `{ city_id, old_level, new_level, reward_choice: "DEFENSE"|"EXPAND_TERRITORY"|"UNLOCK_PORT"|"SPECIALIZATION" }`
-- **BOOST_SCIENCE:** `{ money_spent, science_gained, cap_used: int }`
+- **PRODUCE:** `{ city_id, unit_type_id, spawned_unit_id }`
+- **BUILD_ROAD:** `{ tile_id, new_road_level }` — tile_id 0..6399
+- **UPGRADE_ROAD:** `{ tile_id, new_road_level }` — опционально: `old_road_level`
+- **BUILD_PORT:** `{ tile_id, new_port_level }`
+- **UPGRADE_PORT:** `{ tile_id, new_port_level }` — опционально: `old_port_level`
+- **UPGRADE_CITY:** `{ city_id, new_city_level, chosen_reward }` — reward: DEFENSE|EXPAND_TERRITORY|UNLOCK_PORT|SPECIALIZATION
+- **BOOST_SCIENCE:** `{ money_spent, science_gained }` — опционально: `cap_used`
 - **BOOST_STABILITY:** `{ money_spent, stability_gained }`
-- **START_HARVEST:** `{ tile, resource_stock_before, resource_stock_after }`
-- **REPAIR_ROAD:** `{ tile, road_damaged_turns_left_before, road_damaged_turns_left_after }`
+- **START_HARVEST:** `{ tile_id }`
+- **REPAIR_ROAD:** `{ tile_id }`
 - **TECH_UNLOCK:** `{ branch: "MILITARY"|"ECONOMIC"|"SCIENCE", level: 1..5 }`
 - **DECLARE_WAR:** `{ from_civ_id, to_civ_id }`
 - **MAKE_PEACE:** `{ from_civ_id, to_civ_id }`
@@ -89,11 +108,11 @@
 
 ### Payload specs
 
-- **REBELLION:** `{ city_id, old_owner_civ_id, new_owner_civ_id: -1 }` — -1 = neutral
+- **REBELLION:** `{ city_id }` — опционально: `old_owner_civ_id`
 - **ELIMINATION:** `{ civ_id }`
-- **VICTORY_TRIGGER:** `{ victory_type: "MILITARY"|"ECONOMIC"|"TECH", civ_id, turns_to_win: int }`
-- **VICTORY_COMPLETE:** `{ victory_type: "MILITARY"|"ECONOMIC"|"TECH", civ_id }`
-- **HIDDEN_CIV_SPAWN:** `{ civ_id, regions_count: int, cities_count: int }`
+- **VICTORY_TRIGGER:** `{ victory_type, civ_id, turns_to_win }` — victory_type: MILITARY|ECONOMIC|TECH
+- **VICTORY_COMPLETE:** `{ victory_type, civ_id }`
+- **HIDDEN_CIV_SPAWN:** `{ civ_id, regions_count, cities_count }` — опционально: `city_ids`
 
 ---
 

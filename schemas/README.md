@@ -42,7 +42,7 @@
 
 Схема типа юнита. Добавлено поле `sight` (per unit type).
 
-## match.schema.json (v4.25)
+## match.schema.json (v4.25.1)
 
 Canonical State Container для состояния партии (полный game state) + `events[]` как replay-log.
 
@@ -53,8 +53,9 @@ Canonical State Container для состояния партии (полный g
 - Победа: отдельный раздел `victory`
 - Только живые юниты (история — в `events[]`)
 
-### events[] (v4.25) — типизированный replay-log
+### events[] (v4.25.1) — discriminated union replay-log
 
-- Каждое событие: `event_id`, `turn_index`, `acting_civ_id`, `event_type`, `payload`.
-- `event_type` — enum (MOVE, ATTACK, SERIAL_ATTACK, PRODUCE, BUILD_ROAD, UPGRADE_ROAD, BUILD_PORT, UPGRADE_PORT, UPGRADE_CITY, HEAL, DISBAND, CAPTURE_CITY, START_HARVEST, REPAIR_ROAD, BOOST_SCIENCE, BOOST_STABILITY, TECH_UNLOCK, DECLARE_WAR, MAKE_PEACE, FORM_ALLIANCE, BREAK_ALLIANCE, REBELLION, ELIMINATION, VICTORY_TRIGGER, VICTORY_COMPLETE, HIDDEN_CIV_SPAWN).
+- GameEvent: `oneOf` с 26 вариантами (Event_MOVE … Event_HIDDEN_CIV_SPAWN).
+- EventBase: `event_id`, `round_index`, `civ_turn_index`, `acting_civ_id`, `event_type`, `payload`; опционально `seq`; `turn_index` deprecated.
+- Payload для каждого event_type — строгая схема (additionalProperties: false).
 - Payload specs: `docs/01_overview/Action_Catalog.md`.
