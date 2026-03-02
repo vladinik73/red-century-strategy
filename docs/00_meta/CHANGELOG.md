@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.25 — Phase 4.17 (Event Taxonomy + Action Catalog)
+
+- Event taxonomy: `events[]` в match.schema типизированы по `event_type` (enum из 26 типов).
+- Обязательные поля события: event_id, turn_index, acting_civ_id, event_type, payload.
+- Добавлен `docs/01_overview/Action_Catalog.md` — каталог действий (Unit Actions, Civ Actions, System Events) и соответствие Action → Event Type.
+- Payload specs для replay/debug задокументированы в Action_Catalog.
+
+---
+
 ## v4.24 — Phase 4.16 (Tech Tree Effects)
 
 - Полностью определены эффекты всех 15 технологий в `docs/05_tech/Tech_Tree.md`.

@@ -1,4 +1,4 @@
-# Source of Truth (v4.24 — Tech Tree Effects)
+# Source of Truth (v4.25 — Event Taxonomy + Action Catalog)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -51,6 +51,14 @@
 - City territory: `territory_radius` is stored in match city object (1..5). Canon cap: `MaxTerritoryRadius = 5`.
 - Tile ports: use `port_level: 0..3`. Do **not** keep a separate `has_port` boolean.
 - Tile damaged road timer: `road_damaged_turns_left: 0..2`.
+
+## Events (Replay Log) — Event Taxonomy (v4.25)
+
+- `events[]` типизированы по `event_type` (enum).
+- Обязательные поля события: `event_id`, `turn_index`, `acting_civ_id`, `event_type`, `payload`.
+- Опционально: `seq` (порядок внутри хода).
+- Канон: `schemas/match.schema.json`, `docs/01_overview/Action_Catalog.md`.
+- Event types: MOVE, ATTACK, SERIAL_ATTACK, PRODUCE, BUILD_ROAD, UPGRADE_ROAD, BUILD_PORT, UPGRADE_PORT, UPGRADE_CITY, HEAL, DISBAND, CAPTURE_CITY, START_HARVEST, REPAIR_ROAD, BOOST_SCIENCE, BOOST_STABILITY, TECH_UNLOCK, DECLARE_WAR, MAKE_PEACE, FORM_ALLIANCE, BREAK_ALLIANCE, REBELLION, ELIMINATION, VICTORY_TRIGGER, VICTORY_COMPLETE, HIDDEN_CIV_SPAWN.
 
 ## Tech Tree Effects (v4.24)
 

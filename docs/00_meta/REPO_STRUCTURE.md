@@ -13,7 +13,7 @@
 | Раздел | Путь | Содержание |
 |--------|------|------------|
 | Meta | `docs/00_meta/` | SOURCE_OF_TRUTH, CHANGELOG, PROJECT_IDENTITY |
-| Обзор | `docs/01_overview/` | README, Elimination_Rules, MVP_Player_Journey, Turn_Pipeline — общее описание игры и MVP сценарий |
+| Обзор | `docs/01_overview/` | README, Action_Catalog, Elimination_Rules, MVP_Player_Journey, Turn_Pipeline — общее описание игры и MVP сценарий |
 | Города | `docs/02_cities/` | City_Capture, City_Levels |
 | Мир и фракции | `docs/02_world_and_factions/` | Список цивилизаций |
 | Карта | `docs/03_map/` | Map_Generation, Visibility |
