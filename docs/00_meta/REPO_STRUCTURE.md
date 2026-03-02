@@ -6,6 +6,7 @@
 - `schemas/` — схемы сущностей
   - `schemas/tile.schema.json` — структура тайла карты (terrain/resources/roads/ports/territory/visibility).
   - `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.11)
+  - `schemas/match.schema.json` — состояние партии (Match State, Canonical Container + replay-log) (v4.12)
 
 ## Навигация по docs/
 
