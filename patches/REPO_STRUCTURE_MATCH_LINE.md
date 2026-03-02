@@ -1,0 +1,1 @@
+- `schemas/match.schema.json` — состояние партии (Match State, Canonical Container + replay-log) (v4.12)

@@ -1,0 +1,424 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Match State (v4.12)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta",
+    "turn",
+    "players",
+    "map",
+    "cities",
+    "units",
+    "diplomacy",
+    "victory",
+    "events"
+  ],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "match_id",
+        "mode",
+        "seed",
+        "created_at_utc"
+      ],
+      "properties": {
+        "match_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9]{16}$"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "PvE",
+            "PvP",
+            "AsyncPvP"
+          ]
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "created_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ruleset": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_of_truth_version": {
+              "type": "string"
+            },
+            "git_commit": {
+              "type": "string"
+            },
+            "notes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "turn_index",
+        "round_index",
+        "active_player_id",
+        "turn_order_player_ids"
+      ],
+      "properties": {
+        "turn_index": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Increments after each civilization completes its turn."
+        },
+        "round_index": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Increments after all alive civilizations complete a turn."
+        },
+        "active_player_id": {
+          "type": "string"
+        },
+        "turn_order_player_ids": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "alive_player_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ended_player_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "players": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "$ref": "player.schema.json"
+      }
+    },
+    "map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "tiles_flat"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "enum": [
+            80
+          ]
+        },
+        "height": {
+          "type": "integer",
+          "enum": [
+            80
+          ]
+        },
+        "tiles_flat": {
+          "type": "array",
+          "minItems": 6400,
+          "maxItems": 6400,
+          "items": {
+            "$ref": "tile.schema.json"
+          },
+          "description": "Flat array; index = y*width + x"
+        }
+      }
+    },
+    "cities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "city_id",
+          "x",
+          "y",
+          "owner_player_id",
+          "is_capital",
+          "level",
+          "defense_level",
+          "integration_turns_left",
+          "territory_tile_indices"
+        ],
+        "properties": {
+          "city_id": {
+            "type": "string"
+          },
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 79
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 79
+          },
+          "owner_player_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null = neutral city"
+          },
+          "is_capital": {
+            "type": "boolean"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          },
+          "defense_level": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "integration_turns_left": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "sieged": {
+            "type": "boolean"
+          },
+          "disruption_turns_left": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "territory_tile_indices": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 6399
+            }
+          }
+        }
+      }
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "unit_id",
+          "unit_type_id",
+          "owner_player_id",
+          "x",
+          "y",
+          "hp",
+          "kills_in_chain",
+          "kill_count_total",
+          "veterancy_level",
+          "has_moved",
+          "has_attacked"
+        ],
+        "properties": {
+          "unit_id": {
+            "type": "string"
+          },
+          "unit_type_id": {
+            "type": "string"
+          },
+          "owner_player_id": {
+            "type": "string"
+          },
+          "x": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 79
+          },
+          "y": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 79
+          },
+          "hp": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "kills_in_chain": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "kill_count_total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "veterancy_level": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "has_moved": {
+            "type": "boolean"
+          },
+          "has_attacked": {
+            "type": "boolean"
+          },
+          "garrisoned_city_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "diplomacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relations"
+      ],
+      "properties": {
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "a_player_id",
+              "b_player_id",
+              "state",
+              "min_alliance_turns_left",
+              "cooldown_turns_left"
+            ],
+            "properties": {
+              "a_player_id": {
+                "type": "string"
+              },
+              "b_player_id": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "War",
+                  "Neutral",
+                  "Alliance"
+                ]
+              },
+              "min_alliance_turns_left": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 6
+              },
+              "cooldown_turns_left": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    "victory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "global_city_power",
+        "per_player"
+      ],
+      "properties": {
+        "global_city_power": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "per_player": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "player_id",
+              "military_city_power",
+              "economic_hold_turns_left",
+              "tech_victory_turns_left",
+              "won",
+              "lost"
+            ],
+            "properties": {
+              "player_id": {
+                "type": "string"
+              },
+              "military_city_power": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "economic_hold_turns_left": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "tech_victory_turns_left": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "won": {
+                "type": "boolean"
+              },
+              "lost": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "t",
+          "turn_index"
+        ],
+        "properties": {
+          "t": {
+            "type": "string"
+          },
+          "turn_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "actor_player_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "payload": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
