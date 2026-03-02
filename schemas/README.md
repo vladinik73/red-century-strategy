@@ -17,3 +17,14 @@
 Примечания:
 - Мост — это дорога на WATER-тайле (`terrain_base=WATER` и `road_level>0`). Ограничение «мост можно строить только если между сушей 1 тайл воды» — правило геймплея (см. Map_Generation.md), не схема.
 - Видимость — permanent reveal (см. `docs/03_map/Visibility.md`).
+
+## player.schema.json (v4.11)
+
+Схема состояния игрока/цивилизации (Player State), достаточная для:
+- расчёта экономики (money/science/stability),
+- выдачи и учёта ОД/AP,
+- дипломатии (WAR/NEUTRAL/ALLIANCE + cooldown),
+- победных таймеров,
+- глобальных эффектов (например, «Сбой»).
+
+Файл: `schemas/player.schema.json`

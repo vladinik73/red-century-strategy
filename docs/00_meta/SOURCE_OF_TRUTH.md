@@ -1,4 +1,4 @@
-# Source of Truth (v4.10 — Phase 4.3 Schema: Tile)
+# Source of Truth (v4.11 — Phase 4.4 Start Conditions + Schema: Player)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -22,6 +22,16 @@
 
 ## Schemas (v4.10)
 - Добавлен `schemas/tile.schema.json` как каноническая структура тайла (карта/ресурсы/дороги/порты/territory/visibility).
+
+## Start Conditions (v4.11)
+- Стартовые ресурсы игрока: Money=100, Science=0, Stability=70.
+- Стартовая столица: City Level=1, интегрирована сразу, Defense Level=0 по умолчанию.
+- Стартовый юнит: 1× Starter Scout (A2).
+- Старт: видна территория стартовой столицы + видимость стартового юнита (см. Visibility v4.9).
+- Канон: `docs/01_overview/Start_Conditions.md`.
+
+## Schemas (v4.11)
+- Добавлена схема состояния игрока: `schemas/player.schema.json` (Player State).
 
 ## Turn Pipeline
 
