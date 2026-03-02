@@ -5,6 +5,7 @@
 - `docs/` — спецификация
 - `schemas/` — схемы сущностей
   - `schemas/tile.schema.json` — структура тайла карты (terrain/resources/roads/ports/territory/visibility).
+  - `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.11)
 
 ## Навигация по docs/
 
