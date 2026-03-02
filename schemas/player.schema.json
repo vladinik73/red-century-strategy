@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "player.state.schema (v4.22)",
+  "title": "player.state.schema (v4.26)",
   "type": "object",
   "additionalProperties": false,
   "required": [

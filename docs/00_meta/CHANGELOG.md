@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.26 — Phase X (P0 SOT Formula Sync)
+
+- SOT: AP formula includes TechAccelerationBonus (+1 AP if Science L4)
+- SOT: Money formula includes LogisticsMultiplier (×1.05 if Economic L4)
+- Map_Generation: removed legacy 'движение -1' wording, aligned with MoveCost table
+- Schema titles bumped: player.schema v4.26, tile.schema v4.26
+
+---
+
 ## v4.25.1 — Event Taxonomy (strict payloads + turn semantics)
 
 - `events[]`: discriminated union (oneOf) с 26 строго типизированными payload-схемами (additionalProperties: false).

@@ -1,4 +1,4 @@
-# Source of Truth (v4.25.1 — Event Taxonomy + Action Catalog)
+# Source of Truth (v4.26 — P0 SOT Formula Sync)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -71,6 +71,9 @@
 - Science L1: +1 Science/city | L2: +10% Science | L3: +20% Science | L4: +1 AP | L5: Tech Victory timer
 
 Связи с формулами: `docs/04_economy/Money_Model.md` (Economic L4), `docs/04_economy/Action_Points.md` (Science L4), `docs/06_combat/Damage_and_Rules.md` (Military L3, L5).
+
+### Sync note (v4.26)
+Формулы SOT обновлены: включены Economic L4 LogisticsMultiplier и Science L4 TechAccelerationBonus (введены в v4.24).
 
 ## Elimination + Neutral Cities (v4.23)
 
@@ -166,7 +169,8 @@
 - Подробности: `docs/07_units/Production_Rules.md`
 
 ## Экономика — деньги (Phase 2)
-- MoneyPerTurn = floor((Σ CityBaseIncome + HarvestIncome) × NetworkMultiplier × AllianceMultiplier × StabilityMultiplier × CyberIncomeMultiplier)
+- LogisticsMultiplier = 1.05 если Economic L4 (Logistics) изучена; иначе 1.0.
+- MoneyPerTurn = floor((Σ CityBaseIncome + HarvestIncome) × NetworkMultiplier × AllianceMultiplier × StabilityMultiplier × LogisticsMultiplier × CyberIncomeMultiplier)
 - CityBaseIncome = city_level (только интегрированные города)
 - HarvestIncome = Σ MoneyYield(tile) от денежных ресурсных клеток
 - Ресурсная клетка: 2 ед./ход (запас 10), после исчерпания 1 ед./ход (бесконечно)
@@ -187,7 +191,8 @@
 - SciencePerTurn = 5 + CityBonus + TechBonus + NetworkContribution
 
 ## ОД — формула (Phase 2 + 2.1)
-- OD = 5 + floor(Σ уровней интегрированных городов / 5) + floor(Количество технологий / 3) + StabilityModifier + NetworkModifier + AllianceModifier - OccupationPenalty - CyberPenalty
+- TechAccelerationBonus = +1 ОД если Science L4 (Tech Acceleration) изучена; иначе 0.
+- OD = 5 + floor(Σ уровней интегрированных городов / 5) + floor(Количество технологий / 3) + StabilityModifier + NetworkModifier + AllianceModifier + TechAccelerationBonus - OccupationPenalty - CyberPenalty
 - Подробности: `docs/04_economy/Action_Points.md`
 
 ## Cyber Rules (v4.2)
