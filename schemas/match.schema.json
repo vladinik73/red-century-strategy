@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.28)",
+  "title": "Match State (v4.29)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -398,7 +398,7 @@
     },
     "events": {
       "type": "array",
-      "description": "Replay-log. Discriminated union by event_type (v4.28). Canon: docs/01_overview/Action_Catalog.md",
+      "description": "Replay-log. Discriminated union by event_type (v4.29). Canon: docs/01_overview/Action_Catalog.md",
       "items": { "$ref": "#/$defs/GameEvent" }
     }
   },
@@ -437,14 +437,14 @@
     },
     "EventBase": {
       "type": "object",
-      "required": ["event_id", "round_index", "civ_turn_index", "acting_civ_id", "event_type", "payload"],
+      "required": ["event_id", "round_index", "civ_turn_index", "acting_player_id", "event_type", "payload"],
       "additionalProperties": false,
       "properties": {
         "event_id": { "type": "string" },
         "round_index": { "type": "integer", "minimum": 0, "description": "Round number; increments after all alive civs complete a turn" },
         "civ_turn_index": { "type": "integer", "minimum": 0, "description": "Flat turn counter; same as match.turn.turn_index" },
         "turn_index": { "type": "integer", "minimum": 0, "description": "Deprecated: use civ_turn_index" },
-        "acting_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 },
+        "acting_player_id": { "type": "string", "description": "Canonical identity: player_id (string) in match state and events" },
         "event_type": { "type": "string" },
         "seq": { "type": "integer", "minimum": 0, "description": "Order within civ turn" },
         "payload": { "type": "object" }
@@ -461,7 +461,7 @@
     "Event_DISBAND": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "DISBAND" }, "payload": { "$ref": "#/$defs/Payload_DISBAND" } }, "required": ["event_type", "payload"] }] },
     "Payload_DISBAND": { "type": "object", "additionalProperties": false, "required": ["unit_id", "ap_refund"], "properties": { "unit_id": { "type": "string" }, "ap_refund": { "type": "integer", "minimum": 0 } } },
     "Event_CAPTURE_CITY": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "CAPTURE_CITY" }, "payload": { "$ref": "#/$defs/Payload_CAPTURE_CITY" } }, "required": ["event_type", "payload"] }] },
-    "Payload_CAPTURE_CITY": { "type": "object", "additionalProperties": false, "required": ["unit_id", "city_id"], "properties": { "unit_id": { "type": "string" }, "city_id": { "type": "string" }, "from_owner_civ_id": { "type": "integer" }, "to_owner_civ_id": { "type": "integer" }, "integration_turns_left": { "type": "integer", "minimum": 0, "maximum": 4 } } },
+    "Payload_CAPTURE_CITY": { "type": "object", "additionalProperties": false, "required": ["unit_id", "city_id"], "properties": { "unit_id": { "type": "string" }, "city_id": { "type": "string" }, "from_owner_player_id": { "type": "string" }, "to_owner_player_id": { "type": "string" }, "integration_turns_left": { "type": "integer", "minimum": 0, "maximum": 4 } } },
     "Event_PRODUCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "PRODUCE" }, "payload": { "$ref": "#/$defs/Payload_PRODUCE" } }, "required": ["event_type", "payload"] }] },
     "Payload_PRODUCE": { "type": "object", "additionalProperties": false, "required": ["city_id", "unit_type_id", "spawned_unit_id"], "properties": { "city_id": { "type": "string" }, "unit_type_id": { "type": "string" }, "spawned_unit_id": { "type": "string" } } },
     "Event_BUILD_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BUILD_ROAD" }, "payload": { "$ref": "#/$defs/Payload_BUILD_ROAD" } }, "required": ["event_type", "payload"] }] },
@@ -489,22 +489,22 @@
     "Event_TECH_UNLOCK": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "TECH_UNLOCK" }, "payload": { "$ref": "#/$defs/Payload_TECH_UNLOCK" } }, "required": ["event_type", "payload"] }] },
     "Payload_TECH_UNLOCK": { "type": "object", "additionalProperties": false, "required": ["branch", "level"], "properties": { "branch": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "SCIENCE"] }, "level": { "type": "integer", "minimum": 1, "maximum": 5 } } },
     "Event_DECLARE_WAR": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "DECLARE_WAR" }, "payload": { "$ref": "#/$defs/Payload_DECLARE_WAR" } }, "required": ["event_type", "payload"] }] },
-    "Payload_DECLARE_WAR": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Payload_DECLARE_WAR": { "type": "object", "additionalProperties": false, "required": ["from_player_id", "to_player_id"], "properties": { "from_player_id": { "type": "string" }, "to_player_id": { "type": "string" } } },
     "Event_MAKE_PEACE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "MAKE_PEACE" }, "payload": { "$ref": "#/$defs/Payload_MAKE_PEACE" } }, "required": ["event_type", "payload"] }] },
-    "Payload_MAKE_PEACE": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Payload_MAKE_PEACE": { "type": "object", "additionalProperties": false, "required": ["from_player_id", "to_player_id"], "properties": { "from_player_id": { "type": "string" }, "to_player_id": { "type": "string" } } },
     "Event_FORM_ALLIANCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "FORM_ALLIANCE" }, "payload": { "$ref": "#/$defs/Payload_FORM_ALLIANCE" } }, "required": ["event_type", "payload"] }] },
-    "Payload_FORM_ALLIANCE": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Payload_FORM_ALLIANCE": { "type": "object", "additionalProperties": false, "required": ["from_player_id", "to_player_id"], "properties": { "from_player_id": { "type": "string" }, "to_player_id": { "type": "string" } } },
     "Event_BREAK_ALLIANCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BREAK_ALLIANCE" }, "payload": { "$ref": "#/$defs/Payload_BREAK_ALLIANCE" } }, "required": ["event_type", "payload"] }] },
-    "Payload_BREAK_ALLIANCE": { "type": "object", "additionalProperties": false, "required": ["from_civ_id", "to_civ_id"], "properties": { "from_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "to_civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Payload_BREAK_ALLIANCE": { "type": "object", "additionalProperties": false, "required": ["from_player_id", "to_player_id"], "properties": { "from_player_id": { "type": "string" }, "to_player_id": { "type": "string" } } },
     "Event_REBELLION": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "REBELLION" }, "payload": { "$ref": "#/$defs/Payload_REBELLION" } }, "required": ["event_type", "payload"] }] },
-    "Payload_REBELLION": { "type": "object", "additionalProperties": false, "required": ["city_id"], "properties": { "city_id": { "type": "string" }, "old_owner_civ_id": { "type": "integer" } } },
+    "Payload_REBELLION": { "type": "object", "additionalProperties": false, "required": ["city_id"], "properties": { "city_id": { "type": "string" }, "old_owner_player_id": { "type": "string" } } },
     "Event_ELIMINATION": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "ELIMINATION" }, "payload": { "$ref": "#/$defs/Payload_ELIMINATION" } }, "required": ["event_type", "payload"] }] },
-    "Payload_ELIMINATION": { "type": "object", "additionalProperties": false, "required": ["civ_id"], "properties": { "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Payload_ELIMINATION": { "type": "object", "additionalProperties": false, "required": ["player_id"], "properties": { "player_id": { "type": "string" } } },
     "Event_VICTORY_TRIGGER": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "VICTORY_TRIGGER" }, "payload": { "$ref": "#/$defs/Payload_VICTORY_TRIGGER" } }, "required": ["event_type", "payload"] }] },
-    "Payload_VICTORY_TRIGGER": { "type": "object", "additionalProperties": false, "required": ["victory_type", "civ_id", "turns_to_win"], "properties": { "victory_type": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "TECH"] }, "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "turns_to_win": { "type": "integer", "minimum": 0 } } },
+    "Payload_VICTORY_TRIGGER": { "type": "object", "additionalProperties": false, "required": ["victory_type", "player_id", "turns_to_win"], "properties": { "victory_type": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "TECH"] }, "player_id": { "type": "string" }, "turns_to_win": { "type": "integer", "minimum": 0 } } },
     "Event_VICTORY_COMPLETE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "VICTORY_COMPLETE" }, "payload": { "$ref": "#/$defs/Payload_VICTORY_COMPLETE" } }, "required": ["event_type", "payload"] }] },
-    "Payload_VICTORY_COMPLETE": { "type": "object", "additionalProperties": false, "required": ["victory_type", "civ_id"], "properties": { "victory_type": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "TECH"] }, "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 } } },
+    "Payload_VICTORY_COMPLETE": { "type": "object", "additionalProperties": false, "required": ["victory_type", "player_id"], "properties": { "victory_type": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "TECH"] }, "player_id": { "type": "string" } } },
     "Event_HIDDEN_CIV_SPAWN": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "HIDDEN_CIV_SPAWN" }, "payload": { "$ref": "#/$defs/Payload_HIDDEN_CIV_SPAWN" } }, "required": ["event_type", "payload"] }] },
-    "Payload_HIDDEN_CIV_SPAWN": { "type": "object", "additionalProperties": false, "required": ["civ_id", "regions_count", "cities_count"], "properties": { "civ_id": { "type": "integer", "minimum": 0, "maximum": 9 }, "regions_count": { "type": "integer", "minimum": 1 }, "cities_count": { "type": "integer", "minimum": 1 }, "city_ids": { "type": "array", "items": { "type": "string" } } } }
+    "Payload_HIDDEN_CIV_SPAWN": { "type": "object", "additionalProperties": false, "required": ["player_id", "regions_count", "cities_count"], "properties": { "player_id": { "type": "string" }, "regions_count": { "type": "integer", "minimum": 1 }, "cities_count": { "type": "integer", "minimum": 1 }, "city_ids": { "type": "array", "items": { "type": "string" } } } }
   }
 }

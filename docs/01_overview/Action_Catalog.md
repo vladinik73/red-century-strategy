@@ -1,4 +1,4 @@
-# Action Catalog (v4.28) — MVP
+# Action Catalog (v4.29) — MVP
 
 Канонический каталог действий игрока и соответствующих event types для replay-log.
 
@@ -6,7 +6,7 @@
 
 ---
 
-## Event Fields (v4.28)
+## Event Fields (v4.29)
 
 Каждый event — discriminated union по `event_type`. Общие поля (EventBase):
 
@@ -15,7 +15,7 @@
 | `event_id` | string | Уникальный ID события |
 | `round_index` | int | Номер раунда (инкремент после хода всех живых цивилизаций) |
 | `civ_turn_index` | int | Плоский счётчик хода; то же, что `match.turn.turn_index` |
-| `acting_civ_id` | int | ID цивилизации, совершившей действие (0..9) |
+| `acting_player_id` | string | ID цивилизации (player_id), совершившей действие (canonical identity) |
 | `event_type` | string | Тип события (см. таблицы ниже) |
 | `payload` | object | Специфичные данные (см. payload specs) |
 | `seq` | int? | Порядок внутри хода цивилизации |
@@ -47,7 +47,7 @@ Payload для каждого event_type строго типизирован в 
 - **SERIAL_ATTACK:** `{ attacker_unit_id, chain_index, target_unit_id, damage, target_destroyed }`
 - **HEAL:** `{ unit_id, hp_before, hp_after }`
 - **DISBAND:** `{ unit_id, ap_refund }`
-- **CAPTURE_CITY:** `{ unit_id, city_id }` — опционально: `from_owner_civ_id`, `to_owner_civ_id`, `integration_turns_left`
+- **CAPTURE_CITY:** `{ unit_id, city_id }` — опционально: `from_owner_player_id`, `to_owner_player_id`, `integration_turns_left`
 - **CYBER_DISRUPT:** `{ unit_id, target_city_id }` — опционально: `disruption_turns` (2)
 - **CYBER_DAMAGE_ROAD:** `{ unit_id, target_tile_index }` — опционально: `road_damaged_turns` (2)
 
@@ -91,10 +91,10 @@ Payload для каждого event_type строго типизирован в 
 - **START_HARVEST:** `{ tile_id }`
 - **REPAIR_ROAD:** `{ tile_id }`
 - **TECH_UNLOCK:** `{ branch: "MILITARY"|"ECONOMIC"|"SCIENCE", level: 1..5 }`
-- **DECLARE_WAR:** `{ from_civ_id, to_civ_id }`
-- **MAKE_PEACE:** `{ from_civ_id, to_civ_id }`
-- **FORM_ALLIANCE:** `{ from_civ_id, to_civ_id }`
-- **BREAK_ALLIANCE:** `{ from_civ_id, to_civ_id }`
+- **DECLARE_WAR:** `{ from_player_id, to_player_id }`
+- **MAKE_PEACE:** `{ from_player_id, to_player_id }`
+- **FORM_ALLIANCE:** `{ from_player_id, to_player_id }`
+- **BREAK_ALLIANCE:** `{ from_player_id, to_player_id }`
 
 ---
 
@@ -112,11 +112,11 @@ Payload для каждого event_type строго типизирован в 
 
 ### Payload specs
 
-- **REBELLION:** `{ city_id }` — опционально: `old_owner_civ_id`
-- **ELIMINATION:** `{ civ_id }`
-- **VICTORY_TRIGGER:** `{ victory_type, civ_id, turns_to_win }` — victory_type: MILITARY|ECONOMIC|TECH
-- **VICTORY_COMPLETE:** `{ victory_type, civ_id }`
-- **HIDDEN_CIV_SPAWN:** `{ civ_id, regions_count, cities_count }` — опционально: `city_ids`
+- **REBELLION:** `{ city_id }` — опционально: `old_owner_player_id`
+- **ELIMINATION:** `{ player_id }`
+- **VICTORY_TRIGGER:** `{ victory_type, player_id, turns_to_win }` — victory_type: MILITARY|ECONOMIC|TECH
+- **VICTORY_COMPLETE:** `{ victory_type, player_id }`
+- **HIDDEN_CIV_SPAWN:** `{ player_id, regions_count, cities_count }` — опционально: `city_ids`
 
 ---
 

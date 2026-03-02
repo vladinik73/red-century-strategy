@@ -1,4 +1,4 @@
-# Source of Truth (v4.28 — Cyber Events + Elimination Step)
+# Source of Truth (v4.29 — Identity Canon: player_id)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -52,15 +52,15 @@
 - Tile ports: use `port_level: 0..3`. Do **not** keep a separate `has_port` boolean.
 - Tile damaged road timer: `road_damaged_turns_left: 0..2`.
 
-## Events (Replay Log) — Event Taxonomy (v4.28)
+## Events (Replay Log) — Event Taxonomy (v4.29)
 
 - `events[]` — discriminated union по `event_type` (oneOf с 28 вариантами).
-- Обязательные поля (EventBase): `event_id`, `round_index`, `civ_turn_index`, `acting_civ_id`, `event_type`, `payload`.
+- Обязательные поля (EventBase): `event_id`, `round_index`, `civ_turn_index`, `acting_player_id`, `event_type`, `payload`.
 - Опционально: `seq` (порядок внутри хода). `turn_index` — deprecated, использовать `civ_turn_index`.
 - Payload строго типизирован для каждого event_type (additionalProperties: false).
 - Канон: `schemas/match.schema.json`, `docs/01_overview/Action_Catalog.md`.
 - Event types: MOVE, ATTACK, SERIAL_ATTACK, PRODUCE, BUILD_ROAD, UPGRADE_ROAD, BUILD_PORT, UPGRADE_PORT, UPGRADE_CITY, HEAL, DISBAND, CAPTURE_CITY, CYBER_DISRUPT, CYBER_DAMAGE_ROAD, START_HARVEST, REPAIR_ROAD, BOOST_SCIENCE, BOOST_STABILITY, TECH_UNLOCK, DECLARE_WAR, MAKE_PEACE, FORM_ALLIANCE, BREAK_ALLIANCE, REBELLION, ELIMINATION, VICTORY_TRIGGER, VICTORY_COMPLETE, HIDDEN_CIV_SPAWN.
-- **Events sync note (v4.28):** добавлены кибер-события CYBER_DISRUPT (Сбой на город) и CYBER_DAMAGE_ROAD (повреждение дороги).
+- **Identity canonical:** `player_id` (string) используется в match state и replay events. `civ_id` не используется в event layer.
 
 ## Tech Tree Effects (v4.24)
 

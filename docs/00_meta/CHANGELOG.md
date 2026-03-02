@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.29 — Identity Canon (player_id ↔ civ_id)
+
+- **EventBase:** `acting_civ_id` (int 0..9) заменён на `acting_player_id` (string).
+- **Payloads:** все civ_id заменены на player_id: ELIMINATION, DECLARE_WAR, MAKE_PEACE, FORM_ALLIANCE, BREAK_ALLIANCE, REBELLION (old_owner), CAPTURE_CITY (from/to), VICTORY_TRIGGER, VICTORY_COMPLETE, HIDDEN_CIV_SPAWN.
+- **Canon:** player_id (string) — единственный идентификатор в match state и events; civ_id не используется в event layer.
+- SOT, Action_Catalog, schemas/README, Turn_Pipeline обновлены.
+
+---
+
 ## v4.28 — Cyber Events + Elimination Step (P0 MVP gaps)
 
 - **Event taxonomy:** добавлены CYBER_DISRUPT и CYBER_DAMAGE_ROAD (payloads: unit_id, target_city_id / target_tile_index; additionalProperties: false).

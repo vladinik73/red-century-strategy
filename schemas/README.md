@@ -2,7 +2,7 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
-## Список схем (v4.28)
+## Список схем (v4.29)
 
 - `match.schema.json` — состояние партии (Match State, Canonical Container + replay-log)
 - `tile.schema.json` — структура тайла карты
@@ -56,7 +56,7 @@
 
 Ключевые поля: city_id, x, y, owner_player_id, is_capital, level, defense_level, integration_turns_left, territory_radius (1..5), territory_tile_indices.
 
-## match.schema.json (v4.28)
+## match.schema.json (v4.29)
 
 Canonical State Container для состояния партии (полный game state) + `events[]` как replay-log.
 
@@ -67,9 +67,9 @@ Canonical State Container для состояния партии (полный g
 - Победа: отдельный раздел `victory`
 - Только живые юниты (история — в `events[]`)
 
-### events[] (v4.28) — discriminated union replay-log
+### events[] (v4.29) — discriminated union replay-log
 
 - GameEvent: `oneOf` с 28 вариантами (Event_MOVE … Event_HIDDEN_CIV_SPAWN), включая CYBER_DISRUPT, CYBER_DAMAGE_ROAD.
-- EventBase: `event_id`, `round_index`, `civ_turn_index`, `acting_civ_id`, `event_type`, `payload`; опционально `seq`; `turn_index` deprecated.
+- EventBase: `event_id`, `round_index`, `civ_turn_index`, `acting_player_id`, `event_type`, `payload`; опционально `seq`; `turn_index` deprecated.
 - Payload для каждого event_type — строгая схема (additionalProperties: false).
 - Payload specs: `docs/01_overview/Action_Catalog.md`.
