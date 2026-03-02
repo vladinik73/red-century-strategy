@@ -1,4 +1,4 @@
-# Source of Truth (v4.11 — Phase 4.4 Start Conditions + Schema: Player)
+# Source of Truth (v4.12 — Phase 4.5 Schema: Match State)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -32,6 +32,16 @@
 
 ## Schemas (v4.11)
 - Добавлена схема состояния игрока: `schemas/player.schema.json` (Player State).
+
+## Match State Schema (v4.12)
+- Каноническая структура состояния партии описана в: `schemas/match.schema.json`.
+- Формат: **Canonical State Container** + `events[]` как replay-log.
+- Карта хранится как `tiles_flat` длиной `80×80 = 6400`, индекс: `i = y*80 + x`.
+- Состояние хранит только **живые** юниты (история боёв — через `events[]`).
+
+См. также:
+- `schemas/tile.schema.json` (v4.10)
+- `schemas/player.schema.json` (v4.11)
 
 ## Turn Pipeline
 
