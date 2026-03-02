@@ -39,6 +39,8 @@
 - Показать текущий `TerritoryRadius` и целевой `TerritoryRadius+1`.
 - Предварительный просмотр на карте (подсветка тайлов, которые *попытаются* войти в территорию).
 - Если расширение невозможно (упирается в границу/вражеские территории/минимальную дистанцию) — опция **disabled** + краткий reason.
+- Если `TerritoryRadius == MaxTerritoryRadius`, опция скрыта или disabled (выбор невозможен).
+- `MaxTerritoryRadius = 5` (канон: `docs/03_map/Territory_Rules.md`).
 - Канон: `Territory_Rules.md`.
 
 3) **Unlock Port Construction**

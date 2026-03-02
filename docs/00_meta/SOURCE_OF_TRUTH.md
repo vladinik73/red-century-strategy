@@ -1,4 +1,4 @@
-# Source of Truth (v4.15.1 — Phase 4.8.1 UI sync: City Level Up Reward Choice)
+# Source of Truth (v4.16 — Phase 4.9 P1 constants & edge-cases)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -210,6 +210,14 @@
 - У каждого типа юнита есть параметр `Sight` (видимость).
 - StarterScout (A2) Sight = 2.
 Канон: таблицы юнитов в `docs/07_units/*`.
+
+## Territory — MaxTerritoryRadius (v4.16)
+
+- `MaxTerritoryRadius = 5`
+- Территория города расширяется только через награду апгрейда **Expand Territory (+1 TerritoryRadius)**.
+- `TerritoryRadius` не может превышать `MaxTerritoryRadius`.
+- UI: если `TerritoryRadius == MaxTerritoryRadius`, опция **Expand Territory** скрыта/disabled (выбор невозможен).
+- Канон: `docs/03_map/Territory_Rules.md`
 
 ## UI/UX (City Level Up Choice) — sync note (v4.15.1)
 - UI апгрейда города использует модель «**Level Up → Reward Choice (4 options)**».

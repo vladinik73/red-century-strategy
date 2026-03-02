@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.16 — Phase 4.9 (P1 constants & edge-cases)
+
+- Territory: зафиксирован `MaxTerritoryRadius = 5`; при достижении капа опция **Expand Territory** скрыта/disabled (выбор невозможен).
+
+---
+
 ## v4.15.1 — Phase 4.8.1 (UI sync: City Level Up Reward Choice)
 
 - `docs/10_uiux/City_UI.md` — синхронизирован с каноном v4.13+: «апгрейд уровня города → выбор награды (4 опции)» вместо отдельных кнопок.

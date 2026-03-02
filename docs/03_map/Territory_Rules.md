@@ -11,6 +11,13 @@
 - **Начальный и минимальный TerritoryRadius = 1**.
 - При выборе расширения территории на апгрейде города: `TerritoryRadius += 1`.
 
+### MaxTerritoryRadius (v4.16)
+
+- `MaxTerritoryRadius = 5`
+- `TerritoryRadius` города ∈ [1..MaxTerritoryRadius]
+- При выборе награды апгрейда **Expand Territory**: `TerritoryRadius = min(TerritoryRadius + 1, MaxTerritoryRadius)`
+- Если `TerritoryRadius == MaxTerritoryRadius`, дальнейшее расширение недоступно (UI скрывает/disable опцию).
+
 ### Геометрия территории
 - Территория города формируется как **квадрат** вокруг центра города:
   - все тайлы в пределах Chebyshev-distance `<= TerritoryRadius`.
