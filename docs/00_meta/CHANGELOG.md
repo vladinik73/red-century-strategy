@@ -1,5 +1,19 @@
 # Changelog
 
+## v4.4.1 — Phase 3.3.1 (UI sync: Serial Strike)
+
+- `docs/10_uiux/Unit_Interaction.md` — описание серийного юнита синхронизировано с каноном v4.4 (SerialKillCap, DamageMultiplierPerKill, условия остановки цепочки).
+
+---
+
+## v4.4 — Phase 3.3 (Serial Strike Balance)
+
+- Серийный удар: введён лимит `SerialKillCap = 5` убийств за одну цепочку в ход.
+- Деградация урона в цепочке усилена: `DamageMultiplierPerKill = 0.85` (−15% после каждого убийства).
+- Устранён эксплойт бесконечной зачистки фронта одним спец‑юнитом.
+
+---
+
 ## v4.3 — Phase 3.2 (Alliance Economic Victory Fix)
 
 - Экономическая победа теперь считается **только по CityPower игрока** (без суммирования через альянс).
