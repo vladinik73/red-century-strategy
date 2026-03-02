@@ -1,4 +1,4 @@
-# Turn Pipeline (Canonical) — v1.0
+# Turn Pipeline (Canonical) — v4.28
 
 Этот документ задаёт строгий порядок фаз хода (turn order) для Red Age и является каноном для реализации core loop.
 
@@ -116,6 +116,15 @@
 ---
 
 ### PHASE 4 — End of Turn (System)
+
+#### 4.0 Elimination check
+
+Если у цивилизации **0 городов** → цивилизация **элиминирована**:
+- Удалить цивилизацию из turn order (пропуск в порядке хода).
+- Эмитировать событие **ELIMINATION** (`{ civ_id }`).
+- Удалить все юниты элиминированной цивилизации.
+
+Проверка выполняется **до** обновления победных таймеров и проверки победы. Канон: `docs/01_overview/Elimination_Rules.md`.
 
 #### 4.1 Update victory timers
 

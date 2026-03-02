@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.28 — Cyber Events + Elimination Step (P0 MVP gaps)
+
+- **Event taxonomy:** добавлены CYBER_DISRUPT и CYBER_DAMAGE_ROAD (payloads: unit_id, target_city_id / target_tile_index; additionalProperties: false).
+- **Action_Catalog:** Cyber Disrupt и Cyber Damage Road в UNIT ACTIONS; mapping Action → event_type.
+- **Turn Pipeline:** явный шаг 4.0 Elimination check — при 0 городов элиминация, эмиссия ELIMINATION, удаление из turn order; выполняется до victory timers и victory check.
+- SOT, schemas/README, match.schema обновлены до v4.28.
+
+---
+
 ## v4.27 — City Schema Rebuild
 
 - Rebuilt schemas/city.schema.json to match match.schema city object (removed has_port legacy)

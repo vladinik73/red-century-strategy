@@ -1,4 +1,4 @@
-# Action Catalog (v4.25.1) — MVP
+# Action Catalog (v4.28) — MVP
 
 Канонический каталог действий игрока и соответствующих event types для replay-log.
 
@@ -6,7 +6,7 @@
 
 ---
 
-## Event Fields (v4.25.1)
+## Event Fields (v4.28)
 
 Каждый event — discriminated union по `event_type`. Общие поля (EventBase):
 
@@ -37,6 +37,8 @@ Payload для каждого event_type строго типизирован в 
 | **Heal** | CurrentHP < MaxHP | 1 ОД + действие юнита | HEAL |
 | **Disband** | — | 0 ОД, возврат 50% AP cost | DISBAND |
 | **Capture** | Юнит на клетке города без гарнизона | Результат атаки/перемещения | CAPTURE_CITY |
+| **Cyber Disrupt** | Киберподразделение, город врага (не столица) | 1 ОД | CYBER_DISRUPT |
+| **Cyber Damage Road** | Киберподразделение, дорога врага (не у столицы) | 1 ОД | CYBER_DAMAGE_ROAD |
 
 ### Payload specs (replay)
 
@@ -46,6 +48,8 @@ Payload для каждого event_type строго типизирован в 
 - **HEAL:** `{ unit_id, hp_before, hp_after }`
 - **DISBAND:** `{ unit_id, ap_refund }`
 - **CAPTURE_CITY:** `{ unit_id, city_id }` — опционально: `from_owner_civ_id`, `to_owner_civ_id`, `integration_turns_left`
+- **CYBER_DISRUPT:** `{ unit_id, target_city_id }` — опционально: `disruption_turns` (2)
+- **CYBER_DAMAGE_ROAD:** `{ unit_id, target_tile_index }` — опционально: `road_damaged_turns` (2)
 
 ---
 
@@ -132,6 +136,8 @@ Payload для каждого event_type строго типизирован в 
 | Heal | HEAL |
 | Disband | DISBAND |
 | Capture City | CAPTURE_CITY |
+| Cyber Disrupt | CYBER_DISRUPT |
+| Cyber Damage Road | CYBER_DAMAGE_ROAD |
 | Start Harvest | START_HARVEST |
 | Repair Road | REPAIR_ROAD |
 | Boost Science | BOOST_SCIENCE |

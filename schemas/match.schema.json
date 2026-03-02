@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.25.1)",
+  "title": "Match State (v4.28)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -398,7 +398,7 @@
     },
     "events": {
       "type": "array",
-      "description": "Replay-log. Discriminated union by event_type (v4.25.1). Canon: docs/01_overview/Action_Catalog.md",
+      "description": "Replay-log. Discriminated union by event_type (v4.28). Canon: docs/01_overview/Action_Catalog.md",
       "items": { "$ref": "#/$defs/GameEvent" }
     }
   },
@@ -421,6 +421,8 @@
         { "$ref": "#/$defs/Event_BOOST_STABILITY" },
         { "$ref": "#/$defs/Event_START_HARVEST" },
         { "$ref": "#/$defs/Event_REPAIR_ROAD" },
+        { "$ref": "#/$defs/Event_CYBER_DISRUPT" },
+        { "$ref": "#/$defs/Event_CYBER_DAMAGE_ROAD" },
         { "$ref": "#/$defs/Event_TECH_UNLOCK" },
         { "$ref": "#/$defs/Event_DECLARE_WAR" },
         { "$ref": "#/$defs/Event_MAKE_PEACE" },
@@ -480,6 +482,10 @@
     "Payload_START_HARVEST": { "type": "object", "additionalProperties": false, "required": ["tile_id"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 } } },
     "Event_REPAIR_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "REPAIR_ROAD" }, "payload": { "$ref": "#/$defs/Payload_REPAIR_ROAD" } }, "required": ["event_type", "payload"] }] },
     "Payload_REPAIR_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 } } },
+    "Event_CYBER_DISRUPT": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "CYBER_DISRUPT" }, "payload": { "$ref": "#/$defs/Payload_CYBER_DISRUPT" } }, "required": ["event_type", "payload"] }] },
+    "Payload_CYBER_DISRUPT": { "type": "object", "additionalProperties": false, "required": ["unit_id", "target_city_id"], "properties": { "unit_id": { "type": "string" }, "target_city_id": { "type": "string" }, "disruption_turns": { "type": "integer", "minimum": 2, "maximum": 2 } } },
+    "Event_CYBER_DAMAGE_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "CYBER_DAMAGE_ROAD" }, "payload": { "$ref": "#/$defs/Payload_CYBER_DAMAGE_ROAD" } }, "required": ["event_type", "payload"] }] },
+    "Payload_CYBER_DAMAGE_ROAD": { "type": "object", "additionalProperties": false, "required": ["unit_id", "target_tile_index"], "properties": { "unit_id": { "type": "string" }, "target_tile_index": { "type": "integer", "minimum": 0, "maximum": 6399 }, "road_damaged_turns": { "type": "integer", "minimum": 2, "maximum": 2 } } },
     "Event_TECH_UNLOCK": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "TECH_UNLOCK" }, "payload": { "$ref": "#/$defs/Payload_TECH_UNLOCK" } }, "required": ["event_type", "payload"] }] },
     "Payload_TECH_UNLOCK": { "type": "object", "additionalProperties": false, "required": ["branch", "level"], "properties": { "branch": { "type": "string", "enum": ["MILITARY", "ECONOMIC", "SCIENCE"] }, "level": { "type": "integer", "minimum": 1, "maximum": 5 } } },
     "Event_DECLARE_WAR": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "DECLARE_WAR" }, "payload": { "$ref": "#/$defs/Payload_DECLARE_WAR" } }, "required": ["event_type", "payload"] }] },
