@@ -1,0 +1,1 @@
+- Hypersonic cannot target capital cities.
