@@ -23,6 +23,7 @@ OD = 5 (база)
 + StabilityModifier
 + NetworkModifier
 + AllianceModifier
++ TechAccelerationBonus   // +1 если Science L4 (Tech Acceleration) изучена (v4.24)
 - OccupationPenalty
 - CyberPenalty
 

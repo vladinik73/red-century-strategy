@@ -45,6 +45,13 @@ StabilityMultiplier = 1 + MoneyMultiplier / 100
 
 Пример: стабильность 85 → MoneyMultiplier = +5% → StabilityMultiplier = 1.05
 
+## 5.1) Logistics (Economic L4) (v4.24)
+Если изучена Economic L4 (Магистральная логистика):
+```
+LogisticsMultiplier = 1.05
+```
+(+5% к доходу денег). Применяется в итоговой формуле.
+
 ## 6) Осада (-30%)
 Если город под осадой, его вклад в доход снижается:
 - CityBaseIncome ×0.7
@@ -69,6 +76,7 @@ floor(
   × NetworkMultiplier
   × AllianceMultiplier
   × StabilityMultiplier
+  × LogisticsMultiplier   // 1.05 если Economic L4, иначе 1.0 (v4.24)
   × CyberIncomeMultiplier
 )
 ```

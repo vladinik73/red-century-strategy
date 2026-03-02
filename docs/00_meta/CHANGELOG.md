@@ -1,5 +1,16 @@
 # Changelog
 
+## v4.24 — Phase 4.16 (Tech Tree Effects)
+
+- Полностью определены эффекты всех 15 технологий в `docs/05_tech/Tech_Tree.md`.
+- Military: L1 Heavy Infantry, L2 Mountain Access, L3 +1 vs cities, L4 Advanced Units + Hypersonic, L5 +1 global damage.
+- Economic: L1 Roads, L2 Ports, L3 Road L2, L4 +5% Money, L5 Road L3 / Port L3.
+- Science: L1 +1 Science/city, L2/L3 +10%/+20%, L4 +1 AP, L5 Tech Victory.
+- Связи с формулами: Money_Model (Logistics), Action_Points (Tech Acceleration), Damage_and_Rules (Siege, Doctrine).
+- Hypersonic unlock через Military L4 (Elite Warfare).
+
+---
+
 ## v4.23 — Phase 4.15 (Elimination Rules + Neutral Cities)
 
 - Добавлен канон элиминации: `docs/01_overview/Elimination_Rules.md` — условие (0 городов), удаление юнитов, пропуск в turn order, пересчёт побед.

@@ -48,15 +48,22 @@ SciencePerTurn = BaseScience
   + NetworkContribution
 
 - **BaseScience** = 5
-- **CityBonus** = Σ (уровень интегрированного города × 1)
-- **TechBonus** = бонусы от научных технологий (Научная ветка уровень 2: +10%, уровень 3: +20%)
+- **CityBonus** = Σ (уровень интегрированного города × 1) + ResearchCenterBonus
+  - **ResearchCenterBonus** = +1 за каждый интегрированный город, если изучена Science L1 (Research Center)
+- **TechBonus** = бонусы от научных технологий (Science L2: +10%, Science L3: +20%)
 - **NetworkContribution** = floor(NetworkBonus% × 0.1)
 
 ### Осада
 - Если город под осадой, его вклад в CityBonus снижается на 30% (×0.7). См. `docs/06_combat/Siege_Effects.md`.
 
-## Связь с ОД
+## Связь с ОД (v4.24)
 - floor(Количество изученных технологий / 3) добавляется к ОД за ход
+- **Science L4 (Tech Acceleration):** дополнительно +1 ОД в формулу AP (см. `docs/04_economy/Action_Points.md`)
+
+## Связь с боёвкой (v4.24)
+- **Military L3 (Siege Tech):** +1 damage при атаке города (только когда цель — в городе)
+- **Military L5 (Military Doctrine):** +1 global combat damage (применяется до MoraleMultiplier)
+- См. `docs/06_combat/Damage_and_Rules.md`
 
 ## Связь с победой
-- Изучение 5-го уровня Научной ветки запускает таймер Технологической победы (10 ходов).
+- Изучение Science L5 (Tech Breakthrough) запускает таймер Технологической победы (10 ходов).

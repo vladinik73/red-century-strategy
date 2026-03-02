@@ -1,12 +1,25 @@
 # Бой: формула и правила
 
-## Общая формула урона
+## Общая формула урона (v4.24)
+
+Порядок применения бонусов:
+1. BaseDamage (урон юнита)
+2. + TerrainBonus (гора)
+3. - DefenseModifier (лес, город, осада, окружение)
+4. + TechDamageBonus (Military L3, L5 — см. ниже)
+5. × MoraleMultiplier
+
 ```
-Damage = floor((BaseDamage + TerrainBonus - DefenseModifier) × MoraleMultiplier)
+Damage = floor((BaseDamage + TerrainBonus - DefenseModifier + TechDamageBonus) × MoraleMultiplier)
 ```
 
 - Минимальный урон = 1
 - Округление вниз
+
+### TechDamageBonus (v4.24)
+- **Military L3 (Siege Tech):** +1 damage, если цель атаки находится **в городе** (юнит на клетке города или атака по городу)
+- **Military L5 (Military Doctrine):** +1 damage ко **всем** боевым атакам (глобальный бонус)
+- Оба бонуса складываются, если применимы
 
 ## TerrainBonus
 - +1 при атаке с горы
@@ -46,8 +59,7 @@ Damage = floor((BaseDamage + TerrainBonus - DefenseModifier) × MoraleMultiplier
 Правила:
 1) **Триггер:** атакующий совершает атаку по цели на соседней клетке (melee, Range=1).
 2) Если **защитник выжил** после применения основной формулы урона, то защитник наносит **ответный удар** по атакующему.
-3) Ответный удар использует **ту же формулу урона**, что и обычная атака:
-   `Damage = floor((BaseDamage + TerrainBonus - DefenseModifier) × MoraleMultiplier)`, минимум 1.
+3) Ответный удар использует **ту же формулу урона**, что и обычная атака (включая TechDamageBonus), минимум 1.
 4) Для ответного удара:
    - `TerrainBonus` и `DefenseModifier` считаются **от позиции защитника и атакующего** так же, как для обычной атаки (у кого гора/лес/город и т.п.).
    - если атакующий находится в укреплённом городе / лесу / на горе — это учитывается как его `DefenseModifier`.

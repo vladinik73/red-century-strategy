@@ -29,6 +29,13 @@
 9) Силы специального назначения (серийный удар)
 10 / 3 / 1 / 2 / 4 / 1
 
+## Heavy Infantry — Тяжёлая пехота (v4.24)
+**Unlock:** Military L1 (Infantry Improvement)
+
+Параметры: **HP 12 / Damage 3 / Range 1 / Move 1 / Cost 3 ОД / Sight 1**
+
+- Базовый юнит, разблокируемый военной технологией L1.
+
 ## A2 — Разведка (StarterScout) (v4.14)
 
 Параметры: **HP 6 / Damage 1 / Range 1 / Move 3 / Cost 2 ОД / Sight 2**

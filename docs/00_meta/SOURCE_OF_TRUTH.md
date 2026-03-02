@@ -1,4 +1,4 @@
-# Source of Truth (v4.23 — Elimination + Neutral Cities)
+# Source of Truth (v4.24 — Tech Tree Effects)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -51,6 +51,17 @@
 - City territory: `territory_radius` is stored in match city object (1..5). Canon cap: `MaxTerritoryRadius = 5`.
 - Tile ports: use `port_level: 0..3`. Do **not** keep a separate `has_port` boolean.
 - Tile damaged road timer: `road_damaged_turns_left: 0..2`.
+
+## Tech Tree Effects (v4.24)
+
+Все 15 технологий имеют определённые эффекты. Канон: `docs/05_tech/Tech_Tree.md`.
+
+Ключевые связи:
+- Military L1: Unlock Heavy Infantry | L2: Mountain Access | L3: +1 damage vs cities | L4: Unlock Advanced Units + Hypersonic | L5: +1 global damage
+- Economic L1: Unlock Roads | L2: Unlock Ports | L3: Road L2 | L4: +5% Money | L5: Road L3, Port L3
+- Science L1: +1 Science/city | L2: +10% Science | L3: +20% Science | L4: +1 AP | L5: Tech Victory timer
+
+Связи с формулами: `docs/04_economy/Money_Model.md` (Economic L4), `docs/04_economy/Action_Points.md` (Science L4), `docs/06_combat/Damage_and_Rules.md` (Military L3, L5).
 
 ## Elimination + Neutral Cities (v4.23)
 
