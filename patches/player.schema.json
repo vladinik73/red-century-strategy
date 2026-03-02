@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "player.state.schema (v4.11)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "player_id",
+    "faction_id",
+    "money",
+    "science",
+    "stability",
+    "ap_current",
+    "ap_income_last_turn",
+    "tech_unlocked",
+    "diplomacy",
+    "victory_timers",
+    "effects"
+  ],
+  "properties": {
+    "player_id": {
+      "type": "string",
+      "description": "Уникальный идентификатор игрока (например, UUID)."
+    },
+    "faction_id": {
+      "type": "string",
+      "description": "ID цивилизации/фракции игрока (см. docs/02_world_and_factions)."
+    },
+    "money": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Текущий баланс денег."
+    },
+    "science": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Текущий баланс науки."
+    },
+    "stability": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Стабильность 0..100 (влияет на мораль/доход/ОД)."
+    },
+    "ap_current": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Очки действий, доступные в текущем ходу (после расчёта AP)."
+    },
+    "ap_income_last_turn": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Сколько AP было выдано в начале предыдущего хода (для дебага/реплеев)."
+    },
+    "tech_unlocked": {
+      "type": "array",
+      "description": "Список открытых технологий (ключи из Tech_Tree).",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "diplomacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relations"
+      ],
+      "properties": {
+        "relations": {
+          "type": "array",
+          "description": "Отношения с другими игроками.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "other_player_id",
+              "state",
+              "cooldown_turns_left",
+              "min_alliance_turns_left"
+            ],
+            "properties": {
+              "other_player_id": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "WAR",
+                  "NEUTRAL",
+                  "ALLIANCE"
+                ]
+              },
+              "cooldown_turns_left": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Cooldown после разрыва альянса (в ходах)."
+              },
+              "min_alliance_turns_left": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Минимальная длительность союза до разрешения разрыва (в ходах)."
+              }
+            }
+          }
+        }
+      }
+    },
+    "victory_timers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "economic_hold_turns_left",
+        "tech_victory_turns_left"
+      ],
+      "properties": {
+        "economic_hold_turns_left": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tech_victory_turns_left": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "effects": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cyber_global_penalty_turns_left"
+      ],
+      "properties": {
+        "cyber_global_penalty_turns_left": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

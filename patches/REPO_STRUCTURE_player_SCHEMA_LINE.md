@@ -1,0 +1,1 @@
+- `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.11)
