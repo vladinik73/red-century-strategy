@@ -36,7 +36,11 @@
 - DamagedRoad: дорога считается восстановленной (тайл снова учитывается сетью).
 - Осада: если осада снята (условие/таймер) — снимается штраф осады.
 
-#### 0.3 Rebellion check (Stability = 0)
+#### 0.3 Reset per-turn counters
+
+- `BoostScienceThisTurn = 0`
+
+#### 0.4 Rebellion check (Stability = 0)
 
 Для каждого города игрока:
 
@@ -70,6 +74,10 @@
 
 - `Player.science += SciencePerTurn`
 
+#### 1.5 Fix Boost Cap
+
+- `SciencePerTurn_ForBoostCap = SciencePerTurn` (значение до бустов, используется для лимита Boost Science в PHASE 3).
+
 ---
 
 ### PHASE 2 — Action Points (AP) calculation (System)
@@ -91,7 +99,7 @@
 - Строительство (дороги/порты/мосты — по канону)
 - Чинка дорог (`DamagedRoad`) — по канону
 - Кибердействия — по канону
-- Конверсия `Money → Science` — по канону
+- **Boost Science** (1 ОД) — конвертирует деньги в науку; лимит за ход: `BoostScienceThisTurn ≤ floor(SciencePerTurn_ForBoostCap × 2)` (см. `Tech_Progression.md`)
 - Прочие действия юнитов (`Heal`, `Disband`) — по канону UI/UX
 
 Правила:

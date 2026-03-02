@@ -187,7 +187,7 @@
           "level": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 10
+            "maximum": 5
           },
           "defense_level": {
             "type": "integer",
@@ -317,9 +317,9 @@
               "state": {
                 "type": "string",
                 "enum": [
-                  "War",
-                  "Neutral",
-                  "Alliance"
+                  "WAR",
+                  "NEUTRAL",
+                  "ALLIANCE"
                 ]
               },
               "min_alliance_turns_left": {

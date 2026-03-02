@@ -1,5 +1,45 @@
 # Changelog
 
+## v4.15.1 — Phase 4.8.1 (UI sync: City Level Up Reward Choice)
+
+- `docs/10_uiux/City_UI.md` — синхронизирован с каноном v4.13+: «апгрейд уровня города → выбор награды (4 опции)» вместо отдельных кнопок.
+
+---
+
+## v4.15 — Phase 4.8 (Boost Science cap + Capture Infrastructure + Serial vs City choice)
+
+- **Money → Science Boost** (Action Phase):
+  - Стоит **1 ОД**.
+  - Конверсия: `AddedScience = floor(MoneySpent × 0.5)`.
+  - Лимит за ход: `BoostScienceThisTurn ≤ floor(SciencePerTurn × 2)` (SciencePerTurn берётся из PHASE 1 этого хода, до бустов).
+- **Capture: инфраструктура**:
+  - При захвате города **территория переходит сразу**.
+  - Дороги/мосты/порты в территории захваченного города переходят новому владельцу.
+  - `DamagedRoad` таймер **не сбрасывается**.
+  - До интеграции захваченный город **не даёт** доход/науку/NetworkBonus.
+- **Serial Strike vs City**:
+  - Если серийный юнит убивает последнего защитника города, игрок выбирает:
+    - **Capture Now**: юнит занимает клетку города, город захватывается, цепочка **сразу заканчивается**;
+    - **Continue Chain**: юнит занимает клетку города, **захват откладывается** до завершения цепочки (город захватывается только если цепочка завершилась и юнит остался на клетке города).
+
+Канон обновлён в:
+- `docs/05_tech/Tech_Progression.md`
+- `docs/04_economy/Action_Points.md`
+- `docs/01_overview/Turn_Pipeline.md`
+- `docs/02_cities/City_Capture.md`
+- `docs/06_combat/Veterancy_and_Serial.md`
+- `docs/10_uiux/Unit_Interaction.md`
+
+---
+
+## v4.14 — Phase 4.7 (Terrain T1+R1, Infrastructure Costs, Unit Sight)
+
+- Terrain приведён к T1: PLAIN/FOREST/MOUNTAIN/DESERT/WATER; реки = WATER + `is_river=true` (R1).
+- Добавлен канон стоимости инфраструктуры: `docs/04_economy/Infrastructure_Costs.md` (дороги/мосты/порт).
+- Введён параметр `Sight` для типов юнитов; определён стартовый юнит A2 (StarterScout) с Sight=2.
+- Schemas синхронизированы с каноном (terrain enum, unit.sight, city level max=5, diplomacy casing).
+---
+
 ## v4.13 — Phase 4.6 (Territory & City Vision)
 
 - Добавлена каноническая модель территорий городов: `docs/03_map/Territory_Rules.md`.

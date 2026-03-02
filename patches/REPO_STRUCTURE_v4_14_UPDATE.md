@@ -1,0 +1,2 @@
+- Добавить в `docs/00_meta/REPO_STRUCTURE.md`:
+  - `docs/04_economy/Infrastructure_Costs.md` (канон стоимости дорог/мостов/порта)

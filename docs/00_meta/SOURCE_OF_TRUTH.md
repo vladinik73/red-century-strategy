@@ -1,4 +1,4 @@
-# Source of Truth (v4.13 — Phase 4.6 Territory & City Vision)
+# Source of Truth (v4.15.1 — Phase 4.8.1 UI sync: City Level Up Reward Choice)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -110,10 +110,17 @@
 - Запуск добычи: 1 ОД (однократно), клетка на территории интегрированного города
 - Подробности: `docs/04_economy/Money_Model.md`, `docs/04_economy/Resources.md`
 
+## Money → Science Boost (v4.15)
+- Действие в PHASE 3 (Action Phase): **Boost Science**
+  - Стоит: **1 ОД**
+  - Формула: `AddedScience = floor(MoneySpent × 0.5)`
+  - Лимит за ход: `BoostScienceThisTurn ≤ floor(SciencePerTurn × 2)`
+    (SciencePerTurn берётся из PHASE 1 текущего хода, до бустов)
+  - Можно выполнять несколько раз за ход, пока не исчерпан лимит и есть деньги/ОД.
+
 ## Технологии (Phase 1)
 - 3 ветки × 5 уровней = 15 технологий максимум
 - BaseCost(level) = 10 × level²
-- Research Boost: MoneyToScience = MoneySpent × 0.5 (без ограничений на объём)
 - SciencePerTurn = 5 + CityBonus + TechBonus + NetworkContribution
 
 ## ОД — формула (Phase 2 + 2.1)
@@ -131,10 +138,22 @@
   - авто-восстановление через 2 хода или восстановление владельцем за 1 ОД
 - Подробности: `docs/07_units/Cyber_Effects.md`, `docs/07_units/Advanced_Units.md`, `docs/04_economy/Network.md`
 
-## Serial Strike (v4.4)
+## Serial Strike (v4.4 + v4.15)
 - Серийный удар: цепочка возможна только если цель погибает и атакующий занимает её клетку.
 - `SerialKillCap = 5` — максимум 5 убийств в одной цепочке за ход.
 - `DamageMultiplierPerKill = 0.85` — после каждого убийства в цепочке урон следующей атаки умножается на 0.85 (-15%).
+
+## Serial Strike vs City (v4.15)
+- Если серийный юнит убивает последнего защитника города:
+  - Игрок выбирает: **Capture Now** (цепочка заканчивается) или **Continue Chain** (захват откладывается).
+  - Захват происходит в момент, когда цепочка завершилась и юнит остался на клетке города.
+
+## Capture Infrastructure (v4.15)
+- При захвате города:
+  - Территория захваченного города переходит новому владельцу **сразу**.
+  - Дороги/мосты/порты в территории захваченного города переходят новому владельцу.
+  - `DamagedRoad` таймеры **сохраняются** (не сбрасываются).
+  - До интеграции захваченный город **не даёт** Money/Science/NetworkBonus.
 
 ## Naval & Hypersonic Rules (v4.5)
 - Наземные юниты ближнего боя не атакуют корабли.
@@ -174,6 +193,28 @@
 ## China Balance (v4.7)
 - Нефритовый автономный страж: +1 стабильность за убийство **только** на своей территории или в интегрированном городе.
 - Генерация карты: старт Китая не ближе 7 клеток к краю карты.
+
+## Terrain (T1+R1)
+- `terrain_type` (T1): PLAIN / FOREST / MOUNTAIN / DESERT / WATER.
+- River (R1): `is_river = true` на `WATER` тайле; gameplay-отличий от воды нет.
+
+## Infrastructure Costs (v4.14)
+Канон: `docs/04_economy/Infrastructure_Costs.md`
+- Road L1: `1 ОД + 25 денег` за тайл.
+- Road upgrade (per level): `1 ОД + 25 денег` за тайл.
+- Bridge (1 WATER тайл): ×2 от дороги → `2 ОД + 50 денег`.
+- Port L1: `3 ОД + 200 денег` (фикс).
+- Port upgrade per level: `2 ОД + 150 денег` (фикс).
+
+## Unit Sight (v4.14)
+- У каждого типа юнита есть параметр `Sight` (видимость).
+- StarterScout (A2) Sight = 2.
+Канон: таблицы юнитов в `docs/07_units/*`.
+
+## UI/UX (City Level Up Choice) — sync note (v4.15.1)
+- UI апгрейда города использует модель «**Level Up → Reward Choice (4 options)**».
+- Старые отдельные UI-кнопки «Специализация» / «Защита» не являются каноном: они реализуются через выбор награды при апгрейде.
+- Канон UI: `docs/10_uiux/City_UI.md`.
 
 ## AI (Phase 1)
 - Все переменные скоринга определены в `docs/09_ai/AI_Spec_v1_0.md`

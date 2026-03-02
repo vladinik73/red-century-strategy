@@ -17,7 +17,7 @@
 | Города | `docs/02_cities/` | City_Capture, City_Levels |
 | Мир и фракции | `docs/02_world_and_factions/` | Список цивилизаций |
 | Карта | `docs/03_map/` | Map_Generation, Visibility |
-| Экономика | `docs/04_economy/` | Action_Points, Resources, Network, City_Defense, Stability_and_Morale |
+| Экономика | `docs/04_economy/` | Action_Points, Resources, Network, City_Defense, Stability_and_Morale, Infrastructure_Costs |
 | Технологии | `docs/05_tech/` | Tech_Tree, Tech_Progression |
 | Бой | `docs/06_combat/` | Damage_and_Rules, Siege_Air_Sea, Veterancy_and_Serial |
 | Юниты | `docs/07_units/` | Base_Units, Advanced_Units, Unique_Units_By_Faction |

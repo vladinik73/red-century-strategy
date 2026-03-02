@@ -9,6 +9,12 @@
     "range": "int",
     "move": "int",
     "ap_cost": "int",
+    "sight": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4,
+      "description": "Unit sight range (v4.14). Default: Range=1 → Sight=1, Range≥2 → Sight=2."
+    },
     "tags": [
       "string"
     ],

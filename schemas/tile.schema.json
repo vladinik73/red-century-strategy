@@ -35,14 +35,16 @@
       "enum": [
         "PLAIN",
         "FOREST",
-        "HILL",
         "MOUNTAIN",
         "DESERT",
-        "TUNDRA",
-        "SWAMP",
         "WATER"
       ],
-      "description": "Visual/logic terrain type. WATER covers all water tiles (no separate COAST type in v4.10)."
+      "description": "Visual/logic terrain type (T1). WATER covers all water tiles including rivers."
+    },
+    "is_river": {
+      "type": "boolean",
+      "default": false,
+      "description": "River flag (R1). A river tile is WATER + is_river=true. No gameplay difference from regular water; used for generation/visuals."
     },
     "resource_type": {
       "type": [

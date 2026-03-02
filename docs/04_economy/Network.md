@@ -26,6 +26,12 @@ NetworkBonus% =
 - NetworkBonus% влияет на экономику (внутренняя формула доходов)
 - NetworkModifier = floor(NetworkBonus% / 10) добавляется к ОД
 
+### Стоимость инфраструктуры (канон)
+См. канон: `docs/04_economy/Infrastructure_Costs.md`
+
+- Road / Bridge / Port: стоимость в ОД + деньги
+- Bridge = ×2 стоимости дороги (и строится только на 1 WATER тайле между сушами)
+
 ## Повреждённые дороги (DamagedRoad)
 
 `DamagedRoad` — временный статус инфраструктуры (обычно от кибер-диверсии).

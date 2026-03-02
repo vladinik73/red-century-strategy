@@ -2,13 +2,14 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
-## tile.schema.json (v4.10)
+## tile.schema.json (v4.14)
 
 Назначение: формальная структура одной клетки карты (tile) для генерации/хранения match state.
 
 Ключевые поля:
 - coords: `x`, `y`
-- terrain: `terrain_base` (LAND/WATER), `terrain_type` (вода без разделения на COAST)
+- terrain: `terrain_base` (LAND/WATER), `terrain_type` (T1: PLAIN/FOREST/MOUNTAIN/DESERT/WATER)
+- `is_river`: boolean (WATER+is_river=true = river tile)
 - resources: `resource_type` (MONEY/SCIENCE), `resource_remaining`, `resource_yield_per_turn`, `harvest_started`, `harvest_owner_civ_id`
 - infrastructure: `road_level`, `road_owner_civ_id`, `road_damaged_turns_left`, `has_port`, `port_owner_civ_id`
 - city/territory: `city_id`, `territory_city_id`, `territory_owner_civ_id`
@@ -28,6 +29,10 @@
 - глобальных эффектов (например, «Сбой»).
 
 Файл: `schemas/player.schema.json`
+
+## unit.schema.json (v4.14)
+
+Схема типа юнита. Добавлено поле `sight` (per unit type).
 
 ## match.schema.json (v4.12)
 
