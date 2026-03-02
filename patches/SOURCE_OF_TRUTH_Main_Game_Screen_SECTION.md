@@ -1,0 +1,12 @@
+## Main Game Screen (MVP UI/UX) (v4.18)
+- Layout: верхний HUD + правая контекстная панель (юнит/город).
+- Active unit: подсветка клетки + карточка в правой панели.
+- HP: число над юнитом (без HP-bar); ≤30% — красным.
+- Move: подсвечиваются только клетки перемещения.
+- Attack: по клику на врага (без отдельной attack grid).
+- Status indicators: иконки на карте + дублирование в правой панели (Siege/Disruption/Integration/DamagedRoad).
+- Victory timers: показываются в HUD (компактно).
+- Minimap: отсутствует в MVP; навигация pan+zoom.
+- Event feed: только toast-уведомления, без постоянного лога.
+- End Turn: кнопка доступна всегда; можно нажать в любой момент; при AP=0 игрок может осматривать карту.
+- Канон: `docs/10_uiux/Main_Game_Screen.md`

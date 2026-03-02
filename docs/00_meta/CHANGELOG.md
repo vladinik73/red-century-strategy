@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.18 — Phase 4.11 (MVP UI/UX: Main Game Screen)
+
+- Добавлен канон основного экрана матча (HUD + правая контекстная панель).
+- Зафиксированы: выделение активного юнита, формат HP, движение/атака, статусы, победные таймеры в HUD.
+- MVP-ограничения: без миникарты, без постоянного event-log (только toast).
+- End Turn доступна всегда (можно нажать в любой момент); при AP=0 доступен обзор карты.
+
+---
+
+## v4.17 — Phase 4.10 (MVP Player Journey)
+- Добавлен канонический сценарий MVP и цепочка экранов: `docs/01_overview/MVP_Player_Journey.md`.
+- Зафиксированы: autosave policy (end of each civ turn), фиксированный порядок ходов (AI first, player last), сложности (Easy/Normal/Hard/God), целевая длительность матча (60–90 ходов), правило End Turn (manual).
+
+---
+
 ## v4.16 — Phase 4.9 (P1 constants & edge-cases)
 
 - Territory: зафиксирован `MaxTerritoryRadius = 5`; при достижении капа опция **Expand Territory** скрыта/disabled (выбор невозможен).

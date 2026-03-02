@@ -13,7 +13,7 @@
 | Раздел | Путь | Содержание |
 |--------|------|------------|
 | Meta | `docs/00_meta/` | SOURCE_OF_TRUTH, CHANGELOG, PROJECT_IDENTITY |
-| Обзор | `docs/01_overview/` | README — общее описание игры |
+| Обзор | `docs/01_overview/` | README, MVP_Player_Journey — общее описание игры и MVP сценарий |
 | Города | `docs/02_cities/` | City_Capture, City_Levels |
 | Мир и фракции | `docs/02_world_and_factions/` | Список цивилизаций |
 | Карта | `docs/03_map/` | Map_Generation, Visibility |
@@ -23,6 +23,6 @@
 | Юниты | `docs/07_units/` | Base_Units, Advanced_Units, Unique_Units_By_Faction |
 | Дипломатия | `docs/08_diplomacy/` | Victory_Rules, Diplomacy_and_Alliances |
 | ИИ | `docs/09_ai/` | AI_Spec_v1_0, Scoring_Model, Difficulty, Hidden_Civilization |
-| UI/UX | `docs/10_uiux/` | PvE_Web_Layout, City_UI, Unit_Actions, Unit_Interaction |
+| UI/UX | `docs/10_uiux/` | City_UI, PvE_Web_Layout, Unit_Actions, Unit_Interaction, Main_Game_Screen — интерфейс и UX-правила MVP |
 | Реплеи | `docs/11_replays/` | Replays_and_Observer |
 | Монетизация | `docs/12_monetization/` | Monetization |

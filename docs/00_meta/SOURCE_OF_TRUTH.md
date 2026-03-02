@@ -1,4 +1,4 @@
-# Source of Truth (v4.16 — Phase 4.9 P1 constants & edge-cases)
+# Source of Truth (v4.18 — Phase 4.11 MVP UI/UX: Main Game Screen)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -53,6 +53,28 @@
 - Бунт проверяется **до** начисления дохода.
 - Доход начисляется **до** расчёта ОД.
 - Победа проверяется **в конце каждого хода** (не раунда).
+
+## MVP Player Journey (v4.17)
+- Цепочка экранов (MVP): Home → New Game Setup → Loading/Briefing → Main Game → Victory/Defeat.
+- Continue: **автосейв в конце хода каждой цивилизации**, Continue загружает последний autosave.
+- Turn order (канон): порядок фиксированный; **ИИ ходят первыми, игрок ходит последним**.
+- AI difficulties (MVP): `Easy / Normal / Hard / God` (на MVP допускаются числовые модификаторы).
+- Target match length: **60–90 ходов**.
+- End Turn: ход игрока завершается **только кнопкой End Turn** (auto-end не используется).
+- Канон: `docs/01_overview/MVP_Player_Journey.md`
+
+## Main Game Screen (MVP UI/UX) (v4.18)
+- Layout: верхний HUD + правая контекстная панель (юнит/город).
+- Active unit: подсветка клетки + карточка в правой панели.
+- HP: число над юнитом (без HP-bar); ≤30% — красным.
+- Move: подсвечиваются только клетки перемещения.
+- Attack: по клику на врага (без отдельной attack grid).
+- Status indicators: иконки на карте + дублирование в правой панели (Siege/Disruption/Integration/DamagedRoad).
+- Victory timers: показываются в HUD (компактно).
+- Minimap: отсутствует в MVP; навигация pan+zoom.
+- Event feed: только toast-уведомления, без постоянного лога.
+- End Turn: кнопка доступна всегда; можно нажать в любой момент; при AP=0 игрок может осматривать карту.
+- Канон: `docs/10_uiux/Main_Game_Screen.md`
 
 ## Territory (v4.13)
 - У каждого города есть `TerritoryRadius`.

@@ -1,0 +1,1 @@
+- `docs/01_overview/MVP_Player_Journey.md` — MVP сценарий игрока и цепочка экранов (v4.17)
