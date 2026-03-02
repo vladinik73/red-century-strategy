@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/schemas/tile.schema.json",
+  "title": "Red Age Tile Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "x",
+    "y",
+    "terrain_base",
+    "terrain_type",
+    "visibility"
+  ],
+  "properties": {
+    "x": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Tile X coordinate (0..width-1)."
+    },
+    "y": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Tile Y coordinate (0..height-1)."
+    },
+    "terrain_base": {
+      "type": "string",
+      "enum": [
+        "LAND",
+        "WATER"
+      ],
+      "description": "Base terrain class. WATER tiles may host bridge-roads (road_level>0)."
+    },
+    "terrain_type": {
+      "type": "string",
+      "enum": [
+        "PLAIN",
+        "FOREST",
+        "HILL",
+        "MOUNTAIN",
+        "DESERT",
+        "TUNDRA",
+        "SWAMP",
+        "WATER"
+      ],
+      "description": "Visual/logic terrain type. WATER covers all water tiles (no separate COAST type in v4.10)."
+    },
+    "resource_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "MONEY",
+        "SCIENCE",
+        null
+      ],
+      "default": null,
+      "description": "Resource contained in this tile (if any)."
+    },
+    "resource_remaining": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Remaining resource stock on this tile."
+    },
+    "resource_yield_per_turn": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 2,
+      "description": "Per-turn extraction amount once harvesting has started."
+    },
+    "harvest_started": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether harvesting has been started on this tile."
+    },
+    "harvest_owner_civ_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "default": null,
+      "description": "Civ id that started harvesting (if started)."
+    },
+    "depleted_low_productivity": {
+      "type": "boolean",
+      "default": false,
+      "description": "After resource_remaining reaches 0, tile may switch to low productivity state."
+    },
+    "road_level": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "0 = no road. >=1 indicates road level. If terrain_base=WATER and road_level>0, this is a bridge-road."
+    },
+    "road_owner_civ_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "default": null,
+      "description": "Owner civ of the road on this tile, if any."
+    },
+    "road_damaged_turns_left": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2,
+      "default": 0,
+      "description": "DamagedRoad timer. 0 means not damaged."
+    },
+    "has_port": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether a port exists on this tile."
+    },
+    "port_owner_civ_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "default": null,
+      "description": "Owner civ of the port on this tile, if any."
+    },
+    "city_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null,
+      "description": "If this tile is the city center, city_id references the City entity."
+    },
+    "territory_city_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null,
+      "description": "City whose territory includes this tile (borders are city borders)."
+    },
+    "territory_owner_civ_id": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "default": null,
+      "description": "Civ that controls the territory of this tile (usually derived from territory_city_id)."
+    },
+    "visibility": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "integer",
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "description": "Per-civ visibility state (v4.9 2-state): 0=UNEXPLORED, 1=VISIBLE (permanent). Length = MaxCivs (=10)."
+    }
+  }
+}

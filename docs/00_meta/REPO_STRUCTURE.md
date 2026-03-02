@@ -4,6 +4,7 @@
 - `.claude/` — команды, чек-листы, workflows
 - `docs/` — спецификация
 - `schemas/` — схемы сущностей
+  - `schemas/tile.schema.json` — структура тайла карты (terrain/resources/roads/ports/territory/visibility).
 
 ## Навигация по docs/
 

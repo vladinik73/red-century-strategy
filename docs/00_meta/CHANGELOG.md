@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.10 — Phase 4.3 (Schema: Tile)
+
+- Добавлен `schemas/tile.schema.json` — каноническая структура тайла карты (terrain/resources/roads/ports/territory/visibility).
+- Зафиксирован `MaxCivs = 10` (слоты видимости).
+
+---
+
 ## v4.9 — Phase 4.2 (Visibility: Permanent Reveal)
 
 - Введена каноническая модель видимости **2-state**: `UNEXPLORED` / `VISIBLE` (fog-of-war отсутствует).
