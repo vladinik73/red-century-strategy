@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.27 — City Schema Rebuild
+
+- Rebuilt schemas/city.schema.json to match match.schema city object (removed has_port legacy)
+- Updated schemas/README.md coverage
+- Updated REPO_STRUCTURE.md to include key canonical docs
+
+---
+
 ## v4.26 — Phase X (P0 SOT Formula Sync)
 
 - SOT: AP formula includes TechAccelerationBonus (+1 AP if Science L4)

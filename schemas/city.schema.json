@@ -1,18 +1,87 @@
 {
-  "City": {
-    "id": "string",
-    "name": "string",
-    "level": "int",
-    "owner": "string|null",
-    "is_capital": "bool",
-    "is_integrated": "bool",
-    "integration_turns_left": "int",
-    "defense_level": "int",
-    "has_port": "bool",
-    "garrison_units": "int",
-    "max_garrison": "int",
-    "territory_tiles": [
-      "string"
-    ]
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Red Age City Schema (v4.27)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "city_id",
+    "x",
+    "y",
+    "owner_player_id",
+    "is_capital",
+    "level",
+    "defense_level",
+    "integration_turns_left",
+    "territory_tile_indices"
+  ],
+  "properties": {
+    "city_id": {
+      "type": "string",
+      "description": "Unique identifier for the city."
+    },
+    "x": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 79,
+      "description": "Tile X coordinate (city center)."
+    },
+    "y": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 79,
+      "description": "Tile Y coordinate (city center)."
+    },
+    "owner_player_id": {
+      "type": ["string", "null"],
+      "description": "Owner player ID. null = neutral city."
+    },
+    "is_capital": {
+      "type": "boolean",
+      "description": "True if this city is the capital of its civilization."
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "City level (1..5)."
+    },
+    "defense_level": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "Defense level (0..2)."
+    },
+    "integration_turns_left": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "Turns remaining until city is integrated after capture. 0 = integrated."
+    },
+    "sieged": {
+      "type": "boolean",
+      "description": "True if city is under siege."
+    },
+    "disruption_turns_left": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 2,
+      "description": "Turns remaining for Cyber Disruption effect. 0 = no disruption."
+    },
+    "territory_radius": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5,
+      "default": 1,
+      "description": "Chebyshev radius of this city's territory. Canon: start/min=1, MaxTerritoryRadius=5."
+    },
+    "territory_tile_indices": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 6399
+      },
+      "description": "Flat indices of tiles in this city's territory (y*80+x)."
+    }
   }
 }

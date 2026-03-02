@@ -2,6 +2,14 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
+## Список схем (v4.27)
+
+- `match.schema.json` — состояние партии (Match State, Canonical Container + replay-log)
+- `tile.schema.json` — структура тайла карты
+- `player.schema.json` — состояние игрока/цивилизации (Player State)
+- `unit.schema.json` — схема типа юнита
+- `city.schema.json` — объект города (выровнен с match.schema city object, v4.27)
+
 ## Schema Sync Notes (v4.22)
 
 - **match.schema / units**: `has_acted_this_turn: boolean` is canonical. Replaces legacy `has_moved` + `has_attacked`.
@@ -41,6 +49,12 @@
 ## unit.schema.json (v4.14)
 
 Схема типа юнита. Добавлено поле `sight` (per unit type).
+
+## city.schema.json (v4.27)
+
+Схема объекта города. Выровнена с match.schema city object (match.cities[]). Канон: `schemas/match.schema.json`.
+
+Ключевые поля: city_id, x, y, owner_player_id, is_capital, level, defense_level, integration_turns_left, territory_radius (1..5), territory_tile_indices.
 
 ## match.schema.json (v4.25.1)
 

@@ -1,4 +1,4 @@
-# Source of Truth (v4.26 — P0 SOT Formula Sync)
+# Source of Truth (v4.27 — City Schema Rebuild)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -74,6 +74,9 @@
 
 ### Sync note (v4.26)
 Формулы SOT обновлены: включены Economic L4 LogisticsMultiplier и Science L4 TechAccelerationBonus (введены в v4.24).
+
+### Schemas — sync notes (v4.27)
+- city.schema.json пересобран для соответствия match.schema city object; удалены legacy поля (has_port, garrison_units, max_garrison, is_integrated). Изменений геймплея нет.
 
 ## Elimination + Neutral Cities (v4.23)
 
