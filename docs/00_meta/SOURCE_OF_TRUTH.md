@@ -1,4 +1,4 @@
-# Source of Truth (v4.31 — Tile Identity + Specialization Placeholder)
+# Source of Truth (v4.32 — Build Bridge + Unit Schema)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -69,6 +69,9 @@
 ### Sync note (v4.31)
 - **Tile ownership:** tile.schema uses `*_owner_player_id` (string). Identity canon aligned.
 - **Specialization:** out of MVP (placeholder in City_Levels, City_UI; no effect in MVP build).
+
+### Sync note (v4.32)
+- **Build Bridge:** maps to BUILD_ROAD event with `is_bridge: true` in payload. No separate BUILD_BRIDGE event_type.
 
 ## Tech Tree Effects (v4.24)
 

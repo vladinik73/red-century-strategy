@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://example.com/schemas/tile.schema.json",
-  "title": "Red Age Tile Schema (v4.31)",
+  "title": "Red Age Tile Schema (v4.32)",
   "type": "object",
   "additionalProperties": false,
   "required": [

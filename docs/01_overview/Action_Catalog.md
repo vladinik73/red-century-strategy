@@ -1,4 +1,4 @@
-# Action Catalog (v4.30) — MVP
+# Action Catalog (v4.32) — MVP
 
 Канонический каталог действий игрока и соответствующих event types для replay-log.
 
@@ -64,7 +64,7 @@ Payload для каждого event_type строго типизирован в 
 | **Produce** | Интегрированный город, 1 юнит/ход/город | AP cost юнита | PRODUCE |
 | **Build Road** | Economic L1, тайл в территории | 1 ОД + 25 денег | BUILD_ROAD |
 | **Upgrade Road** | Economic L3 (L2), L5 (L3) | 1 ОД + 25 денег | UPGRADE_ROAD |
-| **Build Bridge** | Как дорога на 1 WATER тайле | 2 ОД + 50 денег | BUILD_ROAD (road_level=1 на воде) |
+| **Build Bridge** | 1 WATER тайл между сушами | 2 ОД + 50 денег | BUILD_ROAD (payload: is_bridge=true) |
 | **Build Port** | Economic L2, WATER в территории города | 3 ОД + 200 денег | BUILD_PORT |
 | **Upgrade Port** | Economic L5 для L3 | 2 ОД + 150 денег | UPGRADE_PORT |
 | **Upgrade City** | City level up за деньги | Деньги (см. City_Levels) | UPGRADE_CITY |
@@ -83,7 +83,7 @@ Payload для каждого event_type строго типизирован в 
 ### Payload specs (replay)
 
 - **PRODUCE:** `{ city_id, unit_type_id, spawned_unit_id }`
-- **BUILD_ROAD:** `{ tile_id, new_road_level }` — tile_id 0..6399
+- **BUILD_ROAD:** `{ tile_id, new_road_level }` — tile_id 0..6399. Опционально: `is_bridge` (true при постройке моста на 1 WATER тайле). Bridge restricted to 1-tile WATER between land; cost per bridge rule.
 - **UPGRADE_ROAD:** `{ tile_id, new_road_level }` — опционально: `old_road_level`
 - **BUILD_PORT:** `{ tile_id, new_port_level }`
 - **UPGRADE_PORT:** `{ tile_id, new_port_level }` — опционально: `old_port_level`
@@ -130,7 +130,7 @@ Payload для каждого event_type строго типизирован в 
 | Attack | ATTACK |
 | Serial Attack (per kill) | SERIAL_ATTACK |
 | Produce | PRODUCE |
-| Build Road / Bridge | BUILD_ROAD |
+| Build Road / Bridge | BUILD_ROAD (Bridge: is_bridge=true) |
 | Upgrade Road | UPGRADE_ROAD |
 | Build Port | BUILD_PORT |
 | Upgrade Port | UPGRADE_PORT |

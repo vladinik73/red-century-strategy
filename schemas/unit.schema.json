@@ -1,25 +1,71 @@
 {
-  "Unit": {
-    "id": "string",
-    "name": "string",
-    "faction": "string|null",
-    "hp_max": "int",
-    "hp_current": "int",
-    "damage": "int",
-    "range": "int",
-    "move": "int",
-    "ap_cost": "int",
-    "sight": {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/unit.schema.json",
+  "title": "Red Age Unit Type Schema (v4.32)",
+  "description": "Schema for unit type definitions (UnitType). NOT match units state — see match.schema units[].",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unit_type_id",
+    "name",
+    "domain",
+    "range",
+    "base_damage",
+    "base_max_hp",
+    "ap_cost",
+    "move"
+  ],
+  "properties": {
+    "unit_type_id": {
+      "type": "string",
+      "description": "Unique identifier for this unit type (matches match.schema unit_type_id)."
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the unit type."
+    },
+    "domain": {
+      "type": "string",
+      "enum": ["GROUND", "NAVAL", "AIR"],
+      "description": "Movement domain: ground, naval, or air."
+    },
+    "range": {
       "type": "integer",
       "minimum": 1,
-      "maximum": 4,
-      "description": "Unit sight range (v4.14). Default: Range=1 → Sight=1, Range≥2 → Sight=2."
+      "description": "Attack range (1 = melee, 2+ = ranged)."
     },
-    "tags": [
-      "string"
-    ],
-    "special": [
-      "string"
-    ]
+    "base_damage": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Base damage dealt per attack."
+    },
+    "base_max_hp": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum HP for units of this type."
+    },
+    "ap_cost": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Action points cost to produce this unit."
+    },
+    "move": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Base move points per turn."
+    },
+    "sight": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Visibility range. Optional; defaults by range if omitted."
+    },
+    "is_unique": {
+      "type": "boolean",
+      "description": "If true, faction-unique unit (one per faction)."
+    },
+    "unlock_tech": {
+      "type": ["string", "null"],
+      "description": "Tech branch+level required to unlock (e.g. MILITARY_L4), or null if base."
+    }
   }
 }

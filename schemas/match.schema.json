@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.30)",
+  "title": "Match State (v4.32)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -398,7 +398,7 @@
     },
     "events": {
       "type": "array",
-      "description": "Replay-log. Discriminated union by event_type (v4.30). Canon: docs/01_overview/Action_Catalog.md",
+      "description": "Replay-log. Discriminated union by event_type (v4.32). Canon: docs/01_overview/Action_Catalog.md",
       "items": { "$ref": "#/$defs/GameEvent" }
     }
   },
@@ -465,7 +465,7 @@
     "Event_PRODUCE": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "PRODUCE" }, "payload": { "$ref": "#/$defs/Payload_PRODUCE" } }, "required": ["event_type", "payload"] }] },
     "Payload_PRODUCE": { "type": "object", "additionalProperties": false, "required": ["city_id", "unit_type_id", "spawned_unit_id"], "properties": { "city_id": { "type": "string" }, "unit_type_id": { "type": "string" }, "spawned_unit_id": { "type": "string" } } },
     "Event_BUILD_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BUILD_ROAD" }, "payload": { "$ref": "#/$defs/Payload_BUILD_ROAD" } }, "required": ["event_type", "payload"] }] },
-    "Payload_BUILD_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_road_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "new_road_level": { "type": "integer", "minimum": 1, "maximum": 3 } } },
+    "Payload_BUILD_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_road_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "new_road_level": { "type": "integer", "minimum": 1, "maximum": 3 }, "is_bridge": { "type": "boolean", "default": false, "description": "When building on WATER tile (1-tile water between land), must be true. Bridge cost: 2 AP + 50 money." } } },
     "Event_UPGRADE_ROAD": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "UPGRADE_ROAD" }, "payload": { "$ref": "#/$defs/Payload_UPGRADE_ROAD" } }, "required": ["event_type", "payload"] }] },
     "Payload_UPGRADE_ROAD": { "type": "object", "additionalProperties": false, "required": ["tile_id", "new_road_level"], "properties": { "tile_id": { "type": "integer", "minimum": 0, "maximum": 6399 }, "old_road_level": { "type": "integer", "minimum": 1, "maximum": 2 }, "new_road_level": { "type": "integer", "minimum": 2, "maximum": 3 } } },
     "Event_BUILD_PORT": { "allOf": [{ "$ref": "#/$defs/EventBase" }, { "properties": { "event_type": { "const": "BUILD_PORT" }, "payload": { "$ref": "#/$defs/Payload_BUILD_PORT" } }, "required": ["event_type", "payload"] }] },

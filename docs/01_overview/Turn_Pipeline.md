@@ -1,4 +1,4 @@
-# Turn Pipeline (Canonical) — v4.28
+# Turn Pipeline (Canonical) — v4.32
 
 Этот документ задаёт строгий порядок фаз хода (turn order) для Red Age и является каноном для реализации core loop.
 

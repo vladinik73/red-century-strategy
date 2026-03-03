@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.32 — P0/P2 Prep Pack (Build Bridge + Unit Schema + Version Hygiene)
+
+- **Build Bridge mapping:** BUILD_BRIDGE is NOT a separate event_type. Build Bridge → BUILD_ROAD with `is_bridge: true` in payload. Payload_BUILD_ROAD adds optional `is_bridge` (default false).
+- **unit.schema.json:** Rebuilt as valid JSON Schema draft/2020-12. Defines UnitType (unit_type_id, name, domain, range, base_damage, base_max_hp, ap_cost, move; optional sight, is_unique, unlock_tech). P0 blocker removed.
+- **Version header alignment:** Action_Catalog, Turn_Pipeline, match/player/tile/city schemas bumped to v4.32.
+- SOT, schemas/README updated.
+
+---
+
 ## v4.31 — P1 Cleanup Pack (Tile Identity + Specialization Placeholder)
 
 - **tile.schema.json:** Identity refactor — harvest_owner_civ_id, road_owner_civ_id, port_owner_civ_id, territory_owner_civ_id → *_owner_player_id (string|null). Title v4.31.

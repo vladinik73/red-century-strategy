@@ -4,11 +4,11 @@
 - `.claude/` — команды, чек-листы, workflows
 - `docs/` — спецификация
 - `schemas/` — схемы сущностей
-  - `schemas/tile.schema.json` — структура тайла карты (v4.31; terrain/resources/roads/ports/territory/visibility; *_owner_player_id)
-  - `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.30)
-  - `schemas/match.schema.json` — состояние партии (Match State, Canonical Container + replay-log) (v4.30)
-  - `schemas/city.schema.json` — объект города (v4.27)
-  - `schemas/unit.schema.json` — схема типа юнита
+  - `schemas/tile.schema.json` — структура тайла карты (v4.32; terrain/resources/roads/ports/territory/visibility; *_owner_player_id)
+  - `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.32)
+  - `schemas/match.schema.json` — состояние партии (Match State, Canonical Container + replay-log) (v4.32)
+  - `schemas/city.schema.json` — объект города (v4.32)
+  - `schemas/unit.schema.json` — схема типа юнита UnitType (v4.32)
 
 ## Навигация по docs/
 

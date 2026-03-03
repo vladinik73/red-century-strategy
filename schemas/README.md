@@ -2,7 +2,7 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
-## Список схем (v4.31)
+## Список схем (v4.32)
 
 - `match.schema.json` — состояние партии (Match State, Canonical Container + replay-log)
 - `tile.schema.json` — структура тайла карты
@@ -18,7 +18,7 @@
 - **tile.schema / ports**: `port_level: 0..3` is canonical; `has_port` removed. `port_level >= 1` means port exists.
 - **tile.schema / roads**: `road_damaged_turns_left: 0..2` (max=2 enforced).
 
-## tile.schema.json (v4.31)
+## tile.schema.json (v4.32)
 
 Назначение: формальная структура одной клетки карты (tile) для генерации/хранения match state.
 
@@ -35,7 +35,7 @@
 - Мост — это дорога на WATER-тайле (`terrain_base=WATER` и `road_level>0`). Ограничение «мост можно строить только если между сушей 1 тайл воды» — правило геймплея (см. Map_Generation.md), не схема.
 - Видимость — permanent reveal (см. `docs/03_map/Visibility.md`).
 
-## player.schema.json (v4.30)
+## player.schema.json (v4.32)
 
 Схема состояния игрока/цивилизации (Player State), достаточная для:
 - расчёта экономики (money/science/stability),
@@ -47,17 +47,19 @@
 
 Файл: `schemas/player.schema.json`
 
-## unit.schema.json (v4.14)
+## unit.schema.json (v4.32)
 
-Схема типа юнита (unit type definition). Добавлено поле `sight` (per unit type). Файл: `schemas/unit.schema.json`.
+Схема определения типа юнита (UnitType). Не описывает состояние юнитов в match — см. match.schema units[].
 
-## city.schema.json (v4.27)
+Ключевые поля: unit_type_id, name, domain (GROUND|NAVAL|AIR), range, base_damage, base_max_hp, ap_cost, move; опционально: sight, is_unique, unlock_tech. Файл: `schemas/unit.schema.json`.
+
+## city.schema.json (v4.32)
 
 Схема объекта города. Выровнена с match.schema city object (match.cities[]). Канон: `schemas/match.schema.json`. Файл: `schemas/city.schema.json`.
 
 Ключевые поля: city_id, x, y, owner_player_id, is_capital, level, defense_level, integration_turns_left, territory_radius (1..5), territory_tile_indices.
 
-## match.schema.json (v4.30)
+## match.schema.json (v4.32)
 
 Canonical State Container для состояния партии (полный game state) + `events[]` как replay-log.
 
@@ -68,7 +70,7 @@ Canonical State Container для состояния партии (полный g
 - Победа: отдельный раздел `victory`
 - Только живые юниты (история — в `events[]`)
 
-### events[] (v4.30) — discriminated union replay-log
+### events[] (v4.32) — discriminated union replay-log
 
 - GameEvent: `oneOf` с 28 вариантами (Event_MOVE … Event_HIDDEN_CIV_SPAWN), включая CYBER_DISRUPT, CYBER_DAMAGE_ROAD.
 - EventBase: `event_id`, `round_index`, `civ_turn_index`, `acting_player_id`, `event_type`, `payload`; опционально `seq`; `turn_index` deprecated.
