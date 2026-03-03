@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.30 — P1 Diplomacy Canon (authoritative match-level only)
+
+- **player.schema:** Removed diplomacy section (relations, other_player_id, state, cooldown, min_alliance_turns). Player schema no longer stores diplomacy.
+- **match.diplomacy:** Sole source of truth for diplomacy state. `relations[]` uses player_id keys (a_player_id, b_player_id).
+- Docs/SOT synced: Diplomacy Canon note in Action_Catalog, SOT section, schemas/README.
+
+---
+
 ## v4.29 — Identity Canon (player_id ↔ civ_id)
 
 - **EventBase:** `acting_civ_id` (int 0..9) заменён на `acting_player_id` (string).

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "player.state.schema (v4.26)",
+  "title": "player.state.schema (v4.30)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,7 +12,6 @@
     "ap_current",
     "ap_income_last_turn",
     "tech_unlocked",
-    "diplomacy",
     "victory_timers",
     "effects"
   ],
@@ -58,52 +57,6 @@
         "type": "string"
       },
       "uniqueItems": true
-    },
-    "diplomacy": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "relations"
-      ],
-      "properties": {
-        "relations": {
-          "type": "array",
-          "description": "Отношения с другими игроками.",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "other_player_id",
-              "state",
-              "cooldown_turns_left",
-              "min_alliance_turns_left"
-            ],
-            "properties": {
-              "other_player_id": {
-                "type": "string"
-              },
-              "state": {
-                "type": "string",
-                "enum": [
-                  "WAR",
-                  "NEUTRAL",
-                  "ALLIANCE"
-                ]
-              },
-              "cooldown_turns_left": {
-                "type": "integer",
-                "minimum": 0,
-                "description": "Cooldown после разрыва альянса (в ходах)."
-              },
-              "min_alliance_turns_left": {
-                "type": "integer",
-                "minimum": 0,
-                "description": "Минимальная длительность союза до разрешения разрыва (в ходах)."
-              }
-            }
-          }
-        }
-      }
     },
     "victory_timers": {
       "type": "object",

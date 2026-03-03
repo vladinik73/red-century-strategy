@@ -2,7 +2,7 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
-## Список схем (v4.29)
+## Список схем (v4.30)
 
 - `match.schema.json` — состояние партии (Match State, Canonical Container + replay-log)
 - `tile.schema.json` — структура тайла карты
@@ -35,14 +35,15 @@
 - Мост — это дорога на WATER-тайле (`terrain_base=WATER` и `road_level>0`). Ограничение «мост можно строить только если между сушей 1 тайл воды» — правило геймплея (см. Map_Generation.md), не схема.
 - Видимость — permanent reveal (см. `docs/03_map/Visibility.md`).
 
-## player.schema.json (v4.11)
+## player.schema.json (v4.30)
 
 Схема состояния игрока/цивилизации (Player State), достаточная для:
 - расчёта экономики (money/science/stability),
 - выдачи и учёта ОД/AP,
-- дипломатии (WAR/NEUTRAL/ALLIANCE + cooldown),
 - победных таймеров,
 - глобальных эффектов (например, «Сбой»).
+
+**Diplomacy:** НЕ хранится в player schema. Канон: `match.diplomacy.relations[]` (v4.30).
 
 Файл: `schemas/player.schema.json`
 
@@ -56,18 +57,18 @@
 
 Ключевые поля: city_id, x, y, owner_player_id, is_capital, level, defense_level, integration_turns_left, territory_radius (1..5), territory_tile_indices.
 
-## match.schema.json (v4.29)
+## match.schema.json (v4.30)
 
 Canonical State Container для состояния партии (полный game state) + `events[]` как replay-log.
 
 Ключевые решения:
 - Карта: `tiles_flat` длиной 6400, индекс `i = y*80 + x`
 - Отдельные массивы `cities[]` и `units[]`
-- Дипломатия: список отношений `relations[]` (state/timers)
+- **Дипломатия:** единственный источник истины — `match.diplomacy.relations[]` (a_player_id, b_player_id, state, timers). Player schema не хранит diplomacy.
 - Победа: отдельный раздел `victory`
 - Только живые юниты (история — в `events[]`)
 
-### events[] (v4.29) — discriminated union replay-log
+### events[] (v4.30) — discriminated union replay-log
 
 - GameEvent: `oneOf` с 28 вариантами (Event_MOVE … Event_HIDDEN_CIV_SPAWN), включая CYBER_DISRUPT, CYBER_DAMAGE_ROAD.
 - EventBase: `event_id`, `round_index`, `civ_turn_index`, `acting_player_id`, `event_type`, `payload`; опционально `seq`; `turn_index` deprecated.

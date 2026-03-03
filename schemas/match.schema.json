@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.29)",
+  "title": "Match State (v4.30)",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -398,7 +398,7 @@
     },
     "events": {
       "type": "array",
-      "description": "Replay-log. Discriminated union by event_type (v4.29). Canon: docs/01_overview/Action_Catalog.md",
+      "description": "Replay-log. Discriminated union by event_type (v4.30). Canon: docs/01_overview/Action_Catalog.md",
       "items": { "$ref": "#/$defs/GameEvent" }
     }
   },

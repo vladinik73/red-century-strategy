@@ -1,4 +1,4 @@
-# Source of Truth (v4.29 — Identity Canon: player_id)
+# Source of Truth (v4.30 — Diplomacy Canon)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -61,6 +61,10 @@
 - Канон: `schemas/match.schema.json`, `docs/01_overview/Action_Catalog.md`.
 - Event types: MOVE, ATTACK, SERIAL_ATTACK, PRODUCE, BUILD_ROAD, UPGRADE_ROAD, BUILD_PORT, UPGRADE_PORT, UPGRADE_CITY, HEAL, DISBAND, CAPTURE_CITY, CYBER_DISRUPT, CYBER_DAMAGE_ROAD, START_HARVEST, REPAIR_ROAD, BOOST_SCIENCE, BOOST_STABILITY, TECH_UNLOCK, DECLARE_WAR, MAKE_PEACE, FORM_ALLIANCE, BREAK_ALLIANCE, REBELLION, ELIMINATION, VICTORY_TRIGGER, VICTORY_COMPLETE, HIDDEN_CIV_SPAWN.
 - **Identity canonical:** `player_id` (string) используется в match state и replay events. `civ_id` не используется в event layer.
+
+### Diplomacy Canon (v4.30)
+- **Diplomacy canonical storage:** `match.diplomacy.relations[]` only. Match-level relations are the sole source of truth.
+- **Player schema:** does NOT contain diplomacy relations. Per-player diplomacy duplication removed.
 
 ## Tech Tree Effects (v4.24)
 

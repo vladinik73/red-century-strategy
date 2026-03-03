@@ -1,8 +1,10 @@
-# Action Catalog (v4.29) — MVP
+# Action Catalog (v4.30) — MVP
 
 Канонический каталог действий игрока и соответствующих event types для replay-log.
 
 Канон: `schemas/match.schema.json` (events[]), `docs/01_overview/Turn_Pipeline.md`.
+
+**Diplomacy Canon:** Authoritative diplomacy state stored in `match.diplomacy.relations[]`. Player schema does NOT store diplomacy.
 
 ---
 
@@ -91,7 +93,7 @@ Payload для каждого event_type строго типизирован в 
 - **START_HARVEST:** `{ tile_id }`
 - **REPAIR_ROAD:** `{ tile_id }`
 - **TECH_UNLOCK:** `{ branch: "MILITARY"|"ECONOMIC"|"SCIENCE", level: 1..5 }`
-- **DECLARE_WAR:** `{ from_player_id, to_player_id }`
+- **DECLARE_WAR:** `{ from_player_id, to_player_id }` — updates `match.diplomacy.relations[]`
 - **MAKE_PEACE:** `{ from_player_id, to_player_id }`
 - **FORM_ALLIANCE:** `{ from_player_id, to_player_id }`
 - **BREAK_ALLIANCE:** `{ from_player_id, to_player_id }`
