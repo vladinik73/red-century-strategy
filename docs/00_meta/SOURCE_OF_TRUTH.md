@@ -1,4 +1,4 @@
-# Source of Truth (v4.30 — Diplomacy Canon)
+# Source of Truth (v4.31 — Tile Identity + Specialization Placeholder)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -65,6 +65,10 @@
 ### Diplomacy Canon (v4.30)
 - **Diplomacy canonical storage:** `match.diplomacy.relations[]` only. Match-level relations are the sole source of truth.
 - **Player schema:** does NOT contain diplomacy relations. Per-player diplomacy duplication removed.
+
+### Sync note (v4.31)
+- **Tile ownership:** tile.schema uses `*_owner_player_id` (string). Identity canon aligned.
+- **Specialization:** out of MVP (placeholder in City_Levels, City_UI; no effect in MVP build).
 
 ## Tech Tree Effects (v4.24)
 

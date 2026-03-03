@@ -2,7 +2,7 @@
 
 Здесь можно хранить JSON-черновики сущностей для синхронизации между docs и кодом.
 
-## Список схем (v4.30)
+## Список схем (v4.31)
 
 - `match.schema.json` — состояние партии (Match State, Canonical Container + replay-log)
 - `tile.schema.json` — структура тайла карты
@@ -18,7 +18,7 @@
 - **tile.schema / ports**: `port_level: 0..3` is canonical; `has_port` removed. `port_level >= 1` means port exists.
 - **tile.schema / roads**: `road_damaged_turns_left: 0..2` (max=2 enforced).
 
-## tile.schema.json (v4.14)
+## tile.schema.json (v4.31)
 
 Назначение: формальная структура одной клетки карты (tile) для генерации/хранения match state.
 
@@ -26,9 +26,9 @@
 - coords: `x`, `y`
 - terrain: `terrain_base` (LAND/WATER), `terrain_type` (T1: PLAIN/FOREST/MOUNTAIN/DESERT/WATER)
 - `is_river`: boolean (WATER+is_river=true = river tile)
-- resources: `resource_type` (MONEY/SCIENCE), `resource_remaining`, `resource_yield_per_turn`, `harvest_started`, `harvest_owner_civ_id`
-- infrastructure: `road_level`, `road_owner_civ_id`, `road_damaged_turns_left`, `port_level`, `port_owner_civ_id`
-- city/territory: `city_id`, `territory_city_id`, `territory_owner_civ_id`
+- resources: `resource_type` (MONEY/SCIENCE), `resource_remaining`, `resource_yield_per_turn`, `harvest_started`, `harvest_owner_player_id`
+- infrastructure: `road_level`, `road_owner_player_id`, `road_damaged_turns_left`, `port_level`, `port_owner_player_id`
+- city/territory: `city_id`, `territory_city_id`, `territory_owner_player_id`
 - visibility: `visibility[10]` (0=UNEXPLORED, 1=VISIBLE)
 
 Примечания:
@@ -49,11 +49,11 @@
 
 ## unit.schema.json (v4.14)
 
-Схема типа юнита. Добавлено поле `sight` (per unit type).
+Схема типа юнита (unit type definition). Добавлено поле `sight` (per unit type). Файл: `schemas/unit.schema.json`.
 
 ## city.schema.json (v4.27)
 
-Схема объекта города. Выровнена с match.schema city object (match.cities[]). Канон: `schemas/match.schema.json`.
+Схема объекта города. Выровнена с match.schema city object (match.cities[]). Канон: `schemas/match.schema.json`. Файл: `schemas/city.schema.json`.
 
 Ключевые поля: city_id, x, y, owner_player_id, is_capital, level, defense_level, integration_turns_left, territory_radius (1..5), territory_tile_indices.
 

@@ -48,9 +48,8 @@
 - Выбор **не строит порт автоматически**: он только включает возможность строить/апгрейдить порт как инфраструктуру.
 - Стоимость постройки/апгрейда порта — в `Infrastructure_Costs.md`.
 
-4) **Specialization (если включено каноном City_Levels.md)**
-- Показывать как «выбор специализации города» (детали — согласно `City_Levels.md`).
-- Если специализации пока не специфицированы — показывать как placeholder с текстом «TBD (product)».
+4) **Specialization — out of MVP**
+- Specialization — out of MVP, placeholder (no effect in MVP build). Показывать как placeholder с текстом «TBD (product)».
 
 ### Правила выбора
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.31 — P1 Cleanup Pack (Tile Identity + Specialization Placeholder)
+
+- **tile.schema.json:** Identity refactor — harvest_owner_civ_id, road_owner_civ_id, port_owner_civ_id, territory_owner_civ_id → *_owner_player_id (string|null). Title v4.31.
+- **schemas/README.md:** Tile section sync (*_owner_player_id), version v4.31; city/unit sections clarified.
+- **REPO_STRUCTURE.md:** Schema versions (player v4.30, match v4.30, tile v4.31, city v4.27, unit); Meta (templates/audits) subsection.
+- **Specialization:** City_Levels, City_UI — out of MVP placeholder (no effect in MVP build). SOT sync note.
+
+---
+
 ## v4.30 — P1 Diplomacy Canon (authoritative match-level only)
 
 - **player.schema:** Removed diplomacy section (relations, other_player_id, state, cooldown, min_alliance_turns). Player schema no longer stores diplomacy.
