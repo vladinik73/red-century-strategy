@@ -4,6 +4,69 @@
 
 ---
 
+## AI Turn Execution (MVP) (v4.33)
+
+Канон: `docs/01_overview/Turn_Pipeline.md`, `docs/01_overview/Action_Catalog.md`, `docs/04_economy/Action_Points.md`. Инварианты: **1 действие на юнит** (`has_acted_this_turn`), эмиссия событий в `events[]` по типам из Action_Catalog, AP costs по Infrastructure_Costs.
+
+### Inputs
+- `match` — полное состояние партии (match.schema)
+- `player_id` — ID цивилизации, чей ход
+- `available_AP` — текущие ОД (из match/player)
+- `known_enemies` — цивилизации в WAR (из match.diplomacy.relations)
+- `goals` — целевые EnemyScore/ThreatScore для атаки (пороги по сложности, см. §4)
+
+### Step-by-step loop (pseudocode)
+
+```
+1. DIPLOMACY PHASE
+   - For each NEUTRAL civ: compute EnemyScore; if EnemyScore >= AttackThreshold → DECLARE_WAR (emit DECLARE_WAR event)
+   - For each WAR civ: compute WarScore; if WarScore < PeaceThreshold → MAKE_PEACE (emit MAKE_PEACE event)
+   - For each potential ally: compute AllyScore; if AllyScore >= FormThreshold AND alliances < 2 → FORM_ALLIANCE (emit FORM_ALLIANCE)
+   - For each ally: compute BreakScore; if BreakScore >= BreakThreshold AND min_alliance_turns_left == 0 → BREAK_ALLIANCE (emit BREAK_ALLIANCE)
+   - Tie-break: stable sort by player_id string
+
+2. STRATEGIC OBJECTIVES
+   - Compute ThreatScore for each enemy; identify primary threat
+   - Choose objective set: { DEFEND_CAPITAL | CAPTURE_CITY | DISRUPT_ROADS | TECH_PUSH }
+   - DEFEND_CAPITAL if capital threatened (enemy units adjacent)
+   - CAPTURE_CITY if CityPriority high and EnemyScore >= threshold
+   - DISRUPT_ROADS if cyber unit available and enemy network valuable
+   - TECH_PUSH if science lead and tech victory viable
+
+3. AP BUDGET ALLOCATION (priority order)
+   - emergency_defense: if DEFEND_CAPITAL, produce units in threatened cities (cost: unit ap_cost per produce)
+   - economy: if safe, BUILD_ROAD / BUILD_PORT / UPGRADE_ROAD / UPGRADE_PORT (costs per Infrastructure_Costs)
+   - boost: if conditions met, BOOST_SCIENCE (1 AP) or BOOST_STABILITY (1 AP + money)
+   - Reserve AP for tactical phase (movement free; attacks free; heal 1 AP; cyber 1 AP)
+   - Apply difficulty modifier to AP usage (Easy 75%, Normal 92%, Hard 98%, God 100%)
+
+4. TACTICAL PHASE
+   - units_to_act = filter(units, owner_player_id == player_id AND has_acted_this_turn == false)
+   - Sort units_to_act by stable order (e.g. unit_id lexicographic)
+   - For each unit in units_to_act:
+     a) If HEAL eligible (hp < max_hp) and AP >= 1 and heal valuable → HEAL (emit HEAL, set has_acted_this_turn = true)
+     b) Else if DISBAND valuable (low hp, refund useful) → DISBAND (emit DISBAND)
+     c) Else: choose target (enemy unit or city) using EnemyScore/CityPriority; pathfind; MOVE to reach (emit MOVE)
+     d) If adjacent to enemy and attack valuable → ATTACK (emit ATTACK); respect 1 action per unit
+     e) If cyber unit and DISRUPT_ROADS objective: CYBER_DAMAGE_ROAD (1 AP, emit CYBER_DAMAGE_ROAD) if valuable tile
+     f) Else if cyber unit and city target: CYBER_DISRUPT (1 AP, emit CYBER_DISRUPT) if city not capital
+     g) Set has_acted_this_turn = true after action
+   - Respect max attacks per turn (Easy 3, Normal 5, Hard 7, God 9)
+
+5. END TURN
+   - Emit all queued events to match.events[] (EventBase: event_id, round_index, civ_turn_index, acting_player_id, event_type, payload)
+   - Ensure invariants: no unit with has_acted_this_turn == false remains with valid action
+   - Pass turn to next player_id in turn_order
+```
+
+### Deterministic tie-break rules
+- Unit action order: sort by `unit_id` string ascending
+- Target choice: if multiple equal EnemyScore, choose by `city_id` or `unit_id` ascending
+- Diplomacy order: sort civs by `player_id` ascending before evaluating
+- Tile choice (road/port): sort by tile index ascending
+
+---
+
 ## 1. LeaderIndex
 
 LeaderIndex =

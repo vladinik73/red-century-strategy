@@ -1,4 +1,4 @@
-# Source of Truth (v4.32 — Build Bridge + Unit Schema)
+# Source of Truth (v4.34 — Map Generation Algorithm)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -72,6 +72,12 @@
 
 ### Sync note (v4.32)
 - **Build Bridge:** maps to BUILD_ROAD event with `is_bridge: true` in payload. No separate BUILD_BRIDGE event_type.
+
+### AI execution (v4.33)
+- **AI turn execution:** pseudocode added in `docs/09_ai/AI_Spec_v1_0.md` (section «AI Turn Execution (MVP)»). Canonical path for implementable AI logic.
+
+### Map generation (v4.34)
+- **Map generation algorithm:** pseudocode added in `docs/03_map/Map_Generation.md` (section «Generation Algorithm (MVP)»). Seed handling, landmask (noise + floodfill), terrain assignment, rivers, city placement (50–100, capitals 10+ apart), neutral params v4.23, validation with retry.
 
 ## Tech Tree Effects (v4.24)
 

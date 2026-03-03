@@ -1,5 +1,20 @@
 # Changelog
 
+## v4.34 — P0 Docs (Map Generation Algorithm)
+
+- **Map_Generation.md:** Added section «Generation Algorithm (MVP) (v4.34)» — pseudocode: seed handling (deterministic), landmask (noise threshold + floodfill, 4–6 continents, 5–10 islands), terrain assignment (PLAIN/FOREST/MOUNTAIN/DESERT/WATER), rivers (is_river on WATER), city placement (50–100, min 2 tiles apart, capitals 10+ apart, China 7+ from edge), neutral params (level=1, defense=0, territory_radius=1), validation with seed+1 retry.
+- SOT: Map generation canonical path note.
+
+---
+
+## v4.33 — P0 Docs (AI Turn Execution)
+
+- **AI_Spec_v1_0.md:** Added section «AI Turn Execution (MVP) (v4.33)» — step-by-step pseudocode: diplomacy phase, strategic objectives, AP budget allocation, tactical phase (units, has_acted_this_turn, 1 action per unit), end turn. Deterministic tie-break rules for reproducible replays.
+- References: Turn_Pipeline, Action_Catalog, Action_Points, event types, AP costs, has_acted_this_turn.
+- SOT: AI execution canonical path note.
+
+---
+
 ## v4.32 — P0/P2 Prep Pack (Build Bridge + Unit Schema + Version Hygiene)
 
 - **Build Bridge mapping:** BUILD_BRIDGE is NOT a separate event_type. Build Bridge → BUILD_ROAD with `is_bridge: true` in payload. Payload_BUILD_ROAD adds optional `is_bridge` (default false).
