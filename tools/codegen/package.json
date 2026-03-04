@@ -1,5 +1,12 @@
 {
   "name": "@redage/codegen",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "codegen": "node schema-to-ts.mjs"
+  },
+  "dependencies": {
+    "glob": "^11.0.0",
+    "json-schema-to-typescript": "^14.1.0"
+  }
 }

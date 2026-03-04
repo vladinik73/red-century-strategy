@@ -9,7 +9,7 @@
     "test": "turbo test",
     "build": "turbo build",
     "dev": "turbo dev",
-    "codegen": "node tools/codegen/schema-to-ts.mjs"
+    "codegen": "pnpm -C tools/codegen run codegen"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
