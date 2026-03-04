@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Red Age City Schema (v4.32)",
+  "title": "Red Age City Schema (v4.42)",
   "type": "object",
   "additionalProperties": false,
   "required": [

@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.42 — Schema Draft Alignment + Version Title Sync
+
+- **tile.schema.json:** `$schema` aligned from draft-07 to `https://json-schema.org/draft/2020-12/schema`. No structural changes; meta compatibility only.
+- **Schema titles:** all 5 schemas (match, player, tile, city, unit) bumped to v4.42.
+- **SOT, schemas/README:** version references updated to v4.42.
+- No gameplay mechanics, enums, constraints, or data shapes changed. Spec-only hardening.
+
+---
+
 ## v4.41 — Spec Hardening (P2 Resolution)
 
 - **Victory type:** Clarified as derived value (not stored in schema). Source: VICTORY_COMPLETE event. Display values: MILITARY | ECONOMIC | TECHNOLOGICAL | ALLIANCE. Updated Endgame_Screens.md, Victory_Rules.md.

@@ -4,17 +4,17 @@
 - `.claude/` — команды, чек-листы, workflows
 - `docs/` — спецификация
 - `schemas/` — схемы сущностей
-  - `schemas/tile.schema.json` — структура тайла карты (v4.32; terrain/resources/roads/ports/territory/visibility; *_owner_player_id)
-  - `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.32)
-  - `schemas/match.schema.json` — состояние партии (Match State, Canonical Container + replay-log) (v4.32)
-  - `schemas/city.schema.json` — объект города (v4.32)
-  - `schemas/unit.schema.json` — схема типа юнита UnitType (v4.32)
+  - `schemas/tile.schema.json` — структура тайла карты (v4.42; draft/2020-12; terrain/resources/roads/ports/territory/visibility; *_owner_player_id)
+  - `schemas/player.schema.json` — состояние игрока/цивилизации (Player State) (v4.42)
+  - `schemas/match.schema.json` — состояние партии (Match State, Canonical Container + replay-log) (v4.42)
+  - `schemas/city.schema.json` — объект города (v4.42)
+  - `schemas/unit.schema.json` — схема типа юнита UnitType (v4.42)
 
 ## Навигация по docs/
 
 | Раздел | Путь | Содержание |
 |--------|------|------------|
-| Meta | `docs/00_meta/` | SOURCE_OF_TRUTH, CHANGELOG, PROJECT_IDENTITY, SPEC_LOCK_REPORT_v4.41, REPO_CLEANUP_REPORT_v4.41 |
+| Meta | `docs/00_meta/` | SOURCE_OF_TRUTH, CHANGELOG, PROJECT_IDENTITY, SPEC_LOCK_REPORT_v4.41, REPO_CLEANUP_REPORT_v4.41, SPEC_INTEGRITY_REPORT_v4.42, REPO_CLEANUP_REPORT_v4.42, PATCH_REPORT_v4.42 |
 | Meta (templates/audits) | `docs/00_meta/` | CURSOR_WORKFLOW, CURSOR_TASK_TEMPLATE, ENGINEERING_GUARDRAILS, CONSISTENCY_REPORT_TEMPLATE, GAME_DESIGN_AUDIT_2026_03, GLOBAL_AUDIT_v4_21, SOURCE_OF_TRUTH_PATCH_PHASE2_1, CLAUDE_CODE_USER_GUIDE |
 | Обзор | `docs/01_overview/` | README, Action_Catalog, Elimination_Rules, MVP_Player_Journey, Turn_Pipeline, Start_Conditions |
 | Города | `docs/02_cities/` | City_Capture, City_Levels |

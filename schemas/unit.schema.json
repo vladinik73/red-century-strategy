@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/schemas/unit.schema.json",
-  "title": "Red Age Unit Type Schema (v4.32)",
+  "title": "Red Age Unit Type Schema (v4.42)",
   "description": "Schema for unit type definitions (UnitType). NOT match units state — see match.schema units[].",
   "type": "object",
   "additionalProperties": false,

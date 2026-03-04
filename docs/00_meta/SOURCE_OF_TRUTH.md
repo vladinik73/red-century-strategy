@@ -1,4 +1,4 @@
-# Source of Truth (v4.41 — Spec Hardening)
+# Source of Truth (v4.42 — Schema Draft Alignment)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -90,6 +90,10 @@
 - **Victory type:** производное значение из VICTORY_COMPLETE event; не хранится в match.victory.per_player. Display: MILITARY | ECONOMIC | TECHNOLOGICAL | ALLIANCE. Канон: `Victory_Rules.md`, `Endgame_Screens.md`.
 - **Tech key format:** `player.tech_unlocked` — массив строк, ключ `{branch}_{level}` (lowercase). Пример: `["military_1", "science_2"]`. Соответствует TECH_UNLOCK payload. Канон: `Tech_Progression.md`, `player.schema.json`.
 - **Proposal queue:** спецификация в `Diplomacy_UI.md` §10. Хранилище `match.diplomacy.proposals[]` — опционально при реализации; поля только в docs, не в schema (no drift).
+
+### Schema Draft Alignment (v4.42)
+- **tile.schema.json:** `$schema` aligned from draft-07 to draft/2020-12 (like other schemas). No structural or behavioral changes.
+- **Schema titles:** all schemas (match, player, tile, city, unit) bumped to v4.42. Spec-only hardening; no rules/mechanics changes.
 
 ## Tech Tree Effects (v4.24)
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Match State (v4.32)",
+  "title": "Match State (v4.42)",
   "type": "object",
   "additionalProperties": false,
   "required": [
