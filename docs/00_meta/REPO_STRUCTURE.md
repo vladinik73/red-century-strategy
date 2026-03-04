@@ -14,7 +14,7 @@
 
 | Раздел | Путь | Содержание |
 |--------|------|------------|
-| Meta | `docs/00_meta/` | SOURCE_OF_TRUTH, CHANGELOG, PROJECT_IDENTITY |
+| Meta | `docs/00_meta/` | SOURCE_OF_TRUTH, CHANGELOG, PROJECT_IDENTITY, SPEC_LOCK_REPORT_v4.41, REPO_CLEANUP_REPORT_v4.41 |
 | Meta (templates/audits) | `docs/00_meta/` | CURSOR_WORKFLOW, CURSOR_TASK_TEMPLATE, ENGINEERING_GUARDRAILS, CONSISTENCY_REPORT_TEMPLATE, GAME_DESIGN_AUDIT_2026_03, GLOBAL_AUDIT_v4_21, SOURCE_OF_TRUTH_PATCH_PHASE2_1, CLAUDE_CODE_USER_GUIDE |
 | Обзор | `docs/01_overview/` | README, Action_Catalog, Elimination_Rules, MVP_Player_Journey, Turn_Pipeline, Start_Conditions |
 | Города | `docs/02_cities/` | City_Capture, City_Levels |

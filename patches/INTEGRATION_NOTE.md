@@ -1,3 +1,4 @@
+# LEGACY — obsolete; match.schema.v4.12.json removed (canonical: schemas/match.schema.json v4.32)
+
 Заметка:
-- Файл `patches/match.schema.v4.12.json` содержит полный канонический JSON Schema.
-- Интеграция: заменить содержимое `schemas/match.schema.json` этим файлом (1:1).
+- ~~Файл `patches/match.schema.v4.12.json`~~ — удалён. Канон: `schemas/match.schema.json` (v4.32).
