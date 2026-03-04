@@ -7,3 +7,9 @@ build/
 .turbo/
 .pnpm-store/
 *.log
+
+# Test build artifacts (Vitest/TS emit)
+**/tests/*.js
+**/tests/*.js.map
+**/tests/*.d.ts
+**/tests/*.d.ts.map
