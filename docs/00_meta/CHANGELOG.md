@@ -1,5 +1,18 @@
 # Changelog
 
+## v5A.0 — Phase 5A Bootstrap (monorepo skeleton)
+
+- **Monorepo:** pnpm + turborepo; packages: core, ai, web, server; tools/codegen (stub).
+- **core:** TypeScript strict, placeholder types (MatchState, GameEvent), validateMatchState stub, createSeededRng (mulberry32), hashState (FNV-1a), stableStringify.
+- **ai:** Placeholder decideTurn() returning [].
+- **web:** Vite + React 19 + PixiJS v8 + Zustand; App shows "Red Age — Phase 5A Bootstrap" + state hash + placeholder grid.
+- **server:** Placeholder startServer() with TODO.
+- **codegen:** schema-to-ts.mjs stub (TODO).
+- **Docs:** PHASE5A_BOOTSTRAP.md, AI_ROLES.md; REPO_STRUCTURE updated.
+- No gameplay logic; bootstrap only.
+
+---
+
 ## v4.42 — Schema Draft Alignment + Version Title Sync
 
 - **tile.schema.json:** `$schema` aligned from draft-07 to `https://json-schema.org/draft/2020-12/schema`. No structural changes; meta compatibility only.

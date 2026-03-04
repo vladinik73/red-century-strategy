@@ -1,2 +1,9 @@
 .claude/
 .DS_Store
+
+node_modules/
+dist/
+build/
+.turbo/
+.pnpm-store/
+*.log

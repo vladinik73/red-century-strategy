@@ -1,0 +1,21 @@
+{
+  "name": "red-century-strategy",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "format": "prettier -w .",
+    "lint": "eslint .",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "codegen": "node tools/codegen/schema-to-ts.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "eslint": "^9.16.0",
+    "prettier": "^3.4.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.0"
+  }
+}

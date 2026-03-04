@@ -2,6 +2,8 @@
 
 - `CLAUDE.md` — корневые инструкции
 - `.claude/` — команды, чек-листы, workflows
+- `packages/` — монорепо пакеты (core, ai, web, server)
+- `tools/` — утилиты (codegen)
 - `docs/` — спецификация
 - `schemas/` — схемы сущностей
   - `schemas/tile.schema.json` — структура тайла карты (v4.42; draft/2020-12; terrain/resources/roads/ports/territory/visibility; *_owner_player_id)
