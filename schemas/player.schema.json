@@ -52,7 +52,7 @@
     },
     "tech_unlocked": {
       "type": "array",
-      "description": "Список открытых технологий (ключи из Tech_Tree).",
+      "description": "Список открытых технологий. Формат ключа (v4.41): {branch}_{level} lowercase, напр. military_1, science_2, economic_3. Соответствует TECH_UNLOCK payload (branch MILITARY|ECONOMIC|SCIENCE, level 1..5).",
       "items": {
         "type": "string"
       },

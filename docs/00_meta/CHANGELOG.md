@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.41 — Spec Hardening (P2 Resolution)
+
+- **Victory type:** Clarified as derived value (not stored in schema). Source: VICTORY_COMPLETE event. Display values: MILITARY | ECONOMIC | TECHNOLOGICAL | ALLIANCE. Updated Endgame_Screens.md, Victory_Rules.md.
+- **Tech unlock format:** Standardized `player.tech_unlocked` key format: `{branch}_{level}` (lowercase), e.g. `["military_1", "science_2"]`. Updated Tech_Tree_UI.md, Tech_Progression.md, player.schema.json description.
+- **Diplomacy proposal queue:** Defined in Diplomacy_UI.md §10. Max 3 pending, timeout 1 turn cycle, auto-decline. Proposal object spec (proposal_id, from_player_id, to_player_id, type, created_turn). Stored in docs only; `match.diplomacy.proposals[]` optional at implementation.
+- SOT: v4.41 header, Spec Hardening sync note.
+
+---
+
 ## v4.40 — UI/Visual Spec Pack (Product + World + Visuals Gaps)
 
 - **P0 docs:** Diplomacy_UI, Tech_Tree_UI, Production_UI, Map_Visual_Spec, Design_System, Tutorial_Design, Unit_Visual_Spec, Endgame_Screens.

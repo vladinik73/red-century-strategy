@@ -8,6 +8,15 @@
 При одновременном выполнении нескольких побед приоритет:
 **Военная > Экономическая > Технологическая**.
 
+## Victory type (v4.41)
+
+`victory_type` — **производное значение** из событий, не хранится в `match.victory.per_player`.
+
+- **Источник:** `VICTORY_COMPLETE` event (payload: `victory_type`, `player_id`).
+- **Значения в event:** `MILITARY` | `ECONOMIC` | `TECH`.
+- **Значения для UI/display:** `MILITARY` | `ECONOMIC` | `TECHNOLOGICAL` (TECH) | `ALLIANCE`.
+- **ALLIANCE:** когда побеждает лидер альянса; тип отображения = ALLIANCE.
+
 ## Военная победа
 - PvE: контроль ≥60% интегрированных городов
 

@@ -29,7 +29,15 @@
 
 - **locked:** prerequisite не выполнена (предыдущий уровень ветки не изучен) ИЛИ недостаточно Science.
 - **available:** prerequisite выполнен, Science >= cost, игрок может нажать «Изучить».
-- **unlocked:** технология уже в `players[].tech_unlocked`.
+- **unlocked:** технология уже в `player.tech_unlocked` (см. формат ключа ниже).
+
+### 2.2 Tech key format (v4.41)
+
+`player.tech_unlocked` — массив строк. Ключ технологии: `{branch}_{level}` (lowercase branch, underscore, level).
+
+- **Branch:** `military` | `economic` | `science` (соответствует TECH_UNLOCK payload: MILITARY, ECONOMIC, SCIENCE).
+- **Пример:** `["military_1", "science_2", "economic_3"]`.
+- **Проверка unlocked:** `tech_unlocked.includes("military_1")` для Military L1.
 
 ---
 

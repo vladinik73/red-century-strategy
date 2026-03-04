@@ -67,3 +67,11 @@ SciencePerTurn = BaseScience
 
 ## Связь с победой
 - Изучение Science L5 (Tech Breakthrough) запускает таймер Технологической победы (10 ходов).
+
+## Tech key format (v4.41)
+
+`player.tech_unlocked` — массив строк. Формат ключа: `{branch}_{level}` (lowercase).
+
+- Branch: `military` | `economic` | `science` (TECH_UNLOCK payload: MILITARY, ECONOMIC, SCIENCE).
+- Пример: `["military_1", "science_2"]`.
+- При emit TECH_UNLOCK `{ branch: "MILITARY", level: 1 }` → добавить в массив `"military_1"`.

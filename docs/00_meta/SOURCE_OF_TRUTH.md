@@ -1,4 +1,4 @@
-# Source of Truth (v4.40 — UI/Visual Spec Pack)
+# Source of Truth (v4.41 — Spec Hardening)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -85,6 +85,11 @@
 - **Diplomacy confirmations:** все действия дипломатии требуют подтверждения. Player-initiated: Confirm dialog. AI-initiated: Incoming Proposal dialog (Accept/Reject/Decide later).
 - **Build Bridge:** визуал моста = BUILD_ROAD с `is_bridge: true` на WATER; отдельного BUILD_BRIDGE event нет.
 - **Visibility states:** UNEXPLORED / VISIBLE (2-state, permanent reveal). Канон: `docs/03_map/Visibility.md`.
+
+### Spec Hardening (v4.41)
+- **Victory type:** производное значение из VICTORY_COMPLETE event; не хранится в match.victory.per_player. Display: MILITARY | ECONOMIC | TECHNOLOGICAL | ALLIANCE. Канон: `Victory_Rules.md`, `Endgame_Screens.md`.
+- **Tech key format:** `player.tech_unlocked` — массив строк, ключ `{branch}_{level}` (lowercase). Пример: `["military_1", "science_2"]`. Соответствует TECH_UNLOCK payload. Канон: `Tech_Progression.md`, `player.schema.json`.
+- **Proposal queue:** спецификация в `Diplomacy_UI.md` §10. Хранилище `match.diplomacy.proposals[]` — опционально при реализации; поля только в docs, не в schema (no drift).
 
 ## Tech Tree Effects (v4.24)
 
