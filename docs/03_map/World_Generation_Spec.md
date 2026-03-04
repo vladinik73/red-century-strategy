@@ -596,63 +596,19 @@ SOFT CONSTRAINTS (предупреждение, но не retry):
 
 ---
 
-## 7) Визуальный размер тайла (Tile Rendering)
+## 7) Визуальный рендеринг (Tile Rendering)
 
-### 7.1 Размер тайла в пикселях
+> Полная спецификация визуального стиля, размера тайла, LOD, цветовой палитры, layering и performance — в **`docs/03_map/Map_Design_Spec.md`**.
 
-Базовый размер тайла определяется масштабом (zoom level):
-
-```
-BASE_TILE_SIZE = 64px  // при zoom = 1.0
-
-Zoom range: 0.25 .. 4.0
-Tile pixel size = BASE_TILE_SIZE * zoom
-
-При zoom = 1.0: 64×64 px на тайл
-Viewport при 1280×800: ~20×12 тайлов видимых
-Full map: 80×64 = 5120px × 80×64 = 5120px
-```
-
-### 7.2 Уровни детализации (LOD)
-
-| Zoom | Tile px | Показывается |
-|------|---------|-------------|
-| 0.25–0.5 | 16–32 | Только terrain color + territory borders. Без иконок |
-| 0.5–1.0 | 32–64 | Terrain + cities + units (simplified). Resource icons |
-| 1.0–2.0 | 64–128 | Full detail: terrain, roads, ports, units, HP, resource icons, status |
-| 2.0–4.0 | 128–256 | Maximum detail: текстуры с деталями, анимации |
-
-### 7.3 Форма тайла
+Данная секция фиксирует только инварианты, значимые для генерации:
 
 - **Квадратные тайлы** (square grid). Не гексагональные.
-- Причина: Chebyshev distance = max(|dx|,|dy|) натуральна для квадратной сетки.
+- Chebyshev distance = max(|dx|,|dy|) натуральна для квадратной сетки.
 - 8-connected соседство (включая диагонали).
-
-### 7.4 Визуальные токены (из Map_Visual_Spec.md)
-
-| terrain_type | Token | Цвет-placeholder |
-|-------------|-------|-------------------|
-| PLAIN | terrain_plain | Светло-зелёный / бежевый |
-| FOREST | terrain_forest | Тёмно-зелёный |
-| MOUNTAIN | terrain_mountain | Серый / коричневый |
-| DESERT | terrain_desert | Жёлтый / песочный |
-| WATER | terrain_water | Синий / голубой |
-| WATER+river | terrain_river | Светлый синий (отличимый от моря) |
-
-### 7.5 PixiJS-рендеринг карты (архитектурная заметка)
-
-```
-Карта рендерится PixiJS (WebGL):
-- TilemapContainer: sprite batch для terrain (1 draw call per terrain_type)
-- OverlayContainer: дороги, порты, границы территорий
-- EntityContainer: юниты, города
-- FogContainer: затемнение UNEXPLORED тайлов
-- UIContainer: selection highlight, move range, HP labels
-
-Pan: drag / touch drag
-Zoom: scroll wheel / pinch
-Camera: free pan в пределах 0..5120, 0..5120 (при zoom=1)
-```
+- Размер тайла (`BASE_TILE_SIZE`), зум, LOD-пороги определяются в `Map_Design_Spec.md`.
+- Визуальные токены terrain и пропы определяются в `Map_Design_Spec.md` и `Map_Visual_Spec.md`.
+- Tile state (terrain_type, is_river, resource_type, road_level, etc.) → визуал: маппинг в `Map_Design_Spec.md` §3–§8.
+- Props (деревья, камни, кактусы) размещаются детерминированно из `tile_index + match_seed` — алгоритм в `Map_Design_Spec.md` §4.3.
 
 ---
 
