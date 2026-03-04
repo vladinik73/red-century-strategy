@@ -1,5 +1,7 @@
 # UI/UX PvE Web — Layout
 
+**v4.40:** Aspirational/future variant. Canonical layout для MVP — `Main_Game_Screen.md` (HUD + right panel). Этот документ описывает расширенный вариант с левой панелью «Империя» и нижней панелью.
+
 ## Стиль
 - Минималистичный (Polytopia-inspired)
 - Светлая тема

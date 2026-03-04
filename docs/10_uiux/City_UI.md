@@ -1,5 +1,7 @@
 # UI/UX — экран города
 
+**v4.40:** UI pack: Production_UI (unit picker), City_Visual_Spec (on-map representation).
+
 > Этот раздел задаёт каркас UI города. Детальная UX-проработка делается итеративно.
 
 Показывать всегда:

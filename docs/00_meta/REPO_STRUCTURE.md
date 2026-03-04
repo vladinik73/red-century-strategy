@@ -26,6 +26,6 @@
 | Юниты | `docs/07_units/` | Base_Units, Advanced_Units, Unique_Units_By_Faction, Cyber_Effects, Production_Rules |
 | Дипломатия | `docs/08_diplomacy/` | Victory_Rules, Diplomacy_and_Alliances |
 | ИИ | `docs/09_ai/` | AI_Spec_v1_0, Scoring_Model, Difficulty, Hidden_Civilization |
-| UI/UX | `docs/10_uiux/` | City_UI, PvE_Web_Layout, Unit_Actions, Unit_Interaction, Main_Game_Screen — интерфейс и UX-правила MVP |
+| UI/UX | `docs/10_uiux/` | Main_Game_Screen (canonical layout), City_UI, Unit_Actions, Unit_Interaction, PvE_Web_Layout (aspirational); v4.40 pack: Diplomacy_UI, Tech_Tree_UI, Production_UI, Map_Visual_Spec, Design_System, Tutorial_Design, Unit_Visual_Spec, Endgame_Screens, City_Visual_Spec, Combat_Feedback_UI, Settings_Screen, New_Game_Setup_UI, Notification_System, Keyboard_Shortcuts, Map_Overlays |
 | Реплеи | `docs/11_replays/` | Replays_and_Observer |
 | Монетизация | `docs/12_monetization/` | Monetization |

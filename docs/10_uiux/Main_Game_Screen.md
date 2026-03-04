@@ -1,5 +1,7 @@
 # Main Game Screen (MVP) — UI/UX Canon (v4.18)
 
+**v4.40:** Canonical layout для MVP. UI pack: Diplomacy_UI, Tech_Tree_UI, Production_UI, Map_Visual_Spec, Notification_System и др.
+
 Этот документ фиксирует минималистичный MVP-UI для основного экрана матча (web-first).
 
 ## 1) Layout

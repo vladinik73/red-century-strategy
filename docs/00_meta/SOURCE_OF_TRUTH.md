@@ -1,4 +1,4 @@
-# Source of Truth (v4.34 — Map Generation Algorithm)
+# Source of Truth (v4.40 — UI/Visual Spec Pack)
 
 Этот файл фиксирует ключевые «инварианты» — правила, которые считаются источником истины.
 Если в других разделах возникают расхождения — править нужно **здесь**, а затем синхронизировать остальные разделы.
@@ -78,6 +78,13 @@
 
 ### Map generation (v4.34)
 - **Map generation algorithm:** pseudocode added in `docs/03_map/Map_Generation.md` (section «Generation Algorithm (MVP)»). Seed handling, landmask (noise + floodfill), terrain assignment, rivers, city placement (50–100, capitals 10+ apart), neutral params v4.23, validation with retry.
+
+### UI/Visual Spec Pack (v4.40)
+- **Canonical UI/UX docs:** `docs/10_uiux/` — Diplomacy_UI, Tech_Tree_UI, Production_UI, Map_Visual_Spec, Design_System, Tutorial_Design, Unit_Visual_Spec, Endgame_Screens, City_Visual_Spec, Combat_Feedback_UI, Settings_Screen, New_Game_Setup_UI, Notification_System, Keyboard_Shortcuts, Map_Overlays.
+- **Layout canonical:** `Main_Game_Screen.md` — верхний HUD + правая контекстная панель. `PvE_Web_Layout.md` — aspirational/future variant (левая «Империя», нижняя панель).
+- **Diplomacy confirmations:** все действия дипломатии требуют подтверждения. Player-initiated: Confirm dialog. AI-initiated: Incoming Proposal dialog (Accept/Reject/Decide later).
+- **Build Bridge:** визуал моста = BUILD_ROAD с `is_bridge: true` на WATER; отдельного BUILD_BRIDGE event нет.
+- **Visibility states:** UNEXPLORED / VISIBLE (2-state, permanent reveal). Канон: `docs/03_map/Visibility.md`.
 
 ## Tech Tree Effects (v4.24)
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.40 — UI/Visual Spec Pack (Product + World + Visuals Gaps)
+
+- **P0 docs:** Diplomacy_UI, Tech_Tree_UI, Production_UI, Map_Visual_Spec, Design_System, Tutorial_Design, Unit_Visual_Spec, Endgame_Screens.
+- **P1 docs:** City_Visual_Spec, Combat_Feedback_UI, Settings_Screen, New_Game_Setup_UI, Notification_System, Keyboard_Shortcuts, Map_Overlays.
+- **Diplomacy:** все действия (Declare War, Make Peace, Form Alliance, Break Alliance) требуют подтверждения. Player-initiated: Confirm dialog. AI-initiated: Incoming Proposal (Accept/Reject/Decide later).
+- **Layout:** Main_Game_Screen — canonical (HUD + right panel). PvE_Web_Layout — aspirational/future variant.
+- **Map visuals:** terrain tokens, roads/ports/bridges, visibility UNEXPLORED/VISIBLE, territory borders, status indicators.
+- **Build Bridge:** визуал привязан к BUILD_ROAD is_bridge=true (без отдельного event).
+- SOT: v4.40 header, UI/Visual Spec Pack sync note.
+
+---
+
 ## v4.34 — P0 Docs (Map Generation Algorithm)
 
 - **Map_Generation.md:** Added section «Generation Algorithm (MVP) (v4.34)» — pseudocode: seed handling (deterministic), landmask (noise threshold + floodfill, 4–6 continents, 5–10 islands), terrain assignment (PLAIN/FOREST/MOUNTAIN/DESERT/WATER), rivers (is_river on WATER), city placement (50–100, min 2 tiles apart, capitals 10+ apart, China 7+ from edge), neutral params (level=1, defense=0, territory_radius=1), validation with seed+1 retry.

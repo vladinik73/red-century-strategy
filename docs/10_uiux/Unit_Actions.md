@@ -1,5 +1,7 @@
 # UI/UX — действия юнита
 
+**v4.40:** UI pack: Unit_Visual_Spec, Combat_Feedback_UI.
+
 ## Unit Actions: Heal & Disband (v4.20)
 
 Общее правило (MVP):
