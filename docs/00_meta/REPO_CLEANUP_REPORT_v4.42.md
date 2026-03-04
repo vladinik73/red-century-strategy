@@ -7,6 +7,8 @@
 
 ## 1. What Was Deleted
 
+**No deletions performed in v4.42; cleanup is out of scope for this patch.**
+
 None. This patch does not delete any files.
 
 ---

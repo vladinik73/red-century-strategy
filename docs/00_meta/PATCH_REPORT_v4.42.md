@@ -3,6 +3,8 @@
 **Date:** 2026-03-04  
 **Goal:** Align tile schema to draft/2020-12; sync schema titles to v4.42; no behavioral changes.
 
+**Explicit statement:** Meta-only; no schema behavior changes.
+
 ---
 
 ## 1) Modified Files

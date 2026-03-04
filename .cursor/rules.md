@@ -74,3 +74,14 @@ If required parameters/formulas/edge-cases are missing:
 If asked to do broad changes:
 - First produce a file list + estimated risk areas
 - Then proceed file-by-file with checkpoints
+
+## 9) Sync to main repository (MANDATORY)
+**Context:** Workspace may be worktree `den`. Main repo: `/Users/vladimirnikolsky/Documents/GitHub/red-century-strategy`.
+
+**Rule:** After EVERY READ-WRITE task that modifies files:
+1. Copy ALL modified and new files from workspace to main repo.
+2. Remove from main repo any files that were deleted in workspace.
+3. Verify: run `diff` on 2–3 key files; confirm new files exist; confirm deleted files are gone.
+4. In summary, report: **"Synced to main repo: YES"** (or NO + list failures).
+
+Do this without being asked. No exceptions.
