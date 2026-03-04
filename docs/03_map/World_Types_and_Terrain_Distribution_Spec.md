@@ -1,4 +1,4 @@
-# World Types & Terrain Distribution Spec (v5.2)
+# World Types & Terrain Distribution Spec (v5.4)
 
 Канон: `World_Generation_Spec.md` (v5.0), `Map_Generation.md` (v4.34), `Map_Design_Spec.md` (v5.1), `SOURCE_OF_TRUTH.md` (v4.42), `tile.schema.json` (v4.42).
 
@@ -22,12 +22,28 @@
 **Детерминизм:** тип мира определяется из `match_seed` до начала генерации. **world_type не хранится** в MatchState — он вычисляется из seed (см. §12.3):
 
 ```
+WEIGHTS = [30, 20, 20, 15, 15]   // BALANCED, CONTINENTAL, ARCHIPELAGO, PANGAEA, WILD
+CDF     = [30, 50, 70, 85, 100]  // cumulative
+
 rng = Mulberry32(match_seed)
-worldTypeIndex = rng.next() % WORLD_TYPE_COUNT  // weighted random
-world_type = WORLD_TYPES[worldTypeIndex]
+roll = (rng.next() >>> 0) % 100   // uniform [0..99]
+
+world_type = WORLD_TYPES[ CDF.findIndex(c => roll < c) ]
+// roll  0–29 → BALANCED  (30%)
+// roll 30–49 → CONTINENTAL (20%)
+// roll 50–69 → ARCHIPELAGO (20%)
+// roll 70–84 → PANGAEA    (15%)
+// roll 85–99 → WILD       (15%)
 ```
 
-**Альтернативный режим:** игрок может явно выбрать `world_type` в UI «New Game Setup» (см. `docs/10_uiux/New_Game_Setup_UI.md`). Если выбран конкретный тип — `rng`-выбор пропускается. Выбор передаётся как параметр создания матча, но не сохраняется в schema.
+> **Вероятности зафиксированы (MVP):** 30/20/20/15/15. Калибровка после плейтеста. Менять веса НЕ требует schema-изменений — только обновить WEIGHTS/CDF в коде генератора.
+
+**UI flow (MVP):** В «New Game Setup» **нет выбора** конкретного world_type. Игрок всегда получает случайный тип мира, определённый из seed. Тип мира раскрывается на **Loading / Briefing Screen**:
+- Отображается название типа мира (UI name из §2.1) + короткий tooltip-описание географии (1 строка из столбца «Описание»).
+- Пример: *«Пангея — один суперконтинент. Все рядом, ранний контакт, конфликты неизбежны.»*
+- Тип мира **не меняется** после старта. Кнопки «сменить тип» нет.
+
+> **Примечание (post-MVP):** явный выбор world_type может быть добавлен позже в «Advanced Settings». Если реализован — CDF-выбор пропускается, world_type передаётся как **input parameter** к генератору (не сохраняется в schema). Seed генерации: `attemptSeed(match_seed, world_type_id, attempt_index)` (§3.5.1) — полностью детерминирован.
 
 ### 1.3 Инварианты (не зависят от world_type)
 
@@ -204,7 +220,7 @@ world_type = WORLD_TYPES[worldTypeIndex]
 | **Озёра** | MIN_LAKE_SIZE = 4 | ↓ озёра сохраняются |
 | **Coastline complexity** | Высокая (5 octaves, rng persistence) |  |
 | **Biome randomness** | Максимальный (thresholds ± 0.08) | ↑↑ хаотичное распределение |
-| **Terrain: PLAIN** | 30–55% (rng) | ↕ |
+| **Terrain: PLAIN** | 30–55% (rng), **HARD MIN 25%** | ↕ см. §3.5 |
 | **Terrain: FOREST** | 15–35% (rng) | ↕ |
 | **Terrain: MOUNTAIN** | 10–25% (rng) | ↕ может быть много гор |
 | **Terrain: DESERT** | 8–25% (rng) | ↕ может быть много пустынь |
@@ -254,7 +270,7 @@ FOREST доминирует на островах. MOUNTAIN редки (остр
 Равнины и горы делят суперконтинент. Горные хребты — естественные границы между цивилизациями. Меньше леса = меньше «безопасных» углов.
 
 **WILD (всё рандомизировано):**
-Пропорции terrains определяются rng в широких пределах. Единственное ограничение: PLAIN ≥ 25% (минимум проходимой местности для размещения городов).
+Пропорции terrains определяются rng в широких пределах. **Hard constraint: PLAIN ≥ 25%** (минимум проходимой местности для размещения городов). Enforcement: см. §3.5.
 
 ### 3.4 Механизм применения
 
@@ -279,6 +295,77 @@ FOREST доминирует на островах. MOUNTAIN редки (остр
 ```
 
 Постобработка (World_Generation_Spec §3.3) применяется после модификации, чтобы привести пропорции к целевым с допуском ≤ 5%.
+
+### 3.5 WILD constraint enforcement: PLAIN ≥ 25%
+
+**Тип:** hard constraint (WILD world_type only).
+
+**Механизм:** post-validation после terrain assignment (Step 3). Генератор **не модифицирует** terrain in-place (без перестановки тайлов). Вместо этого: если constraint нарушен — полная перегенерация карты с новым детерминированным seed.
+
+**Почему post-validation, а не pre-constraint на target ratios:**
+- WILD пропорции рандомизированы (PLAIN 30–55%, rng). Даже при target ≥ 25%, noise может сдвинуть результат ниже.
+- Post-validation + retry = простая, детерминированная, предсказуемая логика.
+- In-place adjustment нарушает LAND connectivity и cluster shapes.
+
+#### 3.5.1 Deterministic attempt seed
+
+Для обеспечения **полной детерминированности** каждая попытка генерации использует seed, вычисленный хеш-функцией:
+
+```
+function attemptSeed(match_seed: u32, world_type_id: u8, attempt_index: u8): u32 {
+  // FNV-1a 32-bit hash
+  h = 0x811c9dc5
+  h = (h ^ (match_seed & 0xFF))        * 0x01000193
+  h = (h ^ ((match_seed >> 8) & 0xFF)) * 0x01000193
+  h = (h ^ ((match_seed >> 16) & 0xFF))* 0x01000193
+  h = (h ^ ((match_seed >> 24) & 0xFF))* 0x01000193
+  h = (h ^ world_type_id)              * 0x01000193
+  h = (h ^ attempt_index)              * 0x01000193
+  return h >>> 0
+}
+```
+
+**Свойства:**
+- `attempt_index = 0` — первая попытка (основная генерация).
+- Одинаковые `match_seed` + `world_type_id` + `attempt_index` → **всегда одинаковый** attemptSeed → идентичная карта.
+- Нет скрытой случайности, нет nondeterministic fallback.
+- Если world_type выбран случайно (§1.2), `world_type_id` = индекс из enum (0–4). Если задан явно (post-MVP override) — тот же индекс, передаётся как входной параметр генерации, **не сохраняется** в MatchState.
+
+#### 3.5.2 Validation + retry algorithm
+
+**Проверка:** после terrain assignment (Step 3) считаем `plainRatio = PLAIN_tiles / LAND_tiles`.
+
+```
+MAX_RETRIES = 5        // канон World_Generation_Spec §3.0
+
+for (attempt_index = 0; attempt_index <= MAX_RETRIES; attempt_index++) {
+  seed = attemptSeed(match_seed, world_type_id, attempt_index)
+  rng  = Mulberry32(seed)
+
+  // Full generation: Steps 1-3 (landmask → regions → terrain)
+  map = generateTerrain(rng, worldConfig)
+
+  plainRatio = countPlain(map) / countLand(map)
+  if (world_type !== WILD || plainRatio >= 0.25) {
+    break   // constraint satisfied (or not WILD)
+  }
+  // else: retry with next attempt_index → different attemptSeed
+}
+
+if (attempt_index > MAX_RETRIES) {
+  // fallback: use BALANCED config with attempt_index = MAX_RETRIES + 1
+  seed = attemptSeed(match_seed, world_type_id, MAX_RETRIES + 1)
+  rng  = Mulberry32(seed)
+  worldConfig = WORLD_CONFIGS['BALANCED']
+  map = generateTerrain(rng, worldConfig)
+  warn("WILD→BALANCED fallback triggered, attempt_index=" + (MAX_RETRIES + 1))
+}
+```
+
+**Гарантии:**
+- **Determinism:** same `match_seed` + same `world_type_id` (or override) → identical `attempt_index` sequence → identical final map. No hidden randomness.
+- **Fallback safety:** BALANCED config has PLAIN baseline 45% → constraint (≥ 25%) always satisfied after fallback.
+- **Reproducibility:** replay reconstructs `world_type_id` from seed (§12.3), then re-runs the same attempt loop → identical map.
 
 ---
 
@@ -507,18 +594,34 @@ FOREST доминирует на островах. MOUNTAIN редки (остр
 
 ### 9.2 Расширенные гарантии (spawn quality score)
 
-Для обеспечения **справедливого старта** генератор оценивает качество каждого spawn-а:
+Для обеспечения **справедливого старта** генератор оценивает качество каждого spawn-а.
+
+#### MVP Balanced Fairness Profile (default)
+
+Веса зафиксированы для MVP. Калибровка после плейтеста.
+
+| Компонент | Формула | Вес | Обоснование |
+|-----------|---------|-----|-------------|
+| PLAIN в 3×3 | `plainTilesIn3x3` | +3 | Best terrain: MoveCost=1, города, ресурсы |
+| FOREST в 3×3 | `forestTilesIn3x3` | +2 | Defence +1, ресурсы, но MoveCost=2 |
+| DESERT в 3×3 | `desertTilesIn3x3` | +1 | Passable, но бедный по ресурсам |
+| MOUNTAIN в 3×3 | `mountainTilesIn3x3` | −2 | Blocked (no Military L2 at start) |
+| WATER в 3×3 | `waterTilesIn3x3` | −1 | Impassable for ground units |
+| Resources в 3×3 | `resourceTilesIn3x3` | +2 | Economic start |
+| Нейтральные города ≤ 5 | `nearbyNeutralCities` (Chebyshev ≤ 5) | +3 | Expansion targets |
 
 ```
 spawnScore(capital) =
-    plainTilesIn3x3 × 3           // равнины = best terrain
-  + forestTilesIn3x3 × 2          // леса = defence + resources
-  + desertTilesIn3x3 × 1          // пустыня = worse but passable
-  - mountainTilesIn3x3 × 2        // горы = blocked (no Military L2 at start)
-  - waterTilesIn3x3 × 1           // вода = impassable for ground
-  + resourceTilesIn3x3 × 2        // ресурсы = economic start
-  + nearbyNeutralCities × 3       // нейтральные города (Chebyshev ≤ 5) = expansion targets
+    plainTilesIn3x3   × 3
+  + forestTilesIn3x3  × 2
+  + desertTilesIn3x3  × 1
+  - mountainTilesIn3x3 × 2
+  - waterTilesIn3x3   × 1
+  + resourceTilesIn3x3 × 2
+  + nearbyNeutralCities × 3       // Chebyshev ≤ 5 от столицы
 ```
+
+> **Профиль:** `BALANCED_MVP`. Все world_types используют одинаковые веса. Если плейтест потребует отдельные профили (напр. ARCHIPELAGO с бонусом за порт) — это будет отдельный OQ.
 
 **Правило:** `max(spawnScore) - min(spawnScore) ≤ 8` (разброс между лучшим и худшим стартом ≤ 8 очков).
 
@@ -673,19 +776,23 @@ WorldConfig = {
 
 `world_type` **не хранится** в MatchState и **не добавляется** в `match.schema.json`.
 
-**Причина:** world_type детерминированно определяется из `match_seed`:
+**Причина:** world_type детерминированно определяется из `match_seed` через weighted CDF (см. §1.2 для полного алгоритма):
 ```
 rng = Mulberry32(match_seed)
-worldTypeIndex = rng.next() % WORLD_TYPE_COUNT  // weighted
-world_type = WORLD_TYPES[worldTypeIndex]
+roll = (rng.next() >>> 0) % 100
+world_type = WORLD_TYPES[ CDF.findIndex(c => roll < c) ]
 ```
 
 Любой код, которому нужен world_type, вычисляет его заново из seed. Это гарантирует:
 - **Replay:** идентичная карта воспроизводится из seed (world_type пересчитывается)
-- **UI:** world_type вычисляется на лету для HUD / loading screen
+- **UI:** world_type вычисляется на лету для Loading/Briefing screen
 - **Нет schema bloat:** `match.schema.json` не модифицируется
 
-**Исключение:** если игрок явно выбрал world_type в UI «New Game Setup» (§1.2), это передаётся как параметр создания матча, но НЕ сохраняется в MatchState — генератор использует его вместо rng-выбора, а дальше seed определяет всё остальное.
+**Deterministic generation seed:** world_type_id (index 0–4) передаётся в `attemptSeed(match_seed, world_type_id, attempt_index)` (§3.5.1). Тот же match_seed + тот же world_type → тот же attemptSeed → идентичная карта.
+
+**MVP:** явный выбор world_type в UI отсутствует — всегда Random.
+
+**Post-MVP override:** если реализован — world_type передаётся как **input parameter** к функции генерации (не stored in schema). При override CDF-выбор пропускается, но world_type_id используется тот же (index из enum). Override — это «параметр вызова генератора», а не сохранённое состояние.
 
 ---
 
@@ -694,11 +801,11 @@ world_type = WORLD_TYPES[worldTypeIndex]
 | # | Вопрос | Контекст |
 |---|--------|---------|
 | ~~1~~ | ~~Добавлять ли `world_type` в `match.schema.json`?~~ | **Resolved (v5.2):** Не добавлять. world_type детерминированно определяется из seed (§12.3) |
-| 2 | UI выбора типа мира в New Game Setup? | Можно: (a) dropdown с 5 типами + «Random», (b) иконки с описаниями, (c) «Advanced settings» |
-| 3 | Spawn quality score: финальные веса? | Предложены в §9.2 — требуют плейтеста для калибровки |
+| ~~2~~ | ~~UI выбора типа мира в New Game Setup?~~ | **Resolved (v5.3):** MVP — только Random. Тип мира показывается на Loading/Briefing Screen (название + tooltip). Явный выбор — post-MVP (§1.2) |
+| ~~3~~ | ~~Spawn quality score: финальные веса?~~ | **Resolved (v5.3):** Зафиксирован профиль `BALANCED_MVP` — единый для всех world_types. Веса: PLAIN +3, FOREST +2, DESERT +1, MOUNTAIN −2, WATER −1, Resources +2, NeutralCities +3. Калибровка после плейтеста (§9.2) |
 | ~~4~~ | ~~PANGAEA distance relaxation~~ | **Resolved (v5.2):** Hard constraint ≥ 10 сохранён. Вместо ослабления — сателлитные острова (§4.3, §9.3) |
-| 5 | WILD: нижний предел PLAIN (≥ 25%)? | Нужен ли hard minimum, чтобы города могли быть размещены? Или генератор справится через retry? |
-| 6 | Балансировка вероятностей (30/20/20/15/15)? | Требуется плейтест. Возможно BALANCED должен быть ещё чаще (40%) для первых версий |
+| ~~5~~ | ~~WILD: нижний предел PLAIN (≥ 25%)?~~ | **Resolved (v5.3, refined v5.4):** Hard constraint. Post-validation после terrain assignment: `PLAIN/LAND ≥ 0.25`. Нарушение → retry с `attemptSeed(match_seed, world_type_id, attempt_index)` (до 5), затем fallback на BALANCED config (§3.5) |
+| ~~6~~ | ~~Балансировка вероятностей (30/20/20/15/15)?~~ | **Resolved (v5.3):** Зафиксированы для MVP: 30/20/20/15/15. Weighted selection через CDF (§1.2). Калибровка после плейтеста не требует schema-изменений |
 
 ---
 
@@ -720,3 +827,16 @@ world_type = WORLD_TYPES[worldTypeIndex]
 |--------|------|-----------|
 | v5.1 | 2026-03-04 | Начальная версия. 5 типов мира, terrain distribution, spawn balance, pipeline integration |
 | v5.2 | 2026-03-04 | Architect review: (1) PANGAEA ≥10 preserved + satellite islands, (2) world_type derived from seed — no schema change, (3) Resource distribution scope clarified + per-world-type table, (4) NEW §11 Playability & Fairness Invariants, (5) Terrain naming cleaned — no implied new types. OQ #1 + #4 resolved. Sections renumbered: §11→§12, §12→§13 |
+| v5.3 | 2026-03-04 | OQ closure: (OQ#2) UI = Random only, reveal on Loading/Briefing, (OQ#3) spawnScore weights = BALANCED_MVP profile locked, (OQ#5) WILD PLAIN ≥ 25% hard constraint + retry + BALANCED fallback §3.5, (OQ#6) probabilities 30/20/20/15/15 locked + weighted CDF §1.2. All 6 OQs now resolved. No schema/mechanics changes |
+| v5.4 | 2026-03-04 | Deterministic attemptSeed: replaced magic `seed = match_seed + retryCount` with `attemptSeed = Hash32(match_seed, world_type_id, attempt_index)` via FNV-1a (§3.5.1). WILD constraint clarified: post-validation + full regen (not in-place adjustment) (§3.5). Post-MVP override clarified as input parameter (§1.2, §12.3). No schema/mechanics changes |
+
+---
+
+## Related Documents
+
+| Document | Purpose |
+|---------|--------|
+| docs/03_map/World_Generation_Spec.md | Core algorithm for world generation |
+| docs/03_map/Map_Design_Spec.md | Rendering pipeline and tile composition |
+| docs/03_map/Tile_Style_Bible.md | Canonical visual style, palette and tile design rules |
+

@@ -1,6 +1,8 @@
 # Map Design Spec (v5.1) — Visual Style & Rendering Rules
 
-Канон: `World_Generation_Spec.md`, `Map_Visual_Spec.md`, `Map_Overlays.md`, `Visibility.md`, `Territory_Rules.md`, `Design_System.md`, `PROJECT_IDENTITY.md`.
+Канон: `World_Generation_Spec.md`, `Map_Visual_Spec.md`, `Map_Overlays.md`, `Visibility.md`, `Territory_Rules.md`, `Design_System.md`, `PROJECT_IDENTITY.md`, `Tile_Style_Bible.md`.
+
+> **Tile visuals source of truth:** Конкретные правила визуального стиля тайлов (палитра, пропы, silhouettes, shading) — в [`docs/03_map/Tile_Style_Bible.md`](Tile_Style_Bible.md). Данный документ определяет rendering pipeline и layout; Tile_Style_Bible определяет *look*.
 
 > Этот документ определяет **визуальный стиль и правила рендеринга** карты. Он НЕ вводит новых механик или типов местности — только формализует, как существующий tile state превращается в пиксели на экране.
 
@@ -878,6 +880,9 @@ assets/blends/
 | `City_Visual_Spec.md` (v4.40) | **Ссылается.** City rendering — в City_Visual_Spec. Данный документ определяет только layer position (CityLayer = [8]) |
 | `Unit_Visual_Spec.md` (v4.40) | **Ссылается.** Unit rendering — в Unit_Visual_Spec. UnitLayer = [9] |
 | `PROJECT_IDENTITY.md` | **Реализует.** «Минималистичный светлый UI» + Polytopia inspiration |
+| `Tile_Asset_List.md` (v1.0) | **Перечисляет.** Полный инвентарь спрайтов из §5 данного документа |
+| `Tile_Asset_Production_Spec.md` (v1.0) | **Специфицирует.** Формат экспорта, качество, atlas rules |
+| `Tile_Generation_Prompts.md` (v1.0) | **Генерирует.** AI-промпты для создания ассетов |
 
 ---
 

@@ -1,5 +1,39 @@
 # Changelog
 
+## v5.4 — Deterministic attemptSeed + WILD constraint clarification (docs-only)
+
+- **World_Types_and_Terrain_Distribution_Spec.md** bumped v5.3 → v5.4.
+- **attemptSeed (§3.5.1):** Replaced magic `seed = match_seed + retryCount` with deterministic `attemptSeed = Hash32(match_seed, world_type_id, attempt_index)` using FNV-1a. Same inputs → identical map. No hidden randomness.
+- **WILD enforcement (§3.5):** Explicitly documented as post-validation + full regeneration (not in-place terrain adjustment). Preserves LAND connectivity and cluster shapes.
+- **Post-MVP override (§1.2, §12.3):** Clarified as input parameter to generator function, not stored in MatchState. Uses same attemptSeed derivation.
+- **Tile_Style_Bible refs:** Verified in Map_Design_Spec.md, World_Generation_Spec.md, Map_Visual_Spec.md (all present).
+- No schema or mechanics changes.
+
+---
+
+## Tile Art Docs v1.0 — Tile Asset List, Production Spec, Generation Prompts (docs-only)
+
+- **NEW** `docs/03_map/Tile_Asset_List.md` (v1.0): Complete sprite inventory (81 sprites, 10 categories, 3 priority tiers, atlas budget).
+- **NEW** `docs/03_map/Tile_Asset_Production_Spec.md` (v1.0): Export format (96x96 PNG RGBA), palette reference (Tile_Style_Bible canonical), naming convention (Map_Design_Spec canonical), 15-point quality checklist, atlas packing rules, LOD considerations, forbidden styles.
+- **NEW** `docs/03_map/Tile_Generation_Prompts.md` (v1.0): AI image generation prompts (Midjourney/DALL-E/SD) for all terrain, prop, coastline, and blend sprites. Global style prefix, negative prompt, post-processing pipeline, per-tool parameters.
+- **Tile_Style_Bible.md:** Added §16 Related Documents (cross-refs to 3 new docs + Map_Design_Spec + Map_Visual_Spec).
+- **Map_Design_Spec.md:** Added 3 rows to Appendix A (Tile_Asset_List, Tile_Asset_Production_Spec, Tile_Generation_Prompts).
+- No schema or mechanics changes.
+
+---
+
+## v5.3 — Spec Hardening: OQ Closure + Tile_Style_Bible Links (docs-only)
+
+- **World_Types_and_Terrain_Distribution_Spec.md** bumped v5.2 → v5.3.
+- **OQ#2 (UI):** MVP = Random only. World type revealed on Loading/Briefing screen (name + tooltip). No pre-start dropdown.
+- **OQ#3 (Spawn fairness):** BALANCED_MVP weight profile locked: PLAIN +3, FOREST +2, DESERT +1, MOUNTAIN −2, WATER −1, Resources +2, NeutralCities +3. Single profile for all world_types.
+- **OQ#5 (WILD PLAIN):** Hard constraint: PLAIN ≥ 25% of LAND. Retry on violation (up to 5); fallback to BALANCED config with offset seed. New §3.5.
+- **OQ#6 (Probabilities):** 30/20/20/15/15 locked for MVP. Weighted CDF selection algorithm specified.
+- **Tile_Style_Bible links:** Added cross-references in Map_Design_Spec.md, World_Generation_Spec.md, Map_Visual_Spec.md.
+- All 6 Open Questions now resolved. No schema or mechanics changes.
+
+---
+
 ## v5A.0 — Phase 5A Bootstrap (monorepo skeleton)
 
 - **Monorepo:** pnpm + turborepo; packages: core, ai, web, server; tools/codegen (stub).

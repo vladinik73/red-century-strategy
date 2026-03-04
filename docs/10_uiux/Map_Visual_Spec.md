@@ -2,6 +2,8 @@
 
 Канон: `docs/03_map/Map_Generation.md`, `docs/03_map/Visibility.md`, `docs/03_map/Territory_Rules.md`, `docs/04_economy/Network.md`, `schemas/tile.schema.json`.
 
+> **Tile visuals:** Конкретный стиль тайлов (палитра, пропы, shading, silhouettes) — см. [`docs/03_map/Tile_Style_Bible.md`](../03_map/Tile_Style_Bible.md). Rendering pipeline и layout — в [`docs/03_map/Map_Design_Spec.md`](../03_map/Map_Design_Spec.md).
+
 **Build Bridge:** визуал моста — дорога на WATER тайле. Событие `BUILD_ROAD` с `is_bridge: true`. Отдельного BUILD_BRIDGE нет.
 
 ---

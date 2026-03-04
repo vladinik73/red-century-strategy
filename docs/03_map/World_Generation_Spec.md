@@ -606,7 +606,7 @@ SOFT CONSTRAINTS (предупреждение, но не retry):
 - Chebyshev distance = max(|dx|,|dy|) натуральна для квадратной сетки.
 - 8-connected соседство (включая диагонали).
 - Размер тайла (`BASE_TILE_SIZE`), зум, LOD-пороги определяются в `Map_Design_Spec.md`.
-- Визуальные токены terrain и пропы определяются в `Map_Design_Spec.md` и `Map_Visual_Spec.md`.
+- Визуальные токены terrain и пропы определяются в `Map_Design_Spec.md` и `Map_Visual_Spec.md`. Конкретный стиль тайлов (палитра, shading, silhouettes) — в `Tile_Style_Bible.md`.
 - Tile state (terrain_type, is_river, resource_type, road_level, etc.) → визуал: маппинг в `Map_Design_Spec.md` §3–§8.
 - Props (деревья, камни, кактусы) размещаются детерминированно из `tile_index + match_seed` — алгоритм в `Map_Design_Spec.md` §4.3.
 
@@ -893,6 +893,7 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
 | `Visibility.md` | 2-state, sight cost, mountain +1 |
 | `Start_Conditions.md` | Money=100, Science=0, Stability=70, StarterScout |
 | `Map_Visual_Spec.md` | Terrain tokens, LOD, rendering |
+| `Tile_Style_Bible.md` | Tile visual style rules: palette, shading, props, silhouettes |
 | `Damage_and_Rules.md` | Terrain combat bonuses (FOREST +1 def, MOUNTAIN +1 atk/-1 def) |
 | `Network.md` | Мосты (1 WATER between LAND) |
 
