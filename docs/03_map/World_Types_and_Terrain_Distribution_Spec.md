@@ -1,6 +1,6 @@
-# World Types & Terrain Distribution Spec (v5.1)
+# World Types & Terrain Distribution Spec (v5.2)
 
-Канон: `World_Generation_Spec.md` (v5.0), `Map_Generation.md` (v4.34), `Map_Design_Spec.md` (v5.0), `SOURCE_OF_TRUTH.md` (v4.42), `tile.schema.json` (v4.42).
+Канон: `World_Generation_Spec.md` (v5.0), `Map_Generation.md` (v4.34), `Map_Design_Spec.md` (v5.1), `SOURCE_OF_TRUTH.md` (v4.42), `tile.schema.json` (v4.42).
 
 > Этот документ определяет **систему типов мира** и **правила распределения террейна** для генератора карт. Он НЕ вводит новых механик, типов местности или ресурсов — только параметризует существующий алгоритм генерации из `World_Generation_Spec.md`.
 
@@ -19,14 +19,15 @@
 
 ### 1.2 Выбор типа мира
 
-**Детерминизм:** тип мира определяется из `match_seed` до начала генерации:
+**Детерминизм:** тип мира определяется из `match_seed` до начала генерации. **world_type не хранится** в MatchState — он вычисляется из seed (см. §12.3):
 
 ```
-worldTypeIndex = rng.next() % WORLD_TYPE_COUNT
-world_type = WORLD_TYPES[worldTypeIndex]  // с учётом весов (weighted random)
+rng = Mulberry32(match_seed)
+worldTypeIndex = rng.next() % WORLD_TYPE_COUNT  // weighted random
+world_type = WORLD_TYPES[worldTypeIndex]
 ```
 
-**Альтернативный режим:** игрок может явно выбрать `world_type` в UI «New Game Setup» (см. `docs/10_uiux/New_Game_Setup_UI.md`). Если выбран конкретный тип — `rng`-выбор пропускается.
+**Альтернативный режим:** игрок может явно выбрать `world_type` в UI «New Game Setup» (см. `docs/10_uiux/New_Game_Setup_UI.md`). Если выбран конкретный тип — `rng`-выбор пропускается. Выбор передаётся как параметр создания матча, но не сохраняется в schema.
 
 ### 1.3 Инварианты (не зависят от world_type)
 
@@ -142,12 +143,12 @@ world_type = WORLD_TYPES[worldTypeIndex]  // с учётом весов (weighte
 | **Coastline complexity** | Высокая (5 octaves, средний persistence) |  |
 | **Biome randomness** | Высокий (thresholds ± 0.06) | ↑ разнообразие |
 | **Terrain: PLAIN** | 40% | ↓ |
-| **Terrain: FOREST** | 30% | ↑ тропические леса на островах |
+| **Terrain: FOREST** | 30% | ↑ больше леса на островах |
 | **Terrain: MOUNTAIN** | 12% | ↓ мало гор (острова невысокие) |
-| **Terrain: DESERT** | 18% | ↑ песчаные острова |
+| **Terrain: DESERT** | 18% | ↑ больше пустынных тайлов на островах |
 | **Рек** | 2–5 | ↓ мало суши → мало рек |
 | **Длина реки** | 3–12 тайлов | ↓ короткие |
-| **Mountain clusters** | Мелкие (freq=0.08, isolate removal 30%) | ↓ одиночные вулканические пики |
+| **Mountain clusters** | Мелкие (freq=0.08, isolate removal 30%) | ↓ одиночные пики |
 | **Forest clusters** | Мелкие (moisture freq=0.08) | ↓ рощи, не массивы |
 | **Resource density (normal)** | 28% | ↑ плотнее (компенсация малой территории) |
 | **Resource density (desert)** | 15% | ↑ |
@@ -247,7 +248,7 @@ world_type = WORLD_TYPES[worldTypeIndex]  // с учётом весов (weighte
 Большие равнины = длинные дороги и быстрое перемещение. Меньше леса = меньше оборонительных позиций → агрессивная мета. Меньше пустыни = меньше «мёртвых» зон.
 
 **ARCHIPELAGO (-PLAIN, +FOREST, -MOUNTAIN, +DESERT):**
-Островные леса (тропические) доминируют. Горы редки (острова невысокие). Песчаные атоллы вместо обычных равнин. Ресурсы плотнее (маленькие острова должны быть ценными).
+FOREST доминирует на островах. MOUNTAIN редки (острова невысокие). Больше DESERT-тайлов (засушливые острова). Ресурсы плотнее (маленькие острова должны быть ценными).
 
 **PANGAEA (+PLAIN, +MOUNTAIN, -FOREST, -DESERT):**
 Равнины и горы делят суперконтинент. Горные хребты — естественные границы между цивилизациями. Меньше леса = меньше «безопасных» углов.
@@ -376,8 +377,8 @@ world_type = WORLD_TYPES[worldTypeIndex]  // с учётом весов (weighte
 **CONTINENTAL — длинные хребты:**
 Горные цепи 10–25 тайлов. Пересекают континенты, создавая естественные границы. Низкочастотный elevation noise (freq=0.04) → крупные структуры. 70% изолированных гор удаляется.
 
-**ARCHIPELAGO — вулканические пики:**
-Одиночные горы или маленькие группы (1–4 тайла). Высокочастотный noise (freq=0.08). Только 30% изолированных гор удаляется — одиночные пики характерны для островов.
+**ARCHIPELAGO — одиночные пики:**
+Одиночные горы или маленькие группы (1–4 MOUNTAIN-тайла). Высокочастотный noise (freq=0.08). Только 30% изолированных гор удаляется — одиночные пики характерны для островов.
 
 **PANGAEA — горные цепи-стены:**
 Длинные непрерывные хребты (15–30 тайлов), разделяющие суперконтинент на «сектора». Очень низкочастотный noise (freq=0.03). 80% изолированных гор удаляется — только цепи.
@@ -412,7 +413,7 @@ world_type = WORLD_TYPES[worldTypeIndex]  // с учётом весов (weighte
 
 **CONTINENTAL:** крупные лесные массивы (15–40 тайлов). Низкочастотный moisture noise → большие однородные зоны. Лесные «полосы» между равнинами.
 
-**ARCHIPELAGO:** мелкие тропические рощи (4–12 тайлов). Высокочастотный noise → фрагментированные леса. Почти каждый остров имеет лесной участок.
+**ARCHIPELAGO:** мелкие FOREST-кластеры (4–12 тайлов). Высокочастотный noise → фрагментированные леса. Почти каждый остров имеет лесной участок.
 
 **PANGAEA:** крупные леса. Лесные зоны и равнинные зоны чётко разделены (низкий biome randomness).
 
@@ -431,14 +432,28 @@ world_type = WORLD_TYPES[worldTypeIndex]  // с учётом весов (weighte
 
 ## 8) Распределение ресурсов (Resource Distribution)
 
+> **Scope:** данный раздел описывает только **распределение ресурсных тайлов** по карте (какие тайлы получают `has_resource = true`, `resource_type = MONEY|SCIENCE`). Механики добычи, stock, yield, depletion — канон `Resources.md`. Данный документ их **НЕ модифицирует**.
+
 ### 8.1 Параметры по типам мира
 
 | Параметр | BALANCED | CONTINENTAL | ARCHIPELAGO | PANGAEA | WILD |
 |----------|----------|------------|-------------|---------|------|
-| Density (normal) | 25% | 23% | 28% | 22% | 20–30% |
-| Density (desert) | 12% | 10% | 15% | 10% | 8–18% |
-| MONEY : SCIENCE | 50:50 | 55:45 | 50:50 | 50:50 | 40–60:60–40 |
+| Density (normal terrain) | 25% | 23% | 28% | 22% | 20–30% |
+| Density (DESERT terrain) | 12% | 10% | 15% | 10% | 8–18% |
+| MONEY : SCIENCE (tile ratio) | 50:50 | 55:45 | 50:50 | 50:50 | 40–60:60–40 |
 | Clustering | Средняя | Сильная | Слабая | Сильная | Рандом |
+
+**Уточнение:** «Density» = доля eligible тайлов данного terrain, на которых размещается ресурс. «MONEY:SCIENCE» = соотношение количества тайлов с `resource_type = MONEY` к `resource_type = SCIENCE`. Все значения yield/stock фиксированы и определяются `Resources.md`, а не world_type.
+
+### 8.1a Сводная таблица ресурсов по типам мира
+
+| Параметр | BALANCED | CONTINENTAL | ARCHIPELAGO | PANGAEA | WILD |
+|----------|----------|------------|-------------|---------|------|
+| `resource_density` (PLAIN/FOREST) | 0.25 | 0.23 | 0.28 | 0.22 | rng(0.20, 0.30) |
+| `resource_density` (DESERT) | 0.12 | 0.10 | 0.15 | 0.10 | rng(0.08, 0.18) |
+| `money_tile_share` | 0.50 | 0.55 | 0.50 | 0.50 | rng(0.40, 0.60) |
+| `science_tile_share` | 0.50 | 0.45 | 0.50 | 0.50 | 1.0 - money_tile_share |
+| `cluster_strength` | medium | strong | weak | strong | rng(weak, strong) |
 
 ### 8.2 Правила размещения (все типы мира)
 
@@ -551,9 +566,62 @@ spawnScore(capital) =
 
 ---
 
-## 11) Интеграция с pipeline генерации
+## 11) Playability & Fairness Invariants
 
-### 11.1 Модифицированный entry point
+Данные инварианты — **hard constraints**, которые генератор ОБЯЗАН обеспечить для ЛЮБОГО world_type. Нарушение любого инварианта → retry (до max_retries=5), затем generation failure.
+
+### 11.1 Минимум суши
+
+| Инвариант | Значение | Причина |
+|-----------|----------|---------|
+| Min LAND-тайлов | ≥ 2000 (31.25% от 6400) | Достаточно территории для 50+ городов и 8 столиц |
+| Min PLAIN+FOREST+DESERT тайлов | ≥ 1600 | Города не на MOUNTAIN/WATER; нужно ≥ 50 eligible тайлов per city |
+
+### 11.2 Территория столицы
+
+Для КАЖДОЙ столицы (включая скрытую, 8 total):
+
+| Инвариант | Значение | Причина |
+|-----------|----------|---------|
+| terrain_base | LAND | Столица не в воде |
+| terrain_type | ≠ MOUNTAIN | Столица не на горе |
+| LAND-тайлов в TerritoryRadius=1 (3×3) | ≥ 4 из 9 | Минимум проходимой территории вокруг |
+| PLAIN-тайлов в TerritoryRadius=1 | ≥ 1 | Хотя бы одна равнина для юнита/дороги |
+| Ресурсы в TerritoryRadius=1 | ≥ 1 MONEY + ≥ 1 SCIENCE | Экономический старт (World_Generation_Spec §5.3) |
+| Расстояние до других столиц | ≥ 10 Chebyshev | Канон SOT — **никогда не ослабляется** |
+| Расстояние до края карты (China) | ≥ 7 Chebyshev | Канон SOT |
+
+### 11.3 Connectivity
+
+| Инвариант | Значение | Причина |
+|-----------|----------|---------|
+| LAND-connectivity | Каждая столица достижима хотя бы через 1 LAND-path (8-connected, без WATER/MOUNTAIN) ИЛИ через bridgeable WATER (≤ 3 тайла) | Ни одна цивилизация не заблокирована полностью |
+| Neutral city reachability | Каждая столица имеет ≥ 1 нейтральный город в Chebyshev ≤ 8 | Expansion target for early game |
+
+> **Примечание:** ARCHIPELAGO допускает столицы на отдельных островах, разделённых водой. Connectivity обеспечивается через порты/мосты (gameplay mechanic, не terrain constraint). Инвариант LAND-connectivity применяется мягко: если нет LAND-path, генератор НЕ делает retry, но записывает warning.
+
+### 11.4 City Placement Viability
+
+| Инвариант | Значение | Причина |
+|-----------|----------|---------|
+| Min города | ≥ 50 | Минимум для 7+ цивилизаций |
+| Город terrain | PLAIN, FOREST или DESERT | Города не на MOUNTAIN/WATER |
+| City distance | ≥ 2 Chebyshev между любыми городами | Канон Map_Generation.md |
+| Город не в TerritoryRadius=1 столицы другой цивилизации | True | Нейтральные города не в стартовой зоне |
+
+### 11.5 Spawn Fairness
+
+| Инвариант | Значение | Причина |
+|-----------|----------|---------|
+| Spawn score spread | `max(spawnScore) - min(spawnScore) ≤ 8` | Fair start (§9.2) |
+| Resource equalization | Если spread > 8 → перераспределить ресурсы (не terrain/cities) | Мягкая коррекция |
+| Neutral cities per capital | ≥ 2 нейтральных города в Chebyshev ≤ 6 | Ранняя экспансия для всех |
+
+---
+
+## 12) Интеграция с pipeline генерации
+
+### 12.1 Модифицированный entry point
 
 Тип мира выбирается **до** Шага 1 (landmask) из `World_Generation_Spec.md`:
 
@@ -571,7 +639,7 @@ Step 8:   INIT VISIBILITY
 Step 9:   VALIDATE (using worldConfig.continentRange, worldConfig.islandRange + standard hard constraints)
 ```
 
-### 11.2 WorldConfig structure
+### 12.2 WorldConfig structure
 
 ```
 WorldConfig = {
@@ -601,7 +669,7 @@ WorldConfig = {
 }
 ```
 
-### 11.3 Определение world_type (derived, not stored)
+### 12.3 Определение world_type (derived, not stored)
 
 `world_type` **не хранится** в MatchState и **не добавляется** в `match.schema.json`.
 
@@ -621,11 +689,11 @@ world_type = WORLD_TYPES[worldTypeIndex]
 
 ---
 
-## 12) Открытые вопросы
+## 13) Открытые вопросы
 
 | # | Вопрос | Контекст |
 |---|--------|---------|
-| 1 | Добавлять ли `world_type` в `match.schema.json`? | Нужно для replay/UI. Может быть string enum: BALANCED/CONTINENTAL/ARCHIPELAGO/PANGAEA/WILD |
+| ~~1~~ | ~~Добавлять ли `world_type` в `match.schema.json`?~~ | **Resolved (v5.2):** Не добавлять. world_type детерминированно определяется из seed (§12.3) |
 | 2 | UI выбора типа мира в New Game Setup? | Можно: (a) dropdown с 5 типами + «Random», (b) иконки с описаниями, (c) «Advanced settings» |
 | 3 | Spawn quality score: финальные веса? | Предложены в §9.2 — требуют плейтеста для калибровки |
 | ~~4~~ | ~~PANGAEA distance relaxation~~ | **Resolved (v5.2):** Hard constraint ≥ 10 сохранён. Вместо ослабления — сателлитные острова (§4.3, §9.3) |
@@ -640,6 +708,15 @@ world_type = WORLD_TYPES[worldTypeIndex]
 |----------|----------|
 | `World_Generation_Spec.md` (v5.0) | **Параметризует.** Данный документ не меняет алгоритм — только предоставляет разные наборы параметров для каждого world_type |
 | `Map_Generation.md` (v4.34) | **Расширяет.** Добавляет world_type как предшествующий выбор перед генерацией |
-| `Map_Design_Spec.md` (v5.0) | **Не конфликтует.** Визуальные правила не зависят от world_type (тот же terrain → тот же визуал) |
+| `Map_Design_Spec.md` (v5.1) | **Не конфликтует.** Визуальные правила не зависят от world_type (тот же terrain → тот же визуал) |
 | `SOURCE_OF_TRUTH.md` (v4.42) | **Соблюдает все инварианты.** Terrain types, resource types, distances, city rules — неизменны |
 | `tile.schema.json` (v4.42) | **Не модифицирует.** Никаких новых полей, типов, значений |
+
+---
+
+## Change Log
+
+| Версия | Дата | Изменения |
+|--------|------|-----------|
+| v5.1 | 2026-03-04 | Начальная версия. 5 типов мира, terrain distribution, spawn balance, pipeline integration |
+| v5.2 | 2026-03-04 | Architect review: (1) PANGAEA ≥10 preserved + satellite islands, (2) world_type derived from seed — no schema change, (3) Resource distribution scope clarified + per-world-type table, (4) NEW §11 Playability & Fairness Invariants, (5) Terrain naming cleaned — no implied new types. OQ #1 + #4 resolved. Sections renumbered: §11→§12, §12→§13 |
