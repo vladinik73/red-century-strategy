@@ -6,7 +6,7 @@ import { getWorldConfig } from "../src/worldgen/worldConfigs.js";
 import { attemptSeed } from "../src/worldgen/attemptSeed.js";
 
 describe("worldgen pangaea shape", () => {
-  it("PANGAEA: createMatch succeeds for 10 seeds (continents=1, islands [5,10] enforced)", () => {
+  it("PANGAEA: createMatch succeeds for 10 seeds (continents=1 HARD)", () => {
     for (let s = 0; s < 10; s++) {
       const seed = 5000 + s * 1111;
       const match = createMatch({ seed, worldTypeOverride: "PANGAEA" });
@@ -15,7 +15,7 @@ describe("worldgen pangaea shape", () => {
     }
   });
 
-  it("PANGAEA: generateWorld produces continents=1, islands in [5,10] for some attempt", () => {
+  it("PANGAEA: generateWorld produces continents=1 for some attempt (islands optional)", () => {
     const config = getWorldConfig("PANGAEA");
     const worldTypeId = 3;
     let found = false;
