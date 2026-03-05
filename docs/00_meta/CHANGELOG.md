@@ -1,6 +1,14 @@
 # Changelog
 
 
+## v5A.2b — WorldGen landmask quality (fbm + thresholds + strict counts deferred)
+- Fixed: landThreshold inversion — ARCHIPELAGO higher (more water), PANGAEA lower (more land)
+- Added: fBm (5 octaves, lacunarity 2.0, gain 0.5) for landmask instead of single noise
+- Added: 1-iter majority-neighbors smoothing on LAND/WATER mask
+- Removed: MIN_LAND center-forcing fallback (retry handles bad seeds)
+- Tests: ARCHIPELAGO waterShare > CONTINENTAL; BALANCED createMatch 20 seeds
+- Docs: PATCH_REPORT_v5A.2b_worldgen_landmask_quality.md
+
 ## v5A.2a — WorldGen RNG Fix + Missing Invariants
 - Fixed: `createSeededRng` returned raw uint32 but was used as float [0,1) — broke land generation, resources, and config differentiation
 - Fixed: all call sites in generateWorld.ts / deriveWorldType.ts (noise, shuffle, lerp, thresholds, modulo)

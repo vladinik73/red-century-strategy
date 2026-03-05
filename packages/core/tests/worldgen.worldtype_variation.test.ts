@@ -16,15 +16,11 @@ describe("worldgen world type variation", () => {
       (t) => t.terrain_base === "WATER"
     ).length;
 
-    // ARCHIPELAGO should have MORE water than CONTINENTAL (higher noise freq, lower thresholds)
-    // At minimum, they should differ
-    expect(waterCont).not.toBe(waterArch);
+    // ARCHIPELAGO should have MORE water than CONTINENTAL (higher landThreshold => less land)
+    expect(waterArch).toBeGreaterThan(waterCont);
   });
 
   it("PANGAEA and ARCHIPELAGO produce different land counts for same seed", () => {
-    // NOTE: landThreshold config values are currently inverted (PANGAEA threshold is
-    // higher than ARCHIPELAGO, producing less land). This is a known pre-existing
-    // config issue that will be fixed separately. For now, just verify they differ.
     const pangaea = createMatch({ seed: 200, worldTypeOverride: "PANGAEA" });
     const archipelago = createMatch({ seed: 200, worldTypeOverride: "ARCHIPELAGO" });
 
@@ -66,4 +62,14 @@ describe("worldgen world type variation", () => {
     // With ~25% density on ~3000 eligible tiles per map, expect >>16 per map (capital guarantees alone = 16)
     expect(totalResources).toBeGreaterThan(100);
   });
+
+  it("BALANCED: createMatch succeeds for 20 seeds (retry handles bad attempts)", () => {
+    for (let s = 0; s < 20; s++) {
+      const seed = 1000 + s * 777;
+      const match = createMatch({ seed, worldTypeOverride: "BALANCED" });
+      expect(match.map.tiles_flat.length).toBe(6400);
+      expect(match.cities.filter((c) => c.is_capital).length).toBe(8);
+    }
+  });
+
 });

@@ -98,6 +98,33 @@ function createNoise2D(rngU32: () => number): (x: number, y: number) => number {
   };
 }
 
+/**
+ * fBm (fractional Brownian motion): multi-octave noise, normalized to [0,1].
+ * lacunarity ~2.0, gain ~0.5, 5 octaves. Deterministic, fast, pure TS.
+ */
+function fbm2(
+  x: number,
+  y: number,
+  noise: (x: number, y: number) => number,
+  octaves: number = 5,
+  lacunarity: number = 2.0,
+  gain: number = 0.5
+): number {
+  let sum = 0;
+  let amp = 1;
+  let freq = 1;
+  let maxVal = 0;
+  for (let i = 0; i < octaves; i++) {
+    const v = noise(x * freq, y * freq);
+    sum += amp * v;
+    maxVal += amp;
+    amp *= gain;
+    freq *= lacunarity;
+  }
+  const n = sum / maxVal;
+  return Math.max(0, Math.min(1, n));
+}
+
 function emptyTile(x: number, y: number): TileState {
   return {
     x,
@@ -131,10 +158,10 @@ export function generateWorld(
   const moistNoise = createNoise2D(rng.uint32);
 
   const landmask: boolean[] = new Array(MAP_SIZE);
+  const normNoise = (a: number, b: number) => Math.max(0, Math.min(1, (noise(a, b) + 1) / 2));
   for (let y = 0; y < MAP_HEIGHT; y++) {
     for (let x = 0; x < MAP_WIDTH; x++) {
-      const raw = noise(x * freq, y * freq);
-      const n = Math.max(0, Math.min(1, (raw + 1) / 2));
+      const n = fbm2(x * freq, y * freq, normNoise);
       const edgeDistVal = edgeDist(x, y);
       const falloff = smoothstep(0, config.edgeFalloffWidth, edgeDistVal);
       const effTh = threshold + (1 - falloff) * 0.15;
@@ -142,21 +169,22 @@ export function generateWorld(
     }
   }
 
-  // Count pre-filter land; apply center fallback only if insufficient
-  let preFilterLand = 0;
-  let usedFallback = false;
-  for (let i = 0; i < MAP_SIZE; i++) if (landmask[i]) preFilterLand++;
-  if (preFilterLand < MIN_LAND) {
-    usedFallback = true;
+  // Majority-neighbors smoothing (1 iteration) on binary LAND/WATER mask.
+  // >= 4 of 8 neighbors => land (less aggressive than strict majority 5)
+  const smoothIterations = 1;
+  for (let iter = 0; iter < smoothIterations; iter++) {
+    const next: boolean[] = [...landmask];
     for (let y = 0; y < MAP_HEIGHT; y++) {
       for (let x = 0; x < MAP_WIDTH; x++) {
         const i = tileIndex(x, y);
-        const edgeDistVal = edgeDist(x, y);
-        const falloff = smoothstep(0, config.edgeFalloffWidth, edgeDistVal);
-        if (falloff < 0.5) continue;
-        if (rng() < 0.5) landmask[i] = true;              // float comparison
+        let landNeighbors = 0;
+        for (const n of neighbors8(x, y)) {
+          if (landmask[tileIndex(n.x, n.y)]) landNeighbors++;
+        }
+        next[i] = landNeighbors >= 4;
       }
     }
+    for (let j = 0; j < MAP_SIZE; j++) landmask[j] = next[j];
   }
 
   // --- Phase 2: Region detection (flood fill) ---
@@ -232,7 +260,7 @@ export function generateWorld(
 
   // Remove land tiles that aren't in kept regions (skip if fallback was used)
   for (let i = 0; i < MAP_SIZE; i++) {
-    if (!usedFallback && landmask[i] && !keepRegion.has(regionId[i])) landmask[i] = false;
+    if (landmask[i] && !keepRegion.has(regionId[i])) landmask[i] = false;
   }
 
   let landCount = 0;

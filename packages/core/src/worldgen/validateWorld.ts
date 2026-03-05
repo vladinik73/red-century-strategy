@@ -113,11 +113,7 @@ export function validateWorld(
     }
   }
 
-  // === SOFT CONSTRAINTS (warnings — logged, NOT causes for retry) ===
-  // Continent/island counts depend on noise quality; the MVP noise generator
-  // cannot reliably hit config-specified ranges within MAX_RETRIES.
-  // These become hard once the generator gains multi-octave continent seeding.
-
+  // === SOFT: continent/island counts (warnings; hard once generator reliably hits ranges) ===
   if (options?.config) {
     const [contMin, contMax] = options.config.continentRange;
     const mc = result.meta.continentCount;
