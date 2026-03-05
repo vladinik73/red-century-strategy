@@ -31,3 +31,4 @@
 | UI/UX | `docs/10_uiux/` | Main_Game_Screen (canonical layout), City_UI, Unit_Actions, Unit_Interaction, PvE_Web_Layout (aspirational); v4.40 pack: Diplomacy_UI, Tech_Tree_UI, Production_UI, Map_Visual_Spec, Design_System, Tutorial_Design, Unit_Visual_Spec, Endgame_Screens, City_Visual_Spec, Combat_Feedback_UI, Settings_Screen, New_Game_Setup_UI, Notification_System, Keyboard_Shortcuts, Map_Overlays |
 | Реплеи | `docs/11_replays/` | Replays_and_Observer |
 | Монетизация | `docs/12_monetization/` | Monetization |
+| Engine | `docs/13_engine/` | Map_Generator_Architecture |

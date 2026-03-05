@@ -1,5 +1,15 @@
 # Changelog
 
+
+## v5A.2 — Runtime WorldGen MVP (Option A)
+- Added: runtime worldgen in @redage/core (deriveWorldType, attemptSeed(FNV-1a), generateWorld, validateWorld)
+- Added: createMatch интеграция с retry MAX_RETRIES=5 (attemptSeed per attempt)
+- Added: tests worldgen (determinism/invariants/retry)
+- Added: docs/00_meta/PATCH_REPORT_v5A.2_worldgen.md
+
+## v5A.map — Map Generator Architecture
+- Added: docs/13_engine/Map_Generator_Architecture.md (Option A runtime worldgen in createMatch; retry/attemptSeed; separation from rendering)
+
 ## v5.4 — Deterministic attemptSeed + WILD constraint clarification (docs-only)
 
 - **World_Types_and_Terrain_Distribution_Spec.md** bumped v5.3 → v5.4.
