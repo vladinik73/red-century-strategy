@@ -85,16 +85,28 @@ visibility                   — integer[10], каждый ∈ {0, 1}
 
 ### 2.2 Требования к топологии
 
-| Параметр | Значение | Тип ограничения |
-|----------|----------|-----------------|
-| Континенты | 4–6 | hard (retry при нарушении) |
-| Острова | 5–10 | hard (retry при нарушении) |
+| Параметр | Значение (default / BALANCED) | Тип ограничения |
+|----------|-------------------------------|-----------------|
+| Континенты | 4–6 (**world-type-conditional**, см. ниже) | soft target¹ (кроме PANGAEA=1 → hard) |
+| Острова | 5–10 (**world-type-conditional**, см. ниже) | soft target¹ |
 | Города | 50–100 | hard |
 | Доля суши | ~40–60% | soft (контролируется threshold) |
 | Столицы | 8 (7 цивилизаций + 1 скрытая) | hard |
 | Дистанция между столицами | ≥ 10 (Chebyshev) | hard |
 | Дистанция между городами | ≥ 2 (Chebyshev) | hard |
 | Старт Китая до края карты | ≥ 7 (Chebyshev) | hard |
+
+> **World-type-conditional continent/island ranges:** значения 4–6 континентов и 5–10 островов — это defaults (BALANCED). Для других типов мира используются значения из `World_Types_and_Terrain_Distribution_Spec.md` §4.2:
+>
+> | world_type | Continents | Islands |
+> |-----------|-----------|---------|
+> | BALANCED | 4–6 (soft) | 5–10 (soft) |
+> | CONTINENTAL | 3–4 (soft) | 3–6 (soft) |
+> | ARCHIPELAGO | 2–3 (soft) | 8–15 (soft) |
+> | **PANGAEA** | **1 (HARD)** | 5–10 (soft) |
+> | WILD | 2–6 (soft) | 5–15 (soft) |
+>
+> ¹ **Soft target** = генератор стремится попасть в диапазон, но не retry при отклонении. **Единственное hard-ограничение** по топологии — PANGAEA continents = 1. Остальные (включая все island ranges) — soft: острова и вариация континентов — вкусовая вариативность, retry по ним избыточен.
 
 ### 2.3 Определения
 
@@ -110,6 +122,10 @@ const MAP_WIDTH = 80;
 const MAP_HEIGHT = 80;
 const MAP_SIZE = MAP_WIDTH * MAP_HEIGHT; // 6400
 
+// Default continent/island ranges (BALANCED).
+// Other world types override via WorldConfig.continentRange / islandRange
+// (see World_Types_and_Terrain_Distribution_Spec.md §4.2).
+// All ranges are SOFT TARGETS (warning only) except PANGAEA continents=1 (HARD → retry).
 const MIN_CONTINENTS = 4;
 const MAX_CONTINENTS = 6;
 const MIN_ISLANDS = 5;
@@ -208,13 +224,25 @@ effectiveThreshold = threshold + (1 - falloff) * 0.3
 5. Аналогично: floodfill WATER-тайлов внутри суши. Если замкнутый WATER-регион < MIN_LAKE_SIZE → заполнить (terrain_base = LAND)
 ```
 
-**Валидация топологии:**
+**Валидация топологии (world-type-conditional):**
 ```
 continentCount = количество регионов-континентов
 islandCount = количество регионов-островов
 
-if continentCount < MIN_CONTINENTS || continentCount > MAX_CONTINENTS → FAIL
-if islandCount < MIN_ISLANDS || islandCount > MAX_ISLANDS → FAIL
+// Ranges come from WorldConfig.continentRange / islandRange
+// (see World_Types_and_Terrain_Distribution_Spec.md §4.2)
+[minCont, maxCont] = worldConfig.continentRange   // e.g. PANGAEA: [1, 1]
+[minIsl,  maxIsl]  = worldConfig.islandRange       // e.g. PANGAEA: [5, 10]
+
+// HARD (retry при нарушении):
+if worldType == PANGAEA && continentCount != 1 → FAIL   // единственный hard по топологии
+
+// SOFT (warning, НЕ retry):
+if continentCount < minCont || continentCount > maxCont → WARN  // (кроме PANGAEA=1 выше)
+if islandCount < minIsl || islandCount > maxIsl → WARN          // все world types — soft
+
+// PANGAEA example: exactly 1 continent (hard), target 5–10 islands (soft).
+// BALANCED example: target 4–6 continents (soft), target 5–10 islands (soft).
 ```
 
 ### 3.3 Шаг 3: Назначение типов местности (Terrain Assignment)
@@ -420,17 +448,18 @@ DESERT_THRESHOLD   = 0.25 + rngFloat(-0.05, 0.05)
 
 ```
 HARD CONSTRAINTS (при нарушении → retry):
-1. continentCount ∈ [4, 6]
-2. islandCount ∈ [5, 10]
-3. cityCount ∈ [50, 100]
-4. Все 8 столиц размещены
-5. Chebyshev distance между любыми двумя столицами ≥ 10
-6. Chebyshev distance между любыми двумя городами ≥ 2
-7. China capital: min(x, y, 79-x, 79-y) ≥ 7
-8. Каждая столица на LAND-тайле с terrain_type ≠ MOUNTAIN
-9. Каждая столица имеет ≥ 2 ресурсных тайла в территории
+1. PANGAEA: continentCount == 1                  // единственный hard по топологии
+2. cityCount ∈ [50, 100]
+3. Все 8 столиц размещены
+4. Chebyshev distance между любыми двумя столицами ≥ 10
+5. Chebyshev distance между любыми двумя городами ≥ 2
+6. China capital: min(x, y, 79-x, 79-y) ≥ 7
+7. Каждая столица на LAND-тайле с terrain_type ≠ MOUNTAIN
+8. Каждая столица имеет ≥ 2 ресурсных тайла в территории
 
 SOFT CONSTRAINTS (предупреждение, но не retry):
+- continentCount ∈ worldConfig.continentRange     // BALANCED: [4,6]; CONTINENTAL: [3,4]; etc. (кроме PANGAEA=1 → hard выше)
+- islandCount ∈ worldConfig.islandRange            // все world types — soft target
 - Доля суши ∈ [35%, 65%]
 - Пропорции террейнов: отклонение ≤ 5% от целевых
 - Каждый континент содержит ≥ 1 столицу (желательно)

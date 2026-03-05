@@ -1,4 +1,4 @@
-# World Types & Terrain Distribution Spec (v5.4)
+# World Types & Terrain Distribution Spec (v5.6)
 
 Канон: `World_Generation_Spec.md` (v5.0), `Map_Generation.md` (v4.34), `Map_Design_Spec.md` (v5.1), `SOURCE_OF_TRUTH.md` (v4.42), `tile.schema.json` (v4.42).
 
@@ -182,9 +182,9 @@ world_type = WORLD_TYPES[ CDF.findIndex(c => roll < c) ]
 |----------|----------|---------------------|
 | **Доля воды** | 30–40% | ↓ |
 | **Доля суши** | 60–70% | ↑ |
-| **Континенты** | 1–2 | ↓↓ один суперконтинент (+ возможно 1 маленький) |
+| **Континенты** | **1 (hard)** | ↓↓ ровно один суперконтинент — каноническая черта PANGAEA (см. §4.3) |
 | **Min continent size** | 2000 тайлов | ↑↑ суперконтинент ≥ 2000 тайлов |
-| **Острова** | 3–8 | ↓ немного вокруг суперконтинента |
+| **Острова** | target 5–10 (soft) | Островное кольцо — рекомендация; генератор не фейлится по островам (см. §4.3) |
 | **Min island size** | 8 тайлов | = |
 | **Noise frequency** | 0.02–0.04 | ↓↓ очень низкая → один крупный блоб |
 | **Edge falloff** | smoothstep(0, 10) | ↑ широкий океанический край (суша в центре) |
@@ -386,20 +386,29 @@ if (attempt_index > MAX_RETRIES) {
 
 | Параметр | BALANCED | CONTINENTAL | ARCHIPELAGO | PANGAEA | WILD |
 |----------|----------|------------|-------------|---------|------|
-| Continents (min–max) | 4–6 | 3–4 | 2–3 | 1–2 | 2–6 |
+| Continents (min–max) | 4–6 (soft) | 3–4 (soft) | 2–3 (soft) | **1** (hard) | 2–6 (soft) |
 | Min continent size | 200 | 400 | 150 | 2000 | 100 |
-| Islands (min–max) | 5–10 | 3–6 | 8–15 | 3–8 | 5–15 |
+| Islands (min–max) | 5–10 (soft) | 3–6 (soft) | 8–15 (soft) | 5–10 (soft) | 5–15 (soft) |
 | Min island size | 8 | 12 | 6 | 8 | 5 |
 | Min lake size | 6 | 10 | 4 | 8 | 4 |
 
+> **Hard vs soft:** PANGAEA continents = 1 — **единственное hard-ограничение** по топологии (нарушение → retry). Все остальные диапазоны (continents и islands для всех world types, включая PANGAEA islands 5–10) — **soft targets**: генератор стремится попасть, но не фейлится при отклонении. Причина: острова и количество континентов — вкусовая вариативность; retry по ним избыточен и замедляет генерацию.
+
 ### 4.3 Специальные правила
 
-**PANGAEA — суперконтинент:**
+**PANGAEA — суперконтинент (mainland_count = 1, islands = target 5–10):**
+
+Каноническая география PANGAEA — **один суперконтинент**, окружённый кольцом из ~5–10 островов.
+
+- **Континентов: ровно 1 (HARD).** После floodfill и классификации регионов должен быть ровно один регион с `area ≥ minContinentSize (2000)`. Если больше одного → retry. Если ни одного → retry.
+- **Островов: target 5–10 (SOFT).** Генератор стремится к 5–10, но не фейлится при отклонении. Острова — вкусовая вариативность; допустимо 0..N. Кольцо островов вокруг суперконтинента — рекомендация, а не hard constraint.
 - Самый крупный регион LAND должен содержать ≥ 60% всей суши.
 - Если после landmask нет региона ≥ 2000 тайлов → retry.
 - Генератор пытается разместить все 7 основных столиц на суперконтиненте.
 - Если distance ≥ 10 невозможна для всех 7 на суперконтиненте → 1–2 столицы размещаются на **сателлитных островах** (близких к суперконтиненту, ≥ 15 LAND-тайлов). Hard constraint ≥ 10 Chebyshev **не ослабляется**.
 - Скрытая столица — может быть на любом острове.
+
+> **Исключение из глобального правила «4–6 континентов»:** диапазон 4–6 из `World_Generation_Spec.md` §2.2 применим к BALANCED, а не ко всем типам мира. Для PANGAEA каноническое значение — 1. Для каждого world_type используются значения из таблицы §4.2.
 
 **ARCHIPELAGO — островная раскладка:**
 - Ни один регион LAND не должен содержать > 40% всей суши.
@@ -656,8 +665,8 @@ spawnScore(capital) =
 | **Вероятность** | 30% | 20% | 20% | 15% | 15% |
 | **Вода %** | 40–55 | 25–40 | 55–70 | 30–40 | 30–65 |
 | **Суша %** | 45–60 | 60–75 | 30–45 | 60–70 | 35–70 |
-| **Континенты** | 4–6 | 3–4 | 2–3 | 1–2 | 2–6 |
-| **Острова** | 5–10 | 3–6 | 8–15 | 3–8 | 5–15 |
+| **Континенты** | 4–6 | 3–4 | 2–3 | **1** (hard) | 2–6 |
+| **Острова** | 5–10 | 3–6 | 8–15 | 5–10 | 5–15 |
 | **PLAIN %** | 45 | 50 | 40 | 48 | 30–55 |
 | **FOREST %** | 25 | 22 | 30 | 23 | 15–35 |
 | **MOUNTAIN %** | 15 | 15 | 12 | 16 | 10–25 |
@@ -830,6 +839,8 @@ world_type = WORLD_TYPES[ CDF.findIndex(c => roll < c) ]
 | v5.1 | 2026-03-04 | Начальная версия. 5 типов мира, terrain distribution, spawn balance, pipeline integration |
 | v5.2 | 2026-03-04 | Architect review: (1) PANGAEA ≥10 preserved + satellite islands, (2) world_type derived from seed — no schema change, (3) Resource distribution scope clarified + per-world-type table, (4) NEW §11 Playability & Fairness Invariants, (5) Terrain naming cleaned — no implied new types. OQ #1 + #4 resolved. Sections renumbered: §11→§12, §12→§13 |
 | v5.3 | 2026-03-04 | OQ closure: (OQ#2) UI = Random only, reveal on Loading/Briefing, (OQ#3) spawnScore weights = BALANCED_MVP profile locked, (OQ#5) WILD PLAIN ≥ 25% hard constraint + retry + BALANCED fallback §3.5, (OQ#6) probabilities 30/20/20/15/15 locked + weighted CDF §1.2. All 6 OQs now resolved. No schema/mechanics changes |
+| v5.6 | 2026-03-05 | Soft/hard clarification: island counts for ALL world types → soft targets (generator doesn't retry on island count mismatch). Continent counts → soft targets EXCEPT PANGAEA continents=1 (hard). Updated §2.5, §4.2 table, §4.3 special rules, §10 summary. Rationale: islands are flavor variability, retry is overkill. No schema/mechanics changes |
+| v5.5 | 2026-03-05 | PANGAEA canon: mainland_count=1 (hard), islands=5–10 (hard→soft in v5.6). Updated §2.5, §4.2, §4.3, §10 summary table. Added note: 4–6 continent range applies to BALANCED/CONTINENTAL/etc., not PANGAEA. Island ring is canonical PANGAEA feature. No schema/mechanics changes |
 | v5.4 | 2026-03-04 | Deterministic attemptSeed: replaced magic `seed = match_seed + retryCount` with `attemptSeed = Hash32(match_seed, world_type_id, attempt_index)` via FNV-1a (§3.5.1). WILD constraint clarified: post-validation + full regen (not in-place adjustment) (§3.5). Post-MVP override clarified as input parameter (§1.2, §12.3). No schema/mechanics changes |
 
 ---

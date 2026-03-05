@@ -1,6 +1,15 @@
 # Changelog
 
 
+## v5.6 — docs: clarify world-type island/continent counts as soft targets
+- Island counts for ALL world types → **soft targets** (generator warns, no retry)
+- Continent counts for non-PANGAEA types → **soft targets**
+- Only PANGAEA continents=1 remains **hard** (retry on violation)
+- Rationale: острова — вкусовая вариативность, retry по ним избыточен
+- Updated: World_Types_and_Terrain_Distribution_Spec.md (v5.5→v5.6), World_Generation_Spec.md, Map_Generation.md
+- Docs: PATCH_REPORT_PANGAEA_ISLANDS_SOFT.md
+- No code, schema, or mechanics changes
+
 ## v5.5 — Canon: PANGAEA single continent + island ring (docs-only)
 - **World_Types_and_Terrain_Distribution_Spec.md** bumped v5.4 → v5.5
 - PANGAEA continents: `1–2` → `1 (hard)` — ровно один суперконтинент

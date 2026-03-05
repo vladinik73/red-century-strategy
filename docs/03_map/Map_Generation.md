@@ -2,8 +2,8 @@
 
 ## PvE параметры
 - Размер: 80x80
-- Континенты: минимум 4 (цель: 4–6)
-- Острова: минимум 5 (цель: 5–10)
+- Континенты: target 4–6 (soft, default/BALANCED); **PANGAEA: ровно 1 суперконтинент (HARD)** (см. `World_Types_and_Terrain_Distribution_Spec.md` §4.2–§4.3). Остальные world types — soft targets.
+- Острова: target 5–10 (soft, default/BALANCED); **все world types — soft targets** (генератор стремится, но не retry); PANGAEA: target 5–10 (островное кольцо, soft)
 - Города: 50–100 (жёстко)
 - Минимальная дистанция столиц: ≥10 клеток (Chebyshev distance: max(|dx|,|dy|) ≥ 10)
 - Дистанция между городами: ≥2 клетки (может быть больше)
@@ -58,7 +58,9 @@
    - Neutral city params (v4.23): level=1, defense_level=0, territory_radius=1, garrison=none
 
 6. VALIDATE CONSTRAINTS
-   - Check: 4–6 continent blobs, 5–10 island blobs
+   - Check (HARD): PANGAEA continentCount == 1  (единственный hard по топологии)
+   - Check (SOFT — warn only): continent/island counts per worldConfig.continentRange/islandRange
+     (BALANCED: target 4–6 continents, 5–10 islands; PANGAEA: target 5–10 islands; etc.)
    - Check: 50–100 cities placed
    - Check: all capitals >= 10 apart; China >= 7 from edge
    - Check: each capital on LAND
