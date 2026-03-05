@@ -68,11 +68,15 @@ function smoothstep(edge0: number, edge1: number, x: number): number {
   return t * t * (3 - 2 * t);
 }
 
-function createNoise2D(rng: () => number): (x: number, y: number) => number {
+/**
+ * Build a 2D value-noise function seeded by an uint32 RNG.
+ * Accepts rng.uint32 (raw integer) for permutation table shuffle.
+ */
+function createNoise2D(rngU32: () => number): (x: number, y: number) => number {
   const perm: number[] = [];
   for (let i = 0; i < 256; i++) perm[i] = i;
   for (let i = 255; i > 0; i--) {
-    const j = (rng() >>> 0) % (i + 1);
+    const j = rngU32() % (i + 1);
     [perm[i], perm[j]] = [perm[j], perm[i]];
   }
   const grad = (h: number, x: number, y: number) => {
@@ -115,15 +119,16 @@ export function generateWorld(
 ): WorldGenResult {
   const rng = createSeededRng(attemptSeed);
 
+  // --- Phase 1: Landmask via noise ---
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
   const [thMin, thMax] = config.landThreshold;
-  const threshold = lerp(thMin, thMax, rng());
+  const threshold = lerp(thMin, thMax, rng());           // float [0,1)
   const [freqMin, freqMax] = config.noiseFrequency;
-  const freq = lerp(freqMin, freqMax, rng());
+  const freq = lerp(freqMin, freqMax, rng());             // float [0,1)
 
-  const noise = createNoise2D(rng);
-  const elevNoise = createNoise2D(rng);
-  const moistNoise = createNoise2D(rng);
+  const noise = createNoise2D(rng.uint32);                 // uint32 for permutation
+  const elevNoise = createNoise2D(rng.uint32);
+  const moistNoise = createNoise2D(rng.uint32);
 
   const landmask: boolean[] = new Array(MAP_SIZE);
   for (let y = 0; y < MAP_HEIGHT; y++) {
@@ -136,10 +141,12 @@ export function generateWorld(
       landmask[tileIndex(x, y)] = n > effTh;
     }
   }
+
+  // Count pre-filter land; apply center fallback only if insufficient
   let preFilterLand = 0;
   let usedFallback = false;
   for (let i = 0; i < MAP_SIZE; i++) if (landmask[i]) preFilterLand++;
-  if (true) { // MVP: always ensure center has land
+  if (preFilterLand < MIN_LAND) {
     usedFallback = true;
     for (let y = 0; y < MAP_HEIGHT; y++) {
       for (let x = 0; x < MAP_WIDTH; x++) {
@@ -147,11 +154,12 @@ export function generateWorld(
         const edgeDistVal = edgeDist(x, y);
         const falloff = smoothstep(0, config.edgeFalloffWidth, edgeDistVal);
         if (falloff < 0.5) continue;
-        if (rng() < 0.5) landmask[i] = true;
+        if (rng() < 0.5) landmask[i] = true;              // float comparison
       }
     }
   }
 
+  // --- Phase 2: Region detection (flood fill) ---
   const regionId: number[] = new Array(MAP_SIZE).fill(-1);
   let nextRegion = 0;
   const regionSizes: number[] = [];
@@ -179,6 +187,7 @@ export function generateWorld(
     }
   }
 
+  // --- Phase 3: Region selection (continents + islands) ---
   const sortedRegions = regionSizes
     .map((s, i) => ({ size: s, id: i }))
     .sort((a, b) => b.size - a.size);
@@ -209,18 +218,19 @@ export function generateWorld(
     }
   }
 
-    // Fallback: ensure at least MIN_LAND tiles
-    let totalKept = 0;
-    for (const rid of keepRegion) totalKept += regionSizes[rid] ?? 0;
-    if (totalKept < MIN_LAND) {
-      for (const r of sortedRegions) {
-        if (keepRegion.has(r.id)) continue;
-        keepRegion.add(r.id);
-        totalKept += r.size;
-        if (totalKept >= MIN_LAND) break;
-      }
+  // Fallback: ensure at least MIN_LAND tiles
+  let totalKept = 0;
+  for (const rid of keepRegion) totalKept += regionSizes[rid] ?? 0;
+  if (totalKept < MIN_LAND) {
+    for (const r of sortedRegions) {
+      if (keepRegion.has(r.id)) continue;
+      keepRegion.add(r.id);
+      totalKept += r.size;
+      if (totalKept >= MIN_LAND) break;
     }
+  }
 
+  // Remove land tiles that aren't in kept regions (skip if fallback was used)
   for (let i = 0; i < MAP_SIZE; i++) {
     if (!usedFallback && landmask[i] && !keepRegion.has(regionId[i])) landmask[i] = false;
   }
@@ -228,6 +238,7 @@ export function generateWorld(
   let landCount = 0;
   for (let i = 0; i < MAP_SIZE; i++) if (landmask[i]) landCount++;
 
+  // --- Phase 4: Terrain assignment ---
   const tiles: TileState[] = [];
   const elevMap: number[] = new Array(MAP_SIZE);
   const moistMap: number[] = new Array(MAP_SIZE);
@@ -241,7 +252,7 @@ export function generateWorld(
     for (let x = 0; x < MAP_WIDTH; x++) {
       const i = tileIndex(x, y);
       const t = emptyTile(x, y);
-      if (landmask[i] || (edgeDist(x, y) >= 5)) {
+      if (landmask[i]) {                                   // FIX: removed edgeDist catch-all
         elevMap[i] = (elevNoise(x * 0.06, y * 0.06) + 1) / 2;
         moistMap[i] = (moistNoise(x * 0.06, y * 0.06) + 1) / 2;
         const e = elevMap[i];
@@ -262,8 +273,9 @@ export function generateWorld(
     }
   }
 
+  // --- Phase 5: Rivers ---
   const [riverMin, riverMax] = config.riverCount;
-  const nRivers = riverMin + Math.floor(rng() * (riverMax - riverMin + 1));
+  const nRivers = riverMin + Math.floor(rng() * (riverMax - riverMin + 1)); // float → int
   const [lenMin, lenMax] = config.riverLength;
   const maxLen = lenMax;
 
@@ -313,6 +325,7 @@ export function generateWorld(
     }
   }
 
+  // --- Phase 6: City placement ---
   const candidateTiles = tiles
     .map((_, i) => i)
     .filter(
@@ -321,16 +334,17 @@ export function generateWorld(
         tiles[i].terrain_type !== "MOUNTAIN"
     );
 
-  const shuffle = <T>(arr: T[], r: () => number): T[] => {
+  /** Fisher-Yates shuffle using uint32 RNG for uniform index selection. */
+  const shuffle = <T>(arr: T[], rU32: () => number): T[] => {
     const a = [...arr];
     for (let i = a.length - 1; i > 0; i--) {
-      const j = (r() >>> 0) % (i + 1);
+      const j = rU32() % (i + 1);                          // uint32 modulo
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
   };
 
-  const shuffled = shuffle(candidateTiles, rng);
+  const shuffled = shuffle(candidateTiles, rng.uint32);
   const capitals: Array<{ x: number; y: number; playerId: string }> = [];
 
   for (let c = 0; c < NUM_CAPITALS; c++) {
@@ -350,11 +364,13 @@ export function generateWorld(
       }
     }
     if (!placed) {
+      // Relaxed fallback: try with reduced distance (MIN_CAPITAL_DIST - 2, min 6)
+      const relaxedDist = Math.max(6, MIN_CAPITAL_DIST - 2);
       for (const i of shuffled) {
         const { x, y } = tileCoords(i);
         if (isChina && edgeDist(x, y) < CHINA_EDGE_DIST) continue;
         const ok = capitals.every(
-          (cap) => chebyshev({ x, y }, cap) >= MIN_CAPITAL_DIST
+          (cap) => chebyshev({ x, y }, cap) >= relaxedDist
         );
         if (ok) {
           capitals.push({ x, y, playerId });
@@ -367,7 +383,7 @@ export function generateWorld(
   const [cityMin, cityMax] = config.cityRange;
   const totalCities = Math.min(
     cityMax,
-    Math.max(cityMin, NUM_CAPITALS + Math.floor(rng() * (cityMax - cityMin + 1)))
+    Math.max(cityMin, NUM_CAPITALS + Math.floor(rng() * (cityMax - cityMin + 1))) // float
   );
   let neutralCount = totalCities - NUM_CAPITALS;
 
@@ -414,7 +430,7 @@ export function generateWorld(
     );
   });
 
-  const shuffledNeutral = shuffle(neutralCandidates, rng);
+  const shuffledNeutral = shuffle(neutralCandidates, rng.uint32);
   for (let n = 0; n < neutralCount && n < shuffledNeutral.length; n++) {
     const i = shuffledNeutral[n];
     const { x, y } = tileCoords(i);
@@ -448,6 +464,7 @@ export function generateWorld(
     allCityPositions.push({ x, y });
   }
 
+  // --- Phase 7: Resources ---
   const eligibleResourceTiles = tiles
     .map((_, i) => i)
     .filter(
@@ -465,13 +482,14 @@ export function generateWorld(
     const t = tiles[i];
     const density =
       t.terrain_type === "DESERT" ? densityDesert : densityNorm;
-    if (rng() < density) {
-      t.resource_type = rng() < moneyShare ? "MONEY" : "SCIENCE";
+    if (rng() < density) {                                  // float comparison
+      t.resource_type = rng() < moneyShare ? "MONEY" : "SCIENCE"; // float comparison
       t.resource_remaining = RESOURCE_STOCK;
       t.resource_yield_per_turn = RESOURCE_YIELD;
     }
   }
 
+  // Guarantee each capital has >= 1 MONEY + >= 1 SCIENCE in territory
   for (const cap of capitals) {
     const ci = tileIndex(cap.x, cap.y);
     const city = cities.find((c) => c.x === cap.x && c.y === cap.y)!;
@@ -492,20 +510,21 @@ export function generateWorld(
         !tiles[idx].resource_type
     );
     if (moneyCount === 0 && eligibleInTerritory.length) {
-      const pick = eligibleInTerritory[(rng() >>> 0) % eligibleInTerritory.length];
+      const pick = eligibleInTerritory[rng.uint32() % eligibleInTerritory.length]; // uint32
       tiles[pick].resource_type = "MONEY";
       tiles[pick].resource_remaining = RESOURCE_STOCK;
       tiles[pick].resource_yield_per_turn = RESOURCE_YIELD;
       eligibleInTerritory.splice(eligibleInTerritory.indexOf(pick), 1);
     }
     if (scienceCount === 0 && eligibleInTerritory.length) {
-      const pick = eligibleInTerritory[(rng() >>> 0) % eligibleInTerritory.length];
+      const pick = eligibleInTerritory[rng.uint32() % eligibleInTerritory.length]; // uint32
       tiles[pick].resource_type = "SCIENCE";
       tiles[pick].resource_remaining = RESOURCE_STOCK;
       tiles[pick].resource_yield_per_turn = RESOURCE_YIELD;
     }
   }
 
+  // --- Phase 8: Players + Units ---
   const players: PlayerState[] = CIV_PLAYER_IDS.map((player_id, i) => ({
     player_id,
     faction_id: `faction_${i}`,
@@ -535,6 +554,7 @@ export function generateWorld(
     has_acted_this_turn: false,
   }));
 
+  // --- Phase 9: Visibility ---
   for (let civ = 0; civ < NUM_CIVS; civ++) {
     const cap = capitals[civ];
     if (!cap) continue;

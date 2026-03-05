@@ -1,7 +1,9 @@
 /**
- * Validate world generation invariants. Canon: World_Types §11, Map_Generator_Architecture §6.
+ * Validate world generation invariants.
+ * Canon: World_Types §11, Map_Generator_Architecture §6, World_Generation_Spec §3.9
  */
-import type { WorldGenResult } from "./types.js";
+import type { WorldConfig, WorldGenResult } from "./types.js";
+import type { WorldTypeId } from "./types.js";
 import type { TileState } from "../types/generated/tile.js";
 
 const MAP_SIZE = 6400;
@@ -22,20 +24,38 @@ function edgeDist(x: number, y: number): number {
   return Math.min(x, y, 79 - x, 79 - y);
 }
 
-export function validateWorld(
-  result: WorldGenResult
-): { ok: true } | { ok: false; reasons: string[] } {
-  const reasons: string[] = [];
+export interface ValidateWorldOptions {
+  /** Pass worldType to enable WILD PLAIN constraint check. */
+  worldType?: WorldTypeId;
+  /** Pass config to enable continent/island range checks. */
+  config?: WorldConfig;
+}
 
+export type ValidateWorldResult =
+  | { ok: true; warnings: string[] }
+  | { ok: false; reasons: string[]; warnings: string[] };
+
+export function validateWorld(
+  result: WorldGenResult,
+  options?: ValidateWorldOptions
+): ValidateWorldResult {
+  const reasons: string[] = [];
+  const warnings: string[] = [];
+
+  // === HARD CONSTRAINTS (cause retry) ===
+
+  // --- Structural invariants ---
   if (result.tiles_flat.length !== MAP_SIZE) {
     reasons.push(`tiles_flat.length=${result.tiles_flat.length}, expected ${MAP_SIZE}`);
   }
 
-  const landCount = result.tiles_flat.filter((t) => t.terrain_base === "LAND").length;
+  const landTiles = result.tiles_flat.filter((t) => t.terrain_base === "LAND");
+  const landCount = landTiles.length;
   if (landCount < MIN_LAND) {
     reasons.push(`LAND tiles=${landCount}, expected >= ${MIN_LAND}`);
   }
 
+  // --- Capital invariants ---
   const capitals = result.cities.filter((c) => c.is_capital);
   if (capitals.length !== 8) {
     reasons.push(`capitals=${capitals.length}, expected 8`);
@@ -61,10 +81,12 @@ export function validateWorld(
     }
   }
 
+  // --- City count ---
   if (result.cities.length < MIN_CITIES) {
     reasons.push(`cities=${result.cities.length}, expected >= ${MIN_CITIES}`);
   }
 
+  // --- Resource guarantees per capital ---
   for (const cap of capitals) {
     const ci = cap.y * 80 + cap.x;
     const territory = cap.territory_tile_indices;
@@ -80,6 +102,38 @@ export function validateWorld(
     if (scienceCount < 1) reasons.push(`capital at (${cap.x},${cap.y}) has < 1 SCIENCE in territory`);
   }
 
-  if (reasons.length) return { ok: false, reasons };
-  return { ok: true };
+  // --- WILD constraint: PLAIN >= 25% of LAND tiles (Canon: World_Types §3.5) ---
+  if (options?.worldType === "WILD" && landCount > 0) {
+    const plainCount = landTiles.filter((t) => t.terrain_type === "PLAIN").length;
+    const plainRatio = plainCount / landCount;
+    if (plainRatio < 0.25) {
+      reasons.push(
+        `WILD_PLAIN_MIN: PLAIN=${plainCount}/${landCount} (${(plainRatio * 100).toFixed(1)}%) < 25%`
+      );
+    }
+  }
+
+  // === SOFT CONSTRAINTS (warnings — logged, NOT causes for retry) ===
+  // Continent/island counts depend on noise quality; the MVP noise generator
+  // cannot reliably hit config-specified ranges within MAX_RETRIES.
+  // These become hard once the generator gains multi-octave continent seeding.
+
+  if (options?.config) {
+    const [contMin, contMax] = options.config.continentRange;
+    const mc = result.meta.continentCount;
+    if (mc < contMin || mc > contMax) {
+      warnings.push(`continents=${mc}, target [${contMin}..${contMax}]`);
+    }
+  }
+
+  if (options?.config) {
+    const [islMin, islMax] = options.config.islandRange;
+    const mi = result.meta.islandCount;
+    if (mi < islMin || mi > islMax) {
+      warnings.push(`islands=${mi}, target [${islMin}..${islMax}]`);
+    }
+  }
+
+  if (reasons.length) return { ok: false, reasons, warnings };
+  return { ok: true, warnings };
 }

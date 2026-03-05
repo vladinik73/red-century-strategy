@@ -8,7 +8,7 @@ import { WORLD_TYPE_IDS, WORLD_TYPE_CDF } from "./types.js";
 
 export function deriveWorldType(match_seed: number): WorldTypeId {
   const rng = createSeededRng(match_seed);
-  const roll = (rng() >>> 0) % 100;
+  const roll = rng.uint32() % 100;                        // uint32 for uniform [0..99]
   const idx = WORLD_TYPE_CDF.findIndex((c) => roll < c);
   const i = idx >= 0 ? idx : WORLD_TYPE_IDS.length - 1;
   return WORLD_TYPE_IDS[i] ?? "BALANCED";

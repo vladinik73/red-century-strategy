@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v5A.2a — WorldGen RNG Fix + Missing Invariants
+- Fixed: `createSeededRng` returned raw uint32 but was used as float [0,1) — broke land generation, resources, and config differentiation
+- Fixed: all call sites in generateWorld.ts / deriveWorldType.ts (noise, shuffle, lerp, thresholds, modulo)
+- Fixed: removed `edgeDist >= 5` catch-all and `if (true)` center fallback that masked the broken RNG
+- Added: `SeededRng` interface — `rng()` returns float [0,1), `rng.uint32()` returns raw uint32
+- Added: WILD PLAIN ≥ 25% hard constraint in validateWorld (Canon §3.5)
+- Added: continent/island count soft warnings in validateWorld
+- Added: `ValidateWorldResult` type with reasons (hard) + warnings (soft)
+- Added: tests — worldtype_variation (5), wild_constraint (7), updated determinism/invariants/retry
+- Known: landThreshold config values inverted (PANGAEA/ARCHIPELAGO) — separate design fix
+- Docs: PATCH_REPORT_v5A.2a_worldgen_rng_and_invariants.md
+
 ## v5A.2 — Runtime WorldGen MVP (Option A)
 - Added: runtime worldgen in @redage/core (deriveWorldType, attemptSeed(FNV-1a), generateWorld, validateWorld)
 - Added: createMatch интеграция с retry MAX_RETRIES=5 (attemptSeed per attempt)

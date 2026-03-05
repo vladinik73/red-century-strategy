@@ -43,7 +43,7 @@ export function createMatch(input: CreateMatchInput): MatchState {
     const result = generateWorld(aseed, config, attemptIndex);
     lastResult = result;
 
-    const validation = validateWorld(result);
+    const validation = validateWorld(result, { worldType, config });
     if (validation.ok) {
       return buildMatchState(seed, result, deterministicMatchId(seed));
     }
