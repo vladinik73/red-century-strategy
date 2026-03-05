@@ -4,6 +4,8 @@
 
 > Этот документ определяет **систему типов мира** и **правила распределения террейна** для генератора карт. Он НЕ вводит новых механик, типов местности или ресурсов — только параметризует существующий алгоритм генерации из `World_Generation_Spec.md`.
 
+See also: [`Map_Generator_Architecture.md`](../04_engine/Map_Generator_Architecture.md) — архитектура генератора (Option A, retry/attemptSeed, separation from rendering).
+
 ---
 
 ## 1) Система типов мира (World Type System)

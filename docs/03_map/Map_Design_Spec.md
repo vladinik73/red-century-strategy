@@ -6,6 +6,8 @@
 
 > Этот документ определяет **визуальный стиль и правила рендеринга** карты. Он НЕ вводит новых механик или типов местности — только формализует, как существующий tile state превращается в пиксели на экране.
 
+See also: [`Map_Generator_Architecture.md`](../04_engine/Map_Generator_Architecture.md) — архитектура генератора (Option A, separation worldgen from rendering).
+
 ---
 
 ## 1) Визуальные цели и референсы (Visual Goals & References)

@@ -6,6 +6,8 @@
 
 **Build Bridge:** визуал моста — дорога на WATER тайле. Событие `BUILD_ROAD` с `is_bridge: true`. Отдельного BUILD_BRIDGE нет.
 
+See also: [`Map_Generator_Architecture.md`](../04_engine/Map_Generator_Architecture.md) — архитектура генератора (Option A, separation worldgen from rendering).
+
 ---
 
 ## 1) Terrain rendering

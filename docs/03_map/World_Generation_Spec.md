@@ -5,6 +5,8 @@
 
 > **Принцип:** один seed → один мир. Генерация полностью детерминирована через seeded PRNG (Mulberry32). Тот же seed всегда даёт идентичную карту, города, ресурсы и стартовые позиции.
 
+See also: [`Map_Generator_Architecture.md`](../04_engine/Map_Generator_Architecture.md) — архитектура генератора (Option A, runtime worldgen в `createMatch`).
+
 ---
 
 ## 1) Тайловая система (Tile System)

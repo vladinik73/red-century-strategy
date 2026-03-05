@@ -8,7 +8,8 @@
 - Added: docs/00_meta/PATCH_REPORT_v5A.2_worldgen.md
 
 ## v5A.map — Map Generator Architecture
-- Added: docs/13_engine/Map_Generator_Architecture.md (Option A runtime worldgen in createMatch; retry/attemptSeed; separation from rendering)
+- Added: docs/04_engine/Map_Generator_Architecture.md (Option A runtime worldgen in createMatch; retry/attemptSeed; separation from rendering)
+- Cross-refs: "See also" added to World_Generation_Spec.md, World_Types_and_Terrain_Distribution_Spec.md, Map_Design_Spec.md, Map_Visual_Spec.md
 
 ## v5.4 — Deterministic attemptSeed + WILD constraint clarification (docs-only)
 
