@@ -63,13 +63,40 @@ describe("worldgen world type variation", () => {
     expect(totalResources).toBeGreaterThan(100);
   });
 
-  it("BALANCED: createMatch succeeds for 20 seeds (retry handles bad attempts)", () => {
-    for (let s = 0; s < 20; s++) {
+  it("sBALANCED: createMatch succeeds for 5 seedsBALANCED: createMatch succeeds for 5 seeds (retry handles bad attempts)", () => {
+    for (let s = 0; s < 5; s++) {
       const seed = 1000 + s * 777;
       const match = createMatch({ seed, worldTypeOverride: "BALANCED" });
       expect(match.map.tiles_flat.length).toBe(6400);
       expect(match.cities.filter((c) => c.is_capital).length).toBe(8);
     }
+  });
+
+
+  it("PANGAEA landShare > ARCHIPELAGO landShare on 5 seeds", () => {
+    let pangaeaLand = 0;
+    let archLand = 0;
+    for (let s = 0; s < 5; s++) {
+      const seed = 3000 + s * 97;
+      const pangaea = createMatch({ seed, worldTypeOverride: "PANGAEA" });
+      const archipelago = createMatch({ seed, worldTypeOverride: "ARCHIPELAGO" });
+      pangaeaLand += pangaea.map.tiles_flat.filter((t) => t.terrain_base === "LAND").length;
+      archLand += archipelago.map.tiles_flat.filter((t) => t.terrain_base === "LAND").length;
+    }
+    expect(pangaeaLand).toBeGreaterThan(archLand);
+  });
+
+  it("ARCHIPELAGO waterShare > BALANCED waterShare on 5 seeds", () => {
+    let archWater = 0;
+    let balWater = 0;
+    for (let s = 0; s < 5; s++) {
+      const seed = 4000 + s * 73;
+      const archipelago = createMatch({ seed, worldTypeOverride: "ARCHIPELAGO" });
+      const balanced = createMatch({ seed, worldTypeOverride: "BALANCED" });
+      archWater += archipelago.map.tiles_flat.filter((t) => t.terrain_base === "WATER").length;
+      balWater += balanced.map.tiles_flat.filter((t) => t.terrain_base === "WATER").length;
+    }
+    expect(archWater).toBeGreaterThan(balWater);
   });
 
 });

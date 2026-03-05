@@ -1,6 +1,6 @@
 /**
  * World type configs. Canon: docs/03_map/World_Types_and_Terrain_Distribution_Spec.md
- * landThreshold: higher threshold => less land (isLand = noise > threshold)
+ * landThreshold: higher threshold => less land (when using noise > threshold)
  */
 import type { WorldConfig, WorldTypeId } from "./types.js";
 
@@ -11,6 +11,9 @@ export function getWorldConfig(worldType: WorldTypeId): WorldConfig {
       landThreshold: [0.4, 0.55], // higher threshold => less land; 45–60% land
       noiseFrequency: [0.04, 0.08],
       edgeFalloffWidth: 8,
+      edgeFalloffStrength: 0.15,
+      landmaskSmoothIterations: 1,
+      landmaskSmoothMajority: 4,
       continentRange: [4, 6],
       minContinentSize: 200,
       islandRange: [5, 10],
@@ -30,6 +33,9 @@ export function getWorldConfig(worldType: WorldTypeId): WorldConfig {
       landThreshold: [0.3, 0.5], // higher threshold => less land; 60–75% land
       noiseFrequency: [0.03, 0.05],
       edgeFalloffWidth: 5,
+      edgeFalloffStrength: 0.12,
+      landmaskSmoothIterations: 1,
+      landmaskSmoothMajority: 4,
       continentRange: [3, 4],
       minContinentSize: 400,
       islandRange: [3, 6],
@@ -49,6 +55,9 @@ export function getWorldConfig(worldType: WorldTypeId): WorldConfig {
       landThreshold: [0.45, 0.6], // higher threshold => less land; 30–45% land (55–70% water)
       noiseFrequency: [0.06, 0.1],
       edgeFalloffWidth: 4,
+      edgeFalloffStrength: 0.25,
+      landmaskSmoothIterations: 0,
+      landmaskSmoothMajority: 4,
       continentRange: [2, 3],
       minContinentSize: 150,
       islandRange: [8, 15],
@@ -65,13 +74,16 @@ export function getWorldConfig(worldType: WorldTypeId): WorldConfig {
     },
     PANGAEA: {
       worldType: "PANGAEA",
-      landThreshold: [0.25, 0.45], // higher threshold => less land; 60–70% land
+      landThreshold: [0.2, 0.4], // higher threshold => less land; 60–70% land
       noiseFrequency: [0.02, 0.04],
       edgeFalloffWidth: 10,
-      continentRange: [1, 2],
+      edgeFalloffStrength: 0.06,
+      landmaskSmoothIterations: 0,
+      landmaskSmoothMajority: 4,
+      continentRange: [1, 1],
       minContinentSize: 2000,
-      islandRange: [3, 8],
-      minIslandSize: 8,
+      islandRange: [5, 10],
+      minIslandSize: 5,
       minLakeSize: 8,
       terrainRatios: { plain: 0.48, forest: 0.23, mountain: 0.16, desert: 0.13 },
       thresholdDeltas: { mountain: 0.01, forest: -0.02, desert: -0.02 },

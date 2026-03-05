@@ -30,6 +30,12 @@ export interface WorldConfig {
   landThreshold: [number, number];
   noiseFrequency: [number, number];
   edgeFalloffWidth: number;
+  /** 0–1: how much edge falloff raises threshold at map edges. Higher = more water at edges. */
+  edgeFalloffStrength?: number;
+  /** Landmask smoothing iterations (majority-neighbors). */
+  landmaskSmoothIterations?: number;
+  /** Majority threshold: land if >= this many of 8 neighbors are land. */
+  landmaskSmoothMajority?: number;
   continentRange: [number, number];
   minContinentSize: number;
   islandRange: [number, number];

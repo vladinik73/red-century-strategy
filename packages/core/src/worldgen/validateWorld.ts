@@ -113,20 +113,24 @@ export function validateWorld(
     }
   }
 
-  // === SOFT: continent/island counts (warnings; hard once generator reliably hits ranges) ===
+  // === Continent/island: PANGAEA continents=1 HARD; others + PANGAEA islands = soft ===
   if (options?.config) {
-    const [contMin, contMax] = options.config.continentRange;
     const mc = result.meta.continentCount;
-    if (mc < contMin || mc > contMax) {
-      warnings.push(`continents=${mc}, target [${contMin}..${contMax}]`);
-    }
-  }
-
-  if (options?.config) {
-    const [islMin, islMax] = options.config.islandRange;
     const mi = result.meta.islandCount;
-    if (mi < islMin || mi > islMax) {
-      warnings.push(`islands=${mi}, target [${islMin}..${islMax}]`);
+    const wt = options?.worldType;
+    if (wt === "PANGAEA") {
+      if (mc !== 1) reasons.push(`PANGAEA continents=${mc}, expected 1`);
+      if (mi < 5 || mi > 10) warnings.push(`PANGAEA islands=${mi}, target [5..10]`);
+    } else if (wt && wt !== "WILD") {
+      const [contMin, contMax] = options.config.continentRange;
+      const [islMin, islMax] = options.config.islandRange;
+      if (mc < contMin || mc > contMax) warnings.push(`continents=${mc}, target [${contMin}..${contMax}]`);
+      if (mi < islMin || mi > islMax) warnings.push(`islands=${mi}, target [${islMin}..${islMax}]`);
+    } else {
+      const [contMin, contMax] = options.config.continentRange;
+      const [islMin, islMax] = options.config.islandRange;
+      if (mc < contMin || mc > contMax) warnings.push(`continents=${mc}, target [${contMin}..${contMax}]`);
+      if (mi < islMin || mi > islMax) warnings.push(`islands=${mi}, target [${islMin}..${islMax}]`);
     }
   }
 

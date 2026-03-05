@@ -157,6 +157,10 @@ export function generateWorld(
   const elevNoise = createNoise2D(rng.uint32);
   const moistNoise = createNoise2D(rng.uint32);
 
+  const edgeStrength = config.edgeFalloffStrength ?? 0.15;
+  const smoothIterations = config.landmaskSmoothIterations ?? 1;
+  const smoothMajority = config.landmaskSmoothMajority ?? 4;
+
   const landmask: boolean[] = new Array(MAP_SIZE);
   const normNoise = (a: number, b: number) => Math.max(0, Math.min(1, (noise(a, b) + 1) / 2));
   for (let y = 0; y < MAP_HEIGHT; y++) {
@@ -164,14 +168,11 @@ export function generateWorld(
       const n = fbm2(x * freq, y * freq, normNoise);
       const edgeDistVal = edgeDist(x, y);
       const falloff = smoothstep(0, config.edgeFalloffWidth, edgeDistVal);
-      const effTh = threshold + (1 - falloff) * 0.15;
+      const effTh = threshold + (1 - falloff) * edgeStrength;
       landmask[tileIndex(x, y)] = n > effTh;
     }
   }
 
-  // Majority-neighbors smoothing (1 iteration) on binary LAND/WATER mask.
-  // >= 4 of 8 neighbors => land (less aggressive than strict majority 5)
-  const smoothIterations = 1;
   for (let iter = 0; iter < smoothIterations; iter++) {
     const next: boolean[] = [...landmask];
     for (let y = 0; y < MAP_HEIGHT; y++) {
@@ -181,7 +182,7 @@ export function generateWorld(
         for (const n of neighbors8(x, y)) {
           if (landmask[tileIndex(n.x, n.y)]) landNeighbors++;
         }
-        next[i] = landNeighbors >= 4;
+        next[i] = landNeighbors >= smoothMajority;
       }
     }
     for (let j = 0; j < MAP_SIZE; j++) landmask[j] = next[j];
@@ -224,41 +225,59 @@ export function generateWorld(
   const minIsl = config.minIslandSize;
   const [contMin, contMax] = config.continentRange;
   const [islMin, islMax] = config.islandRange;
-  const nCont = Math.min(
-    contMax,
-    Math.max(contMin, sortedRegions.filter((r) => r.size >= minCont).length)
-  );
-  const nIsl = Math.min(
-    islMax,
-    Math.max(islMin, sortedRegions.filter((r) => r.size >= minIsl && r.size < minCont).length)
-  );
 
   const keepRegion = new Set<number>();
   let contCount = 0;
   let islCount = 0;
-  for (const r of sortedRegions) {
-    if (r.size >= minCont && contCount < nCont) {
-      keepRegion.add(r.id);
-      contCount++;
-    } else if (r.size >= minIsl && r.size < minCont && islCount < nIsl) {
-      keepRegion.add(r.id);
+
+  if (config.worldType === "PANGAEA") {
+    // PANGAEA: exactly 1 mainland (largest >= minCont) + 5–10 islands
+    const mainland = sortedRegions.find((r) => r.size >= minCont);
+    if (mainland) {
+      keepRegion.add(mainland.id);
+      contCount = 1;
+    }
+    const islandCandidates = sortedRegions.filter(
+      (r) => r.size >= minIsl && r.size < minCont && !keepRegion.has(r.id)
+    );
+    const nIsl = Math.min(islMax, Math.max(islMin, islandCandidates.length));
+    for (let i = 0; i < nIsl && i < islandCandidates.length; i++) {
+      keepRegion.add(islandCandidates[i].id);
       islCount++;
+    }
+  } else {
+    const nCont = Math.min(
+      contMax,
+      Math.max(contMin, sortedRegions.filter((r) => r.size >= minCont).length)
+    );
+    const nIsl = Math.min(
+      islMax,
+      Math.max(islMin, sortedRegions.filter((r) => r.size >= minIsl && r.size < minCont).length)
+    );
+    for (const r of sortedRegions) {
+      if (r.size >= minCont && contCount < nCont) {
+        keepRegion.add(r.id);
+        contCount++;
+      } else if (r.size >= minIsl && r.size < minCont && islCount < nIsl) {
+        keepRegion.add(r.id);
+        islCount++;
+      }
     }
   }
 
-  // Fallback: ensure at least MIN_LAND tiles
   let totalKept = 0;
   for (const rid of keepRegion) totalKept += regionSizes[rid] ?? 0;
   if (totalKept < MIN_LAND) {
     for (const r of sortedRegions) {
       if (keepRegion.has(r.id)) continue;
+      if (config.worldType === "PANGAEA" && r.size >= minCont) continue;
       keepRegion.add(r.id);
+      islCount += r.size >= minIsl && r.size < minCont ? 1 : 0;
       totalKept += r.size;
       if (totalKept >= MIN_LAND) break;
     }
   }
 
-  // Remove land tiles that aren't in kept regions (skip if fallback was used)
   for (let i = 0; i < MAP_SIZE; i++) {
     if (landmask[i] && !keepRegion.has(regionId[i])) landmask[i] = false;
   }

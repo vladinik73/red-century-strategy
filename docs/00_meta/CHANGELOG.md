@@ -1,12 +1,22 @@
 # Changelog
 
 
-## v5A.2b — WorldGen landmask quality (fbm + thresholds + strict counts deferred)
+## v5.5 — Canon: PANGAEA single continent + island ring (docs-only)
+- **World_Types_and_Terrain_Distribution_Spec.md** bumped v5.4 → v5.5
+- PANGAEA continents: `1–2` → `1 (hard)` — ровно один суперконтинент
+- PANGAEA islands: `3–8` → `5–10 (hard)` — каноническое «островное кольцо» вокруг суперконтинента
+- Updated §2.5, §4.2, §4.3, §10 summary table; added exception note for 4–6 global range
+- **World_Generation_Spec.md**: validation of continent/island counts now world-type-conditional (§2.2, §3.2, §3.9)
+- **Map_Generation.md**: PvE params and §6 Validate updated with PANGAEA exception
+- Docs: PATCH_REPORT_PANGAEA_SINGLE_CONTINENT_CANON.md
+- No code, schema, or mechanics changes
+
+## v5A.2b — WorldGen landmask quality (fbm + thresholds + strict PANGAEA=1 continent)
 - Fixed: landThreshold inversion — ARCHIPELAGO higher (more water), PANGAEA lower (more land)
-- Added: fBm (5 octaves, lacunarity 2.0, gain 0.5) for landmask instead of single noise
-- Added: 1-iter majority-neighbors smoothing on LAND/WATER mask
-- Removed: MIN_LAND center-forcing fallback (retry handles bad seeds)
-- Tests: ARCHIPELAGO waterShare > CONTINENTAL; BALANCED createMatch 20 seeds
+- Added: fBm (5 octaves) for landmask; config-driven edgeFalloffStrength, landmaskSmoothIterations
+- Added: PANGAEA post-process — exactly 1 mainland + islands; fallback never adds second continent
+- Added: validateWorld PANGAEA continents=1 HARD FAIL
+- Added: worldgen.pangaea_shape.test.ts; PANGAEA landShare > ARCHIPELAGO; ARCHIPELAGO waterShare > BALANCED
 - Docs: PATCH_REPORT_v5A.2b_worldgen_landmask_quality.md
 
 ## v5A.2a — WorldGen RNG Fix + Missing Invariants
