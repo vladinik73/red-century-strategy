@@ -1,0 +1,11 @@
+# Replace this with an auto-extracted list from docs/03_map/Tile_Asset_List.md
+# Example entries:
+terrain_plain_v0.png
+terrain_plain_v1.png
+terrain_plain_v2.png
+terrain_plain_v3.png
+fog_fill.png
+fog_edge_n.png
+fog_edge_e.png
+fog_edge_s.png
+fog_edge_w.png

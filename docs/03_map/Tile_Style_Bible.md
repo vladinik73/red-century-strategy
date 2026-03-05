@@ -348,6 +348,7 @@ This Bible is satisfied if:
 | [`Tile_Asset_List.md`](Tile_Asset_List.md) | Complete sprite inventory derived from this Bible |
 | [`Tile_Asset_Production_Spec.md`](Tile_Asset_Production_Spec.md) | Export rules + quality checklist based on this Bible |
 | [`Tile_Generation_Prompts.md`](Tile_Generation_Prompts.md) | AI generation prompts encoding this Bible's style |
+| [`Tile_Prompt_Pack_P0_v1.md`](Tile_Prompt_Pack_P0_v1.md) | Ready-to-run P0 prompt pack (terrain bases + fog only) with palette lock and QA rules |
 | [`Map_Design_Spec.md`](Map_Design_Spec.md) | Rendering pipeline + atlas packing rules |
 | [`Map_Visual_Spec.md`](../10_uiux/Map_Visual_Spec.md) | Semantic tokens + placeholder assignments |
 

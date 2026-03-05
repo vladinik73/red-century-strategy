@@ -1,6 +1,12 @@
 # Changelog
 
 
+## Tile Prompt Pack P0 v1 — art: ready-to-run prompts for terrain bases + fog (P0 only)
+- Created `docs/03_map/Tile_Prompt_Pack_P0_v1.md` — 25 P0 sprites (16 terrain bases + 9 fog)
+- Includes: global style prefix, strict negative prompt, palette lock (Tile_Style_Bible §5 HEX), export constraints, per-variant prompts, fog alpha specs, post-processing checklist
+- Updated `Tile_Style_Bible.md` §16 Related Documents with link to prompt pack
+- No code, schema, or game mechanics changes
+
 ## v5.6 — docs: clarify world-type island/continent counts as soft targets
 - Island counts for ALL world types → **soft targets** (generator warns, no retry)
 - Continent counts for non-PANGAEA types → **soft targets**
